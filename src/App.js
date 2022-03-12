@@ -1,25 +1,14 @@
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Menu from "./components/Menu";
 import "./App.css";
-import Login from './components/_Login';
-import Logout from './components/_Logout';
+import Login from './components/OLD_Login';
+import Logout from './components/OLD_Logout';
 import useDrivePicker from "react-google-drive-picker";
-
 import LoginHooks from './components/LoginHooks';
 import LogoutHooks from './components/LogoutHooks';
 
 var Pressure = require('pressure');
-
-
-const CLIENT_ID = process.env.REACT_APP_GOOGLE_DRIVE_CLIENT_ID;
-
-const CLIENT_SECRET = process.env.REACT_APP_GOOGLE_DRIVE_SECRET_KEY;
-
-const REDIRECT_URI = 'https://developers.google.com/oauthplayground';
-
-const REFRESH_TOKEN = '1//04D-W16HO4bszCgYIARAAGAQSNwF-L9Ir_mwfSIrgJ1mzz4g68Un96QCKFqR6vXPuDPISoS38o-FZzgQhuLPyooQzrimnyHkUZ98';
-
 
 function App() {
   const canvasRef = useRef(null);

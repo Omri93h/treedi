@@ -1,8 +1,7 @@
 import React from 'react';
 import { GoogleLogout } from 'react-google-login';
 
-const clientId =
-  '570116819468-tl8q8ndkk59a7i25rp874liu56fcua21.apps.googleusercontent.com';
+const clientId =process.env.CLIENT_ID;
 
 function Logout() {
   const onSuccess = () => {
