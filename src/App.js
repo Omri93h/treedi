@@ -8,6 +8,10 @@ import useDrivePicker from "react-google-drive-picker";
 import LoginHooks from './components/LoginHooks';
 import LogoutHooks from './components/LogoutHooks';
 
+import data_format from "./utils/DataFormat";
+
+
+
 var Pressure = require('pressure');
 
 function App() {
@@ -19,16 +23,16 @@ function App() {
   const [lineOpacity, setLineOpacity] = useState(0.1);
   const [pressureValue, setPressureValue] = useState(0);
   const [openPicker, data, authResponse] = useDrivePicker();
-
+  let canvas = null
   // Initialization when the component
   // mounts for the first time
   useEffect(() => {
 
-    window.moveTo(-400,0)
-    
-    window.resizeTo(1400,700);
+    window.moveTo(-400, 0)
 
-    const canvas = canvasRef.current;
+    window.resizeTo(1400, 700);
+
+    canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     ctx.canvas.style.touchAction = "none";
     ctx.lineCap = "round";
@@ -36,7 +40,9 @@ function App() {
     ctx.globalAlpha = lineOpacity;
     ctx.strokeStyle = lineColor;
     ctx.lineWidth = lineWidth;
+
     console.log(ctx.canvas)
+
     ctxRef.current = ctx;
   }, [lineColor, lineOpacity, lineWidth]);
 
@@ -44,8 +50,8 @@ function App() {
   // const customViewsArray = [new google.picker.DocsView()]; // custom view
   const handleOpenPicker = () => {
     openPicker({
-      clientId: "570116819468-tl8q8ndkk59a7i25rp874liu56fcua21.apps.googleusercontent.com",
-      developerKey: "AIzaSyAoi2XwXhBeXr_4Q8KJivraKTe3b9G7f_k",
+      clientId: process.env.CLIENT_ID,
+      developerKey: process.env.DEVELOPER_KEY,
       viewId: "DOCS",
       //token:"##youraccesstoken##", // pass oauth token in case you already have one
       showUploadView: true,
@@ -56,16 +62,28 @@ function App() {
     });
   };
 
-  // useEffect(() => {
-  //   // do anything with the selected/uploaded files
-  //   if (data) {
-  //     console.log(data);
-  //     data.docs.map((i) => console.log(i));
-  //   }
-  // }, [data]);
+  const saveToDrive = () => {
+    var canvas = document.querySelector('canvas');
+    var dataURL = canvas.toDataURL("image/png", 1.0);
+    console.log(dataURL)
+    
+    // Currently Downloading...
+    downloadImage(dataURL, 'my-canvas.png');
 
+    // Trial
+    data_format.Images.push(dataURL)
+    console.log(data_format)
 
-  // end jonny
+  }
+
+  function downloadImage(data, filename = 'untitled.png') {
+    var a = document.createElement('a');
+    a.href = data;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+  }
+
 
   Pressure.set('canvas', {
     change: function (force, event) {
@@ -137,7 +155,13 @@ function App() {
         setLineWidth={setLineWidth}
         setLineOpacity={setLineOpacity}
       />
+
+
+      {/* trial for saving image */}
+      <a id="link"></a>
+
       <button onClick={() => handleOpenPicker()}>Open Picker</button>
+      <button onClick={() => saveToDrive()}>saveToDrive</button>
       {/* {console.log(isLoggedIn)} */}
       {/* <Logout setLoggedIn={setLoggedIn} /> */}
       {/* <Login setLoggedIn={setLoggedIn} /> */}
