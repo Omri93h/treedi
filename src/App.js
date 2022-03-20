@@ -8,13 +8,15 @@ import useDrivePicker from "react-google-drive-picker";
 import LoginHooks from './components/LoginHooks';
 import LogoutHooks from './components/LogoutHooks';
 import data_format from "./utils/DataFormat";
+import {Helmet} from "react-helmet";
 
 // TRIAL for trdi File - NEED TO GET IT FROM DRIVE
 let trdiFile = require('./utils/NEW_TREEDI_FILE.trdi');
 // END OF TRIAL
 var Pressure = require('pressure');
 
-function App() {
+
+function App(props) {
   const canvasRef = useRef(null);
   const ctxRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -25,12 +27,11 @@ function App() {
   const [openPicker, data, authResponse] = useDrivePicker();
   let canvas = null
 
-  // Initialization when the component
-  // mounts for the first time
   useEffect(() => {
+
     console.log("availWidth=", window.screen.availWidth);
     console.log("availHeight=", window.screen.availHeight);
-
+    
     // window.moveTo(-400, 0)
 
     // window.resizeTo(1400, 700);
@@ -154,10 +155,16 @@ function App() {
 
   const pressureElement = (<div id="pressure-element"> {pressureValue} </div>)
 
+  // const handleClick=()=>{
+  //   props.openApp;
+  // }
+
+  
 
 
   return (
     <div className="App">
+
       <div className="draw-area">
         <canvas id="canvas"
           onTouchStart={startDrawing}
@@ -171,6 +178,7 @@ function App() {
           height={window.screen.height}
         />
 
+
       </div>
       {pressureElement}
       <Menu
@@ -181,11 +189,21 @@ function App() {
 
 
       {/* trial for saving image */}
-      <a id="link"></a>
+      <Helmet>
+              <script src="https://apis.google.com/js/platform.js" type="text/javascript" />
+      </Helmet>
+      <div className="g-savetodrive"
+        data-src="http://example.com/pug-snores.mp3"
+        data-filename="pug-snores.mp"
+        data-sitename="A pug snores">
+        Save to Drive
+      </div>
 
       <button onClick={() => handleOpenPicker()}>Open Picker</button>
       <button onClick={() => saveToDrive()}>saveToDrive</button>
       <button onClick={() => loadFromDrive()}>loadFromDrive</button>
+      
+
       {/* {console.log(isLoggedIn)} */}
       {/* <Logout setLoggedIn={setLoggedIn} /> */}
       {/* <Login setLoggedIn={setLoggedIn} /> */}
@@ -195,6 +213,9 @@ function App() {
       <h2>The Hooks way</h2>
       <LoginHooks />
       <LogoutHooks />
+
+
+
     </div>
 
   );

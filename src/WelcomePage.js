@@ -1,10 +1,25 @@
 import App from './App';
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
+
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 
-
 function WelcomePage() {
+
+
+  useEffect(() => {
+    const script = document.createElement('script');
+  
+    script.src = "https://apis.google.com/js/platform.js";
+    script.async = true;
+  
+    document.body.appendChild(script);
+  
+    return () => {
+      document.body.removeChild(script);
+    }
+  }, []);
+
 
   const openApp = () => {
     console.log('Clicked')
@@ -16,16 +31,16 @@ function WelcomePage() {
     <Switch>
 
       <Route path="/app">
-        <App />
+        <App/>
       </Route>
 
       <div className="welcome-page" style={welcomePageStyle}>
         <button className='open-app' onClick={openApp} >
           Start App
         </button>
-      </div>
-
+      </div>    
     </Switch>
+    
   );
 }
 
