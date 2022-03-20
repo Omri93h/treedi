@@ -7,11 +7,11 @@ import Logout from './components/OLD_Logout';
 import useDrivePicker from "react-google-drive-picker";
 import LoginHooks from './components/LoginHooks';
 import LogoutHooks from './components/LogoutHooks';
-
 import data_format from "./utils/DataFormat";
 
-
-
+// TRIAL for trdi File - NEED TO GET IT FROM DRIVE
+let trdiFile = require('./utils/NEW_TREEDI_FILE.trdi');
+// END OF TRIAL
 var Pressure = require('pressure');
 
 function App() {
@@ -24,13 +24,16 @@ function App() {
   const [pressureValue, setPressureValue] = useState(0);
   const [openPicker, data, authResponse] = useDrivePicker();
   let canvas = null
+
   // Initialization when the component
   // mounts for the first time
   useEffect(() => {
+    console.log("availWidth=", window.screen.availWidth);
+    console.log("availHeight=", window.screen.availHeight);
 
-    window.moveTo(-400, 0)
+    // window.moveTo(-400, 0)
 
-    window.resizeTo(1400, 700);
+    // window.resizeTo(1400, 700);
 
     canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -41,7 +44,6 @@ function App() {
     ctx.strokeStyle = lineColor;
     ctx.lineWidth = lineWidth;
 
-    console.log(ctx.canvas)
 
     ctxRef.current = ctx;
   }, [lineColor, lineOpacity, lineWidth]);
@@ -62,32 +64,53 @@ function App() {
     });
   };
 
+  const loadFromDrive = () => {
+    // TEMP
+    fetch(trdiFile)
+      .then(r => r.json())
+      .then(parsed => {
+        console.log(parsed)
+        let image = new Image()
+        // var images = new Array();
+        image.onload = function () {
+          var canvas = document.querySelector('canvas');
+          const ctx = canvas.getContext("2d");
+          ctx.globalAlpha = 1
+          ctx.drawImage(image, 0, 0);
+        };
+        image.src = parsed.Screens[0].Image
+      });
+  }
+
   const saveToDrive = () => {
     var canvas = document.querySelector('canvas');
     var dataURL = canvas.toDataURL("image/png", 1.0);
-    console.log(dataURL)
-    
-    // Currently Downloading...
-    downloadImage(dataURL, 'my-canvas.png');
-
-    // Trial
-    data_format.Images.push(dataURL)
+    data_format.FileName = 'need_to_get_file_name';
+    data_format.LastModified = 'need_to_get_date';
+    data_format.Owner = 'need_to_get_google_user';
+    data_format.Screens.push({ "Image": dataURL, "LastModified": 'need_to_get_date' })
     console.log(data_format)
 
+    // TEMP Currently Downloading...
+    downloadTrdiFile(data_format, 'NEW_TREEDI_FILE.trdi');
+
   }
 
-  function downloadImage(data, filename = 'untitled.png') {
-    var a = document.createElement('a');
-    a.href = data;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
+  const downloadTrdiFile = (jsonData, filename) => {
+    const fileData = JSON.stringify(jsonData);
+    const blob = new Blob([fileData], {type: "text/plain"});
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = url;
+    link.click();
   }
-
 
   Pressure.set('canvas', {
     change: function (force, event) {
-      // console.log(force);
+      if (force > 0.5) {
+        console.log('Pressure for second screen');
+      }
       setPressureValue(force)
     }
   });
@@ -162,6 +185,7 @@ function App() {
 
       <button onClick={() => handleOpenPicker()}>Open Picker</button>
       <button onClick={() => saveToDrive()}>saveToDrive</button>
+      <button onClick={() => loadFromDrive()}>loadFromDrive</button>
       {/* {console.log(isLoggedIn)} */}
       {/* <Logout setLoggedIn={setLoggedIn} /> */}
       {/* <Login setLoggedIn={setLoggedIn} /> */}

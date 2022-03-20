@@ -1,6 +1,8 @@
 let data_format = {
-    "Name":"Omri",
-    "Images": []
+    "FileName":"",
+    "Owner":"",
+    "Screens": [],
+    "LastModified":"",
 };
 
 export default data_format;
