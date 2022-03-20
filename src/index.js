@@ -4,6 +4,12 @@ import './index.css';
 import WelcomePage from './WelcomePage'
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from "react-router-dom";
+//import React from 'react';
+//import ReactDOM from 'react-dom';
+import './index.css';
+//import WelcomePage from './WelcomePage';
+//import * as serviceWorker from './serviceWorker';
+
 
 ReactDOM.render(
   <BrowserRouter>

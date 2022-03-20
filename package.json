@@ -6,6 +6,7 @@
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
+    "dotenv": "^16.0.0",
     "gapi-client": "^0.0.3",
     "gapi-script": "^1.2.0",
     "googleapis": "^92.0.0",

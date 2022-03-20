@@ -1,25 +1,13 @@
+import './WelcomePage.css';
+import Login from './components/Login';
+import Logout from './components/Logout';
 import App from './App';
 import React, { useState,useEffect } from "react";
 
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-
-function WelcomePage() {
-
-
-  useEffect(() => {
-    const script = document.createElement('script');
-  
-    script.src = "https://apis.google.com/js/platform.js";
-    script.async = true;
-  
-    document.body.appendChild(script);
-  
-    return () => {
-      document.body.removeChild(script);
-    }
-  }, []);
-
+//import LoginHooks from './components/LoginHooks';
+//import LogoutHooks from './components/LogoutHooks';
 
   const openApp = () => {
     console.log('Clicked')
@@ -27,33 +15,35 @@ function WelcomePage() {
     // window.close()
   }
 
+function WelcomePage() {
   return (
-    <Switch>
-
-      <Route path="/app">
-        <App/>
-      </Route>
-
-      <div className="welcome-page" style={welcomePageStyle}>
-        <button className='open-app' onClick={openApp} >
-          Start App
-        </button>
-      </div>    
-    </Switch>
+    
+    <div className="Welcome">
+      <h2>Teedi App</h2>
+      <Login />
+      <br />
+      <Logout />
+     
+    </div>
     
   );
 }
 
+
+
+
+
+    
+  {/* //   <div className="Welcome">
+  //     <h2>Teedi App</h2>
+  //     <Login onClick = />
+  //     <br />
+  //     <Logout />
+     
+  //   </div>
+  // ); */}
+
 export default WelcomePage;
 
 
-///////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////// STYLES ///////////////////////////////////////
-
-const welcomePageStyle = {
-  Display: 'flex',
-  Width: '100%',
-  height: '100vh',
-  textAlign: 'center',
-  backgroundColor: 'yellow'
-}
+// export default WelcomePage;
