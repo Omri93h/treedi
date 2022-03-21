@@ -1,7 +1,8 @@
-import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import React, { Fragment } from "react";
 import WelcomePage from './WelcomePage'
 import App from './App'
+import TreediDraw from './TreediDraw'
 
 function Routing() {
     return (
@@ -11,6 +12,8 @@ function Routing() {
             <Route exact path="/" element={<WelcomePage/>}>
             </Route>
             <Route  path="/homepage" element={<App/>}>
+            </Route>
+            <Route  path="/treedi" element={<TreediDraw/>}>
             </Route>
             </Fragment>
           </Routes>

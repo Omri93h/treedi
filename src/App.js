@@ -2,11 +2,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Menu from "./components/Menu";
 import "./App.css";
-import Login from './components/OLD_Login';
-import Logout from './components/OLD_Logout';
 import useDrivePicker from "react-google-drive-picker";
-import LoginHooks from './components/LoginHooks';
-import LogoutHooks from './components/LogoutHooks';
 import data_format from "./utils/DataFormat";
 import {Helmet} from "react-helmet";
 
@@ -17,6 +13,7 @@ var Pressure = require('pressure');
 
 
 function App(props) {
+  let name="";
   const canvasRef = useRef(null);
   const ctxRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -101,6 +98,9 @@ function App(props) {
     const fileData = JSON.stringify(jsonData);
     const blob = new Blob([fileData], {type: "text/plain"});
     const url = URL.createObjectURL(blob);
+    console.log("theUrl is:" + url);
+    console.log("theBlolb is:" + blob);
+
     const link = document.createElement('a');
     link.download = filename;
     link.href = url;
@@ -189,32 +189,24 @@ function App(props) {
 
 
       {/* trial for saving image */}
+     
       <Helmet>
               <script src="https://apis.google.com/js/platform.js" type="text/javascript" />
       </Helmet>
       <div className="g-savetodrive"
-        data-src="http://example.com/pug-snores.mp3"
-        data-filename="pug-snores.mp"
-        data-sitename="A pug snores">
+      
+        data-src="../App.css"
+        data-filename="Omri.jpg"
+        data-sitename="Treedi">
         Save to Drive
+        
       </div>
+ 
 
       <button onClick={() => handleOpenPicker()}>Open Picker</button>
       <button onClick={() => saveToDrive()}>saveToDrive</button>
       <button onClick={() => loadFromDrive()}>loadFromDrive</button>
       
-
-      {/* {console.log(isLoggedIn)} */}
-      {/* <Logout setLoggedIn={setLoggedIn} /> */}
-      {/* <Login setLoggedIn={setLoggedIn} /> */}
-      <h2>The Components way</h2>
-      <Login />
-      <Logout />
-      <h2>The Hooks way</h2>
-      <LoginHooks />
-      <LogoutHooks />
-
-
 
     </div>
 

@@ -1,24 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import WelcomePage from './WelcomePage'
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from "react-router-dom";
 import Routing from './route'
-//import React from 'react';
-//import ReactDOM from 'react-dom';
 import './index.css';
-//import WelcomePage from './WelcomePage';
-//import * as serviceWorker from './serviceWorker';
-
-
-// ReactDOM.render(
-//   <BrowserRouter>
-//     <WelcomePage />
-//     </BrowserRouter>,
-//   document.getElementById('root')
-// );
-
 
 ReactDOM.render(
   <BrowserRouter>
