@@ -1,4 +1,3 @@
-
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import Menu from "./components/Menu";
 import "./App.css";
@@ -154,13 +153,6 @@ function App(props) {
   };
 
   const pressureElement = (<div id="pressure-element"> {pressureValue} </div>)
-
-  // const handleClick=()=>{
-  //   props.openApp;
-  // }
-
-  
-
 
   return (
     <div className="App">

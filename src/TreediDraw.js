@@ -2,6 +2,8 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import rough from "roughjs/bundled/rough.esm";
 import getStroke from "perfect-freehand";
 import {Helmet} from "react-helmet";
+import useDrivePicker from "react-google-drive-picker";
+
 
 
 const generator = rough.generator();
@@ -357,6 +359,34 @@ const TreediDraw = () => {
     setAction("none");
     setSelectedElement(null);
   };
+const [openPicker, data, authResponse] = useDrivePicker();
+
+  const clientId  = process.env.REACT_APP_CLIENT_ID;
+  const developerKey = process.env.REACT_APP_DEVELOPER_KEY;
+  console.log(developerKey);
+  const handleOpenPicker = () => {
+    openPicker({
+      clientId: clientId,
+      developerKey: developerKey,
+      viewId: "DOCS",
+      //token:"##youraccesstoken##", // pass oauth token in case you already have one
+      showUploadView: true,
+      showUploadFolders: true,
+      supportDrives: true,
+      multiselect: true,
+      // customViews: customViewsArray, // custom view
+    })
+  }
+  useEffect(() => {
+    // do anything with the selected/uploaded files
+    if(data){
+      console.log("The Data is:"+data);
+      console.log("The docs is:"+data.docs);
+
+      data.docs.map(i => console.log(i))
+    }
+  }, [data])
+
 
   const handleBlur = event => {
     const { id, x1, y1, type } = selectedElement;
@@ -364,6 +394,7 @@ const TreediDraw = () => {
     setSelectedElement(null);
     updateElement(id, x1, y1, null, null, type, { text: event.target.value });
   };
+
 
   return (
     <div>
@@ -394,18 +425,7 @@ const TreediDraw = () => {
         <input type="radio" id="text" checked={tool === "text"} onChange={() => setTool("text")} />
         <label htmlFor="text">Text</label>
       </div>
-{/*       
-      <Helmet>
-              <script src="https://apis.google.com/js/platform.js" type="text/javascript" />
-      </Helmet>
-      <div className="g-savetodrive"
-      
-        data-src="../App.css"
-        data-filename="Omri.jpg"
-        data-sitename="Treedi">
-        Save to Drive
-        
-      </div> */}
+
       <div style={{ position: "fixed", bottom: 0, padding: 10 }}>
         <button onClick={undo}>Undo</button>
         <button onClick={redo}>Redo</button>
@@ -419,8 +439,9 @@ const TreediDraw = () => {
         data-filename="Omri.jpg"
         data-sitename="Treedi">
         Save to Drive
-        
       </div>
+      <button onClick={() => handleOpenPicker()}>Open Picker</button>
+
       </div>
       {action === "writing" ? (
         <textarea

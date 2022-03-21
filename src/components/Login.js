@@ -6,7 +6,7 @@ import { GoogleLogin } from 'react-google-login';
 // refresh token
 import { refreshTokenSetup } from '../utils/refreshToken';
 
-const  clientId  = process.env.REACT_APP_CLIENT_ID;
+const clientId  = process.env.REACT_APP_CLIENT_ID;
 
 function Login() {
   const navigate = useNavigate();
