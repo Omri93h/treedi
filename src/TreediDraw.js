@@ -3,6 +3,7 @@ import rough from "roughjs/bundled/rough.esm";
 import getStroke from "perfect-freehand";
 import { Helmet } from "react-helmet";
 import useDrivePicker from "react-google-drive-picker";
+import data_format from "./utils/DataFormat";
 
 const generator = rough.generator();
 var Pressure = require('pressure');
@@ -328,6 +329,49 @@ const TreediDraw = () => {
     }
   };
 
+  const saveLocal = () => {
+    var canvas = document.querySelector('canvas');
+    var dataURL = canvas.toDataURL("image/png", 1.0);
+    data_format.FileName = 'FILENAME';
+    data_format.LastModified = 'DATE';
+    data_format.Owner = 'GOOGLE_USER';
+    data_format.Screens.push({ "Image": dataURL, "LastModified": 'DATE' })
+    console.log(data_format)
+
+    // TEMP Currently Downloading...
+    downloadTrdiFile(data_format, 'NEW_TREEDI_FILE.trdi');
+
+  }
+
+  const downloadTrdiFile = (jsonData, filename) => {
+    const fileData = JSON.stringify(jsonData);
+    const blob = new Blob([fileData], {type: "text/plain"});
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = filename;
+    link.href = url;
+    link.click();
+  }
+
+  const loadLocal = () => {
+    // TEMP
+    let trdiFile = require('./utils/NEW_TREEDI_FILE.trdi');
+    fetch(trdiFile)
+      .then(r => r.json())
+      .then(parsed => {
+        console.log(parsed)
+        let image = new Image()
+        // var images = new Array();
+        image.onload = function () {
+          var canvas = document.querySelector('canvas');
+          const ctx = canvas.getContext("2d");
+          ctx.globalAlpha = 1
+          ctx.drawImage(image, 0, 0);
+        };
+        image.src = parsed.Screens[0].Image
+      });
+  }
+
   const handleMouseMove = event => {
     const { clientX, clientY } = event;
 
@@ -523,6 +567,8 @@ const TreediDraw = () => {
           data-sitename="Treedi">
           Save to Drive
         </div>
+        <button onClick={() => saveLocal()}>saveLocal</button>
+        <button onClick={() => loadLocal()}>loadLocal</button>
         <button onClick={() => handleOpenPicker()}>Open Picker</button>
 
       </div>
