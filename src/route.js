@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import React, { Fragment } from "react";
+import React from "react";
 import WelcomePage from './WelcomePage'
 import App from './App'
 import TreediDraw from './TreediDraw'

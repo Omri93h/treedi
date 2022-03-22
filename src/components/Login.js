@@ -15,10 +15,13 @@ function Login() {
     console.log('Login Success: currentUser:', res.profileObj);
     console.log(res);
     alert(
-      `Logged in successfully welcome ${res.profileObj.name} 😍. \n See console for full profile object.`
+      `Logged in successfully welcome Treedi ${res.profileObj.name} .`
     );
     refreshTokenSetup(res);
-    navigate('/treedi');
+    console.log(res.tokenObj.access_token);
+    localStorage.setItem("tokenObj",res.tokenObj.access_token);
+    window.open(window.location.origin + '/treedi', 'MyWindow', '_blank');
+    //navigate('/treedi');
 
   };
 
@@ -32,13 +35,13 @@ function Login() {
   return (
     <div>
       <GoogleLogin
-        clientId={clientId}
         buttonText="Login"
         onSuccess={onSuccess}
         onFailure={onFailure}
-        cookiePolicy={'single_host_origin'}
+        //cookiePolicy={'single_host_origin'}
         style={{ marginTop: '100px' }}
         isSignedIn={true}
+        clientId={clientId}
       />
     </div>
   );

@@ -187,11 +187,10 @@ const drawElement = (roughCanvas, context, element) => {
 
 const adjustmentRequired = type => ["line", "rectangle"].includes(type);
 
-
-
 const TreediDraw = () => {
   const [elements, setElements, undo, redo] = useHistory([]);
   const [elementToMove, setElementToMove] = useState(null);
+
   useEffect(() => {
     if (elementToMove !== null) {
       const elementToMoveCopy = elementToMove;
@@ -205,7 +204,7 @@ const TreediDraw = () => {
       setElementToMove(null);
       console.log(elements)
     }
-    
+
   }, [elementToMove])
 
   const [action, setAction] = useState("none");
@@ -215,15 +214,11 @@ const TreediDraw = () => {
   const [pressureValue, setPressureValue] = useState(0);
   const [currMaxPressureValue, setCurrMaxPressureValue] = useState(0);
 
-
-
   useLayoutEffect(() => {
     const canvas = document.getElementById("canvas");
     const context = canvas.getContext("2d");
     context.clearRect(0, 0, canvas.width, canvas.height);
-
     const roughCanvas = rough.canvas(canvas);
-
     elements.forEach(element => {
       if (action === "writing" && selectedElement.id === element.id) return;
       drawElement(roughCanvas, context, element);
@@ -340,21 +335,20 @@ const TreediDraw = () => {
 
     // TEMP Currently Downloading...
     downloadTrdiFile(data_format, 'NEW_TREEDI_FILE.trdi');
-
   }
 
   const downloadTrdiFile = (jsonData, filename) => {
     const fileData = JSON.stringify(jsonData);
-    const blob = new Blob([fileData], {type: "text/plain"});
+    const blob = new Blob([fileData], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.download = filename;
     link.href = url;
+    console.log(link);
     link.click();
   }
 
   const loadLocal = () => {
-    // TEMP
     let trdiFile = require('./utils/NEW_TREEDI_FILE.trdi');
     fetch(trdiFile)
       .then(r => r.json())
@@ -374,7 +368,6 @@ const TreediDraw = () => {
 
   const handleMouseMove = event => {
     const { clientX, clientY } = event;
-
     if (tool === "selection") {
       const element = getElementAtPosition(clientX, clientY, elements);
       event.target.style.cursor = element ? cursorForPosition(element.position) : "default";
@@ -428,7 +421,7 @@ const TreediDraw = () => {
       setElementToMove(new_elem);
       // const canvas = document.getElementById("canvas");
       // const context = canvas.getContext("2d");
-      
+
       // const stroke = getSvgPathFromStroke(getStroke(new_elem.points));
       // console.log("Stroke: ", stroke)
       // context.strokeStyle = '#000';
@@ -475,14 +468,19 @@ const TreediDraw = () => {
   };
 
 
-  const [openPicker, data, authResponse] = useDrivePicker();
+  const [openPicker, data] = useDrivePicker();
 
   const clientId = process.env.REACT_APP_CLIENT_ID;
   const developerKey = process.env.REACT_APP_DEVELOPER_KEY;
+  console.log(process.env.REACT_APP_ACCESS_TOKEN);
+  const TOKEN = process.env.REACT_APP_ACCESS_TOKEN;
+  console.log(TOKEN);
+  console.log(developerKey);
   const handleOpenPicker = () => {
     openPicker({
       clientId: clientId,
       developerKey: developerKey,
+      token: TOKEN,
       viewId: "DOCS",
       showUploadView: true,
       showUploadFolders: true,
@@ -515,6 +513,14 @@ const TreediDraw = () => {
     //   context.drawImage(base_image, 0, 0);
     // }
   }
+  //   $("div.g-savetodrive").click(function(){
+  //     saveLocal();
+  // });
+
+  //   $( "#test" ).on( "click", function() {
+  //     console.log("cliked");
+  //     saveLocal();;
+  //  });
 
   return (
     <div>
@@ -560,18 +566,17 @@ const TreediDraw = () => {
         <Helmet>
           <script src="https://apis.google.com/js/platform.js" type="text/javascript" />
         </Helmet>
-        <div className="g-savetodrive"
 
-          data-src="../App.css"
-          data-filename="Omri.jpg"
-          data-sitename="Treedi">
-          Save to Drive
+        <div className="g-savetodrive"
+          data-src="../utils/logo512.png"
+          data-filename="React-Logo.png"
+          data-sitename="Treedi" >
         </div>
         <button onClick={() => saveLocal()}>saveLocal</button>
         <button onClick={() => loadLocal()}>loadLocal</button>
         <button onClick={() => handleOpenPicker()}>Open Picker</button>
-
       </div>
+
       {action === "writing" ? (
         <textarea
           ref={textAreaRef}
