@@ -1,12 +1,11 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import rough from "roughjs/bundled/rough.esm";
 import getStroke from "perfect-freehand";
-import {Helmet} from "react-helmet";
+import { Helmet } from "react-helmet";
 import useDrivePicker from "react-google-drive-picker";
 
-
-
 const generator = rough.generator();
+var Pressure = require('pressure');
 
 const createElement = (id, x1, y1, x2, y2, type) => {
   switch (type) {
@@ -74,6 +73,7 @@ const getElementAtPosition = (x, y, elements) => {
     .map(element => ({ ...element, position: positionWithinElement(x, y, element) }))
     .find(element => element.position !== null);
 };
+
 
 const adjustElementCoordinates = element => {
   const { type, x1, y1, x2, y2 } = element;
@@ -144,7 +144,7 @@ const useHistory = initialState => {
 
   const undo = () => index > 0 && setIndex(prevState => prevState - 1);
   const redo = () => index < history.length - 1 && setIndex(prevState => prevState + 1);
-
+  // const redo_diff_screen = () => console.log(history);
   return [history[index], setState, undo, redo];
 };
 
@@ -186,12 +186,35 @@ const drawElement = (roughCanvas, context, element) => {
 
 const adjustmentRequired = type => ["line", "rectangle"].includes(type);
 
+
+
 const TreediDraw = () => {
   const [elements, setElements, undo, redo] = useHistory([]);
+  const [elementToMove, setElementToMove] = useState(null);
+  useEffect(() => {
+    if (elementToMove !== null) {
+      const elementToMoveCopy = elementToMove;
+      const canvas = document.querySelector("canvas");
+      const ctx = canvas.getContext("2d");
+      const stroke = getSvgPathFromStroke(getStroke(elementToMove.points));
+      const p = new Path2D(stroke);
+      ctx.stroke(p);
+      ctx.fill(p);
+      setElements(allElements => [...allElements, elementToMoveCopy])
+      setElementToMove(null);
+      console.log(elements)
+    }
+    
+  }, [elementToMove])
+
   const [action, setAction] = useState("none");
-  const [tool, setTool] = useState("text");
+  const [tool, setTool] = useState("pencil");
   const [selectedElement, setSelectedElement] = useState(null);
   const textAreaRef = useRef();
+  const [pressureValue, setPressureValue] = useState(0);
+  const [currMaxPressureValue, setCurrMaxPressureValue] = useState(0);
+
+
 
   useLayoutEffect(() => {
     const canvas = document.getElementById("canvas");
@@ -259,6 +282,17 @@ const TreediDraw = () => {
 
     setElements(elementsCopy, true);
   };
+
+  Pressure.set('canvas', {
+    change: function (force, event) {
+      if (force > currMaxPressureValue) {
+        setCurrMaxPressureValue(force)
+      }
+      setPressureValue(force)
+    }
+  });
+
+  const pressureElement = (<div id="pressure-element" style={{ textAlign: 'right' }}> {pressureValue} </div>)
 
   const handleMouseDown = event => {
     if (action === "writing") return;
@@ -336,13 +370,48 @@ const TreediDraw = () => {
 
   const handleMouseUp = event => {
     const { clientX, clientY } = event;
-    if (selectedElement) {
+
+    if (currMaxPressureValue > 0.5) {
+      const currElement = elements[elements.length - 1]
+
+      const new_elem = { "id": currElement.id, type: "pencil", "points": [] };
+      for (const i in currElement.points) {
+        new_elem.points.push({ 'x': currElement.points[i].x + 100, 'y': currElement.points[i].y })
+      }
+      console.log("OLD ELEM:,", currElement)
+      console.log("NEW ELEM:,", new_elem)
+      undo();
+      setElementToMove(new_elem);
+      // const canvas = document.getElementById("canvas");
+      // const context = canvas.getContext("2d");
+      
+      // const stroke = getSvgPathFromStroke(getStroke(new_elem.points));
+      // console.log("Stroke: ", stroke)
+      // context.strokeStyle = '#000';
+      // context.lineWidth = 1;
+      // context.fillStyle = 'rgb(200, 0, 0)';
+      // context.fillRect(x, y, width, height)
+      // var p = new Path2D(stroke)
+      // console.log("Path2D", p)
+      // context.stroke(p);
+      // context.fill(p)
+      // context.stroke(new Path2D(stroke));
+
+      // insertSvgToDifferentScreen(stroke)
+
+
+      setCurrMaxPressureValue(0);
+
+    }
+
+    else if (selectedElement) {
       if (
         selectedElement.type === "text" &&
         clientX - selectedElement.offsetX === selectedElement.x1 &&
         clientY - selectedElement.offsetY === selectedElement.y1
       ) {
         setAction("writing");
+
         return;
       }
 
@@ -358,30 +427,29 @@ const TreediDraw = () => {
 
     setAction("none");
     setSelectedElement(null);
+    // console.log(elements)
   };
-const [openPicker, data, authResponse] = useDrivePicker();
 
-  const clientId  = process.env.REACT_APP_CLIENT_ID;
+
+  const [openPicker, data, authResponse] = useDrivePicker();
+
+  const clientId = process.env.REACT_APP_CLIENT_ID;
   const developerKey = process.env.REACT_APP_DEVELOPER_KEY;
-  console.log(developerKey);
   const handleOpenPicker = () => {
     openPicker({
       clientId: clientId,
       developerKey: developerKey,
       viewId: "DOCS",
-      //token:"##youraccesstoken##", // pass oauth token in case you already have one
       showUploadView: true,
       showUploadFolders: true,
       supportDrives: true,
       multiselect: true,
-      // customViews: customViewsArray, // custom view
     })
   }
   useEffect(() => {
-    // do anything with the selected/uploaded files
-    if(data){
-      console.log("The Data is:"+data);
-      console.log("The docs is:"+data.docs);
+    if (data) {
+      console.log("The Data is:" + data);
+      console.log("The docs is:" + data.docs);
 
       data.docs.map(i => console.log(i))
     }
@@ -395,6 +463,14 @@ const [openPicker, data, authResponse] = useDrivePicker();
     updateElement(id, x1, y1, null, null, type, { text: event.target.value });
   };
 
+  const insertSvgToDifferentScreen = (stroke) => {
+
+    // base_image = new Image();
+    // base_image.src = 'img/base.svg';
+    // base_image.onload = function(){
+    //   context.drawImage(base_image, 0, 0);
+    // }
+  }
 
   return (
     <div>
@@ -417,30 +493,37 @@ const [openPicker, data, authResponse] = useDrivePicker();
         <label htmlFor="rectangle">Rectangle</label>
         <input
           type="radio"
+          id="text"
+          checked={tool === "text"}
+          onChange={() => setTool("text")} />
+
+        <label htmlFor="text">Text</label>
+        <input
+          type="radio"
           id="pencil"
           checked={tool === "pencil"}
           onChange={() => setTool("pencil")}
         />
         <label htmlFor="pencil">Pencil</label>
-        <input type="radio" id="text" checked={tool === "text"} onChange={() => setTool("text")} />
-        <label htmlFor="text">Text</label>
       </div>
+
+      {pressureElement}
 
       <div style={{ position: "fixed", bottom: 0, padding: 10 }}>
         <button onClick={undo}>Undo</button>
         <button onClick={redo}>Redo</button>
-        
-      <Helmet>
-              <script src="https://apis.google.com/js/platform.js" type="text/javascript" />
-      </Helmet>
-      <div className="g-savetodrive"
-      
-        data-src="../App.css"
-        data-filename="Omri.jpg"
-        data-sitename="Treedi">
-        Save to Drive
-      </div>
-      <button onClick={() => handleOpenPicker()}>Open Picker</button>
+
+        <Helmet>
+          <script src="https://apis.google.com/js/platform.js" type="text/javascript" />
+        </Helmet>
+        <div className="g-savetodrive"
+
+          data-src="../App.css"
+          data-filename="Omri.jpg"
+          data-sitename="Treedi">
+          Save to Drive
+        </div>
+        <button onClick={() => handleOpenPicker()}>Open Picker</button>
 
       </div>
       {action === "writing" ? (

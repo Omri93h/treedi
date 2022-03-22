@@ -5,17 +5,17 @@ import App from './App'
 import TreediDraw from './TreediDraw'
 
 function Routing() {
-    return (
-      <div>
-          <Routes>
-            <Route exact path="/" element={<WelcomePage/>}>
-            </Route>
-            <Route  path="/homepage" element={<App/>}>
-            </Route>
-            <Route  path="/treedi" element={<TreediDraw/>}>
-            </Route>
-          </Routes>
-      </div>
-    );
-  }
-  export default Routing;
+  return (
+    <div>
+      <Routes>
+        <Route exact path="/" element={<WelcomePage />}>
+        </Route>
+        <Route path="/homepage" element={<App />}>
+        </Route>
+        <Route path="/treedi" element={<TreediDraw />}>
+        </Route>
+      </Routes>
+    </div>
+  );
+}
+export default Routing;
