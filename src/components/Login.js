@@ -12,13 +12,13 @@ function Login() {
   const navigate = useNavigate();
 
   const onSuccess = (res) => {
-    console.log('Login Success: currentUser:', res.profileObj);
-    console.log(res);
+    // console.log('Login Success: currentUser:', res.profileObj);
+    // console.log(res);
     alert(
       `Logged in successfully welcome Treedi ${res.profileObj.name} .`
     );
     refreshTokenSetup(res);
-    console.log(res.tokenObj.access_token);
+    // console.log(res.tokenObj.access_token);
     localStorage.setItem("tokenObj",res.tokenObj.access_token);
     window.open(window.location.origin + '/treedi', 'MyWindow', '_blank');
     //navigate('/treedi');

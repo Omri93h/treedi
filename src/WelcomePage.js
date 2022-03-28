@@ -1,3 +1,4 @@
+import React, { Component }  from 'react';
 import './WelcomePage.css';
 import Login from './components/Login';
 import Logout from './components/Logout';

@@ -25,11 +25,10 @@ function App(props) {
 
   useEffect(() => {
 
-    console.log("availWidth=", window.screen.availWidth);
-    console.log("availHeight=", window.screen.availHeight);
-    
-    // window.moveTo(-400, 0)
+    // console.log("availWidth=", window.screen.availWidth);
+    // console.log("availHeight=", window.screen.availHeight);
 
+    // window.moveTo(-400, 0)
     // window.resizeTo(1400, 700);
 
     canvas = canvasRef.current;
@@ -66,7 +65,7 @@ function App(props) {
     fetch(trdiFile)
       .then(r => r.json())
       .then(parsed => {
-        console.log(parsed)
+        // console.log(parsed)
         let image = new Image()
         // var images = new Array();
         image.onload = function () {
@@ -86,7 +85,7 @@ function App(props) {
     data_format.LastModified = 'need_to_get_date';
     data_format.Owner = 'need_to_get_google_user';
     data_format.Screens.push({ "Image": dataURL, "LastModified": 'need_to_get_date' })
-    console.log(data_format)
+    // console.log(data_format)
 
     // TEMP Currently Downloading...
     downloadTrdiFile(data_format, 'NEW_TREEDI_FILE.trdi');
@@ -105,9 +104,9 @@ function App(props) {
 
   Pressure.set('canvas', {
     change: function (force, event) {
-      if (force > 0.5) {
-        console.log('Pressure for second screen');
-      }
+      // if (force > 0.5) {
+      //   console.log('Pressure for second screen');
+      // }
       setPressureValue(force)
     }
   });
@@ -136,8 +135,6 @@ function App(props) {
       ctxRef.current.lineTo(
         e.nativeEvent.changedTouches[0].clientX,
         e.nativeEvent.changedTouches[0].clientY
-        // e.nativeEvent.changedTouches[0].screenX,
-        // e.nativeEvent.changedTouches[0].screenY
       )
     }
     else {

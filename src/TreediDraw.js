@@ -196,13 +196,14 @@ const TreediDraw = () => {
       const elementToMoveCopy = elementToMove;
       const canvas = document.querySelector("canvas");
       const ctx = canvas.getContext("2d");
+      ctx.canvas.style.touchAction = "none";
       const stroke = getSvgPathFromStroke(getStroke(elementToMove.points));
       const p = new Path2D(stroke);
       ctx.stroke(p);
       ctx.fill(p);
       setElements(allElements => [...allElements, elementToMoveCopy])
       setElementToMove(null);
-      console.log(elements)
+      // console.log(elements)
     }
 
   }, [elementToMove])
@@ -331,7 +332,7 @@ const TreediDraw = () => {
     data_format.LastModified = 'DATE';
     data_format.Owner = 'GOOGLE_USER';
     data_format.Screens.push({ "Image": dataURL, "LastModified": 'DATE' })
-    console.log(data_format)
+    // console.log(data_format)
 
     // TEMP Currently Downloading...
     downloadTrdiFile(data_format, 'NEW_TREEDI_FILE.trdi');
@@ -344,7 +345,7 @@ const TreediDraw = () => {
     const link = document.createElement('a');
     link.download = filename;
     link.href = url;
-    console.log(link);
+    // console.log(link);
     link.click();
   }
 
@@ -353,7 +354,7 @@ const TreediDraw = () => {
     fetch(trdiFile)
       .then(r => r.json())
       .then(parsed => {
-        console.log(parsed)
+        // console.log(parsed)
         let image = new Image()
         // var images = new Array();
         image.onload = function () {
@@ -368,21 +369,41 @@ const TreediDraw = () => {
 
   const handleMouseMove = event => {
     const { clientX, clientY } = event;
+
     if (tool === "selection") {
       const element = getElementAtPosition(clientX, clientY, elements);
       event.target.style.cursor = element ? cursorForPosition(element.position) : "default";
     }
-
     if (action === "drawing") {
       const index = elements.length - 1;
       const { x1, y1 } = elements[index];
-      updateElement(index, x1, y1, clientX, clientY, tool);
-    } else if (action === "moving") {
+      if (event.type == 'touchmove') {
+        console.log('Touchmove\n')
+        updateElement(index, x1, y1,  event.changedTouches[0].clientX, event.changedTouches[0].clientY, tool);
+      }
+      
+      else {
+        updateElement(index, x1, y1, clientX, clientY, tool);
+      }
+    //   console.log(
+    //     'index,', index, '\n',
+    //     'x1', x1, '\n',
+    //     'y1, ', y1, '\n',
+    //     'clientX', clientX, '\n',
+    //     'clientY', clientY, '\n',
+    //     'tool', tool)
+    
+    }
+    else if (action === "moving") {
       if (selectedElement.type === "pencil") {
+
+        // console.log(event);
+
         const newPoints = selectedElement.points.map((_, index) => ({
           x: clientX - selectedElement.xOffsets[index],
           y: clientY - selectedElement.yOffsets[index],
         }));
+
         const elementsCopy = [...elements];
         elementsCopy[selectedElement.id] = {
           ...elementsCopy[selectedElement.id],
@@ -413,7 +434,7 @@ const TreediDraw = () => {
 
       const new_elem = { "id": currElement.id, type: "pencil", "points": [] };
       for (const i in currElement.points) {
-        new_elem.points.push({ 'x': currElement.points[i].x + 100, 'y': currElement.points[i].y })
+        new_elem.points.push({ 'x': currElement.points[i].x + 1600, 'y': currElement.points[i].y })
       }
       console.log("OLD ELEM:,", currElement)
       console.log("NEW ELEM:,", new_elem)
@@ -472,10 +493,10 @@ const TreediDraw = () => {
 
   const clientId = process.env.REACT_APP_CLIENT_ID;
   const developerKey = process.env.REACT_APP_DEVELOPER_KEY;
-  console.log(process.env.REACT_APP_ACCESS_TOKEN);
+  // console.log(process.env.REACT_APP_ACCESS_TOKEN);
   const TOKEN = process.env.REACT_APP_ACCESS_TOKEN;
-  console.log(TOKEN);
-  console.log(developerKey);
+  // console.log(TOKEN);
+  // console.log(developerKey);
   const handleOpenPicker = () => {
     openPicker({
       clientId: clientId,
@@ -490,10 +511,10 @@ const TreediDraw = () => {
   }
   useEffect(() => {
     if (data) {
-      console.log("The Data is:" + data);
-      console.log("The docs is:" + data.docs);
+      // console.log("The Data is:" + data);
+      // console.log("The docs is:" + data.docs);
 
-      data.docs.map(i => console.log(i))
+      // data.docs.map(i => console.log(i))
     }
   }, [data])
 
@@ -601,9 +622,15 @@ const TreediDraw = () => {
         id="canvas"
         width={window.innerWidth}
         height={window.innerHeight}
+
+        onTouchStart={handleMouseDown}
+        onTouchMove={handleMouseMove}
+        onTouchEnd={handleMouseUp}
+
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
+        style={{ touchAction: 'none', cursor: 'crosshair' }}
       >
         Canvas
       </canvas>
