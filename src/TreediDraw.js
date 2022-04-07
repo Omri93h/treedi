@@ -4,6 +4,7 @@ import getStroke from "perfect-freehand";
 import { Helmet } from "react-helmet";
 import useDrivePicker from "react-google-drive-picker";
 import data_format from "./utils/DataFormat";
+import Logout from './components/Logout';
 
 const generator = rough.generator();
 var Pressure = require('pressure');
@@ -187,7 +188,7 @@ const drawElement = (roughCanvas, context, element) => {
 
 const adjustmentRequired = type => ["line", "rectangle"].includes(type);
 
-const TreediDraw = () => {
+const TreediDraw = (props) => {
   const [elements, setElements, undo, redo] = useHistory([]);
   const [elementToMove, setElementToMove] = useState(null);
 
@@ -337,7 +338,7 @@ const TreediDraw = () => {
     // TEMP Currently Downloading...
     downloadTrdiFile(data_format, 'NEW_TREEDI_FILE.trdi');
   }
-
+  const[Url,setUrl] = useState(null);
   const downloadTrdiFile = (jsonData, filename) => {
     const fileData = JSON.stringify(jsonData);
     const blob = new Blob([fileData], { type: "text/plain" });
@@ -345,8 +346,10 @@ const TreediDraw = () => {
     const link = document.createElement('a');
     link.download = filename;
     link.href = url;
-    // console.log(link);
-    link.click();
+    setUrl(link.href.slice(5));
+    console.log(typeof(link.href.slice(5)));
+    //console.log(link);
+    //link.click();
   }
 
   const loadLocal = () => {
@@ -379,20 +382,20 @@ const TreediDraw = () => {
       const { x1, y1 } = elements[index];
       if (event.type == 'touchmove') {
         console.log('Touchmove\n')
-        updateElement(index, x1, y1,  event.changedTouches[0].clientX, event.changedTouches[0].clientY, tool);
+        updateElement(index, x1, y1, event.changedTouches[0].clientX, event.changedTouches[0].clientY, tool);
       }
-      
+
       else {
         updateElement(index, x1, y1, clientX, clientY, tool);
       }
-    //   console.log(
-    //     'index,', index, '\n',
-    //     'x1', x1, '\n',
-    //     'y1, ', y1, '\n',
-    //     'clientX', clientX, '\n',
-    //     'clientY', clientY, '\n',
-    //     'tool', tool)
-    
+      //   console.log(
+      //     'index,', index, '\n',
+      //     'x1', x1, '\n',
+      //     'y1, ', y1, '\n',
+      //     'clientX', clientX, '\n',
+      //     'clientY', clientY, '\n',
+      //     'tool', tool)
+
     }
     else if (action === "moving") {
       if (selectedElement.type === "pencil") {
@@ -543,7 +546,26 @@ const TreediDraw = () => {
   //     saveLocal();;
   //  });
 
+  const handleL = () => {
+    console.log("fffffffffff");
+  }
+
+  useEffect(() => {
+    let iframe = document.getElementsByClassName('save-to-drive-button jfk-button jfk-button-standard jfk-button-rtl')
+    
+    console.log(iframe)
+    console.log(typeof(iframe))
+
+  },[])
+
+  useEffect(() => {
+    setInterval(() => {
+  saveLocal();
+    }, 1000);
+  }, []);
+
   return (
+    
     <div>
       <div style={{ position: "fixed" }}>
         <input
@@ -581,17 +603,27 @@ const TreediDraw = () => {
       {pressureElement}
 
       <div style={{ position: "fixed", bottom: 0, padding: 10 }}>
+        <Logout handleLogout={props.handleLogout} />
         <button onClick={undo}>Undo</button>
         <button onClick={redo}>Redo</button>
 
         <Helmet>
           <script src="https://apis.google.com/js/platform.js" type="text/javascript" />
         </Helmet>
+       {/* <Helmet>
+         <script>
+          window.___gcfg = {
+            parsetags': 'explicit'
+          };
+        </script>
+         </Helmet>  */}
 
-        <div className="g-savetodrive"
-          data-src="../utils/logo512.png"
+        <div
+          className="g-savetodrive"
+          data-src= {Url}
           data-filename="React-Logo.png"
-          data-sitename="Treedi" >
+          data-sitename="Treedi"
+        >
         </div>
         <button onClick={() => saveLocal()}>saveLocal</button>
         <button onClick={() => loadLocal()}>loadLocal</button>

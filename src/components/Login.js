@@ -1,27 +1,29 @@
-import { useNavigate } from 'react-router-dom';
-
-import React from 'react';
-
-import { GoogleLogin } from 'react-google-login';
+import React, { useState } from 'react';
+import GoogleLogin from 'react-google-login';
 // refresh token
 import { refreshTokenSetup } from '../utils/refreshToken';
+import { useNavigate } from 'react-router-dom';
 
 const clientId  = process.env.REACT_APP_CLIENT_ID;
 
-function Login() {
+function Login(props) {
+  // const history = useHistory();
   const navigate = useNavigate();
+  
+  const onSuccess = (googleData) => {
+    props.handleLogin(googleData);
+    localStorage.setItem('loginData', JSON.stringify(googleData));
 
-  const onSuccess = (res) => {
     // console.log('Login Success: currentUser:', res.profileObj);
     // console.log(res);
+    console.log(googleData)
     alert(
-      `Logged in successfully welcome Treedi ${res.profileObj.name} .`
+      `Logged in successfully welcome Treedi ${googleData.profileObj.name} .`
     );
-    refreshTokenSetup(res);
-    // console.log(res.tokenObj.access_token);
-    localStorage.setItem("tokenObj",res.tokenObj.access_token);
-    window.open(window.location.origin + '/treedi', 'MyWindow', '_blank');
-    //navigate('/treedi');
+     navigate('/treedi')
+    // refreshTokenSetup(res);
+    // localStorage.setItem("tokenObj",res.tokenObj.access_token);
+    //window.open(window.location.origin + '/treedi', 'MyWindow', '_blank');
 
   };
 
@@ -38,10 +40,10 @@ function Login() {
         buttonText="Login"
         onSuccess={onSuccess}
         onFailure={onFailure}
-        //cookiePolicy={'single_host_origin'}
+        cookiePolicy={'single_host_origin'}
         style={{ marginTop: '100px' }}
-        isSignedIn={true}
-        clientId={clientId}
+        // isSignedIn={true}
+        clientId={process.env.REACT_APP_CLIENT_ID}
       />
     </div>
   );

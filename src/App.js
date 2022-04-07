@@ -3,7 +3,8 @@ import Menu from "./components/Menu";
 import "./App.css";
 import useDrivePicker from "react-google-drive-picker";
 import data_format from "./utils/DataFormat";
-import {Helmet} from "react-helmet";
+import { Helmet } from "react-helmet";
+import Logout from './components/Logout';
 
 // TRIAL for trdi File - NEED TO GET IT FROM DRIVE
 let trdiFile = require('./utils/NEW_TREEDI_FILE.trdi');
@@ -12,7 +13,7 @@ var Pressure = require('pressure');
 
 
 function App(props) {
-  let name="";
+  let name = "";
   const canvasRef = useRef(null);
   const ctxRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -94,7 +95,7 @@ function App(props) {
 
   const downloadTrdiFile = (jsonData, filename) => {
     const fileData = JSON.stringify(jsonData);
-    const blob = new Blob([fileData], {type: "text/plain"});
+    const blob = new Blob([fileData], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.download = filename;
@@ -175,24 +176,22 @@ function App(props) {
 
 
       {/* trial for saving image */}
-     
+
       <Helmet>
-              <script src="https://apis.google.com/js/platform.js" type="text/javascript" />
+        <script src="https://apis.google.com/js/platform.js" type="text/javascript" />
       </Helmet>
       <div className="g-savetodrive"
-      
+
         data-src="../App.css"
         data-filename="Omri.jpg"
         data-sitename="Treedi">
         Save to Drive
-        
       </div>
- 
 
       <button onClick={() => handleOpenPicker()}>Open Picker</button>
       <button onClick={() => saveToDrive()}>saveToDrive</button>
       <button onClick={() => loadFromDrive()}>loadFromDrive</button>
-      
+
 
     </div>
 

@@ -1,20 +1,30 @@
 import React from 'react';
 import { GoogleLogout } from 'react-google-login';
+import { useNavigate } from 'react-router-dom';
 
-const clientId =process.env.CLIENT_ID;
+const clientId = process.env.CLIENT_ID;
 
-function Logout() {
-  const onSuccess = () => {
-    console.log('Logout made successfully');
+const Logout = (props) => {
+  const navigate = useNavigate();
+
+  // const onSuccess = () => {
+  //   console.log('Logout made successfully');
+  //   alert('Logout made successfully ✌');
+  // };
+
+  const handleLogout = () => {
+    localStorage.removeItem('loginData')
+    props.handleLogout();
     alert('Logout made successfully ✌');
-  };
+    navigate('/')
+  }
 
   return (
     <div>
       <GoogleLogout
-        clientId={clientId}
+        clientId={process.env.REACT_APP_CLIENT_ID}
         buttonText="Logout"
-        onLogoutSuccess={onSuccess}
+        onLogoutSuccess={handleLogout}
       ></GoogleLogout>
     </div>
   );
