@@ -4,7 +4,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const userAuthRoutes = require("./modules/User-Auth/routes");
+const userAuthRoutes = require("./routes/authentication-route.js");
 app.use("/api/v1/user-auth", userAuthRoutes);
 
 app.get("/", (req, res) => {
