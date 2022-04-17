@@ -11,7 +11,7 @@ app.get("/", (req, res) => {
   res.send({ msg: "Hello World!" });
 });
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
 });
