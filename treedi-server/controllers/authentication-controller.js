@@ -17,13 +17,6 @@ class Controller {
       });
       const payload = ticket.getPayload();
 
-      /******* 
-      ......
-      Perform Database insertion or
-      retrieval operations here ...
-      ......
-      *******/
-
       // Send the payload
       res.send({
         payload,
