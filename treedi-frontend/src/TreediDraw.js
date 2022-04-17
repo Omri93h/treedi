@@ -196,6 +196,17 @@ const drawElement = (roughCanvas, context, element) => {
 const adjustmentRequired = (type) => ["line", "rectangle"].includes(type);
 
 const TreediDraw = (props) => {
+  const [user, setUser] = useState({
+    name: localStorage.getItem("TreediUserName"),
+    email: localStorage.getItem("TreediUserName"),
+    img: localStorage.getItem("TreediUserEmail")
+  });
+
+    console.log(user.name + " \n" + user.email + " \n" + user.img);
+
+  
+  ////////
+
   const [elements, setElements, undo, redo] = useHistory([]);
   const [elementToMove, setElementToMove] = useState(null);
 
@@ -553,7 +564,7 @@ const TreediDraw = (props) => {
   };
   useEffect(() => {
     if (data) {
-      data.docs.map(i => console.log(i))
+      data.docs.map((i) => console.log(i));
     }
   }, [data]);
 
@@ -647,7 +658,6 @@ const TreediDraw = (props) => {
         <button onClick={undo}>Undo</button>
         <button onClick={redo}>Redo</button>
 
-
         {/* <Helmet>
          <script>
           window.___gcfg = {
@@ -656,7 +666,7 @@ const TreediDraw = (props) => {
         </script>
          </Helmet>  */}
 
-        <GoogleDriveButton Url={Url}/>
+        <GoogleDriveButton Url={Url} />
 
         <button onClick={() => saveLocal()}>saveLocal</button>
         <button onClick={() => loadLocal()}>loadLocal</button>
