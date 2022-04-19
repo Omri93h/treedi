@@ -13,9 +13,6 @@ function WelcomePage(props) {
     <div className="Welcome">
       <h2>Teedi App</h2>
       <Login />
-      {/* <Login /> */}
-      {/* <br /> */}
-      {/* <Logout /> */}
     </div>
   );
 }

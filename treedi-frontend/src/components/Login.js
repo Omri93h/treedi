@@ -28,7 +28,7 @@ const Login = () => {
     // Check if a token was recieved and send it to our API:
     if (response.tokenId) {
       const googleResponse = await axios.post(
-        "http://localhost:5001/api/v1/user-auth",
+        "http://localhost:5001/api/user-authentication",
         { token: response.tokenId }
       );
 
@@ -89,7 +89,7 @@ const Login = () => {
         {!user.profile_loaded ? (
           <div>
             <GoogleLogin
-              clientId="101602613283-mg4l5v8f2ssl11qpusebl8n2dn0hrlil.apps.googleusercontent.com"
+              clientId={clientId}
               buttonText="Login"
               onSuccess={googleResponse}
               onFailure={onFailure}
