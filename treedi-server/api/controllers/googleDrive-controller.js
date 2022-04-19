@@ -1,7 +1,7 @@
 const fs = require('fs');
 const readline = require('readline');
 const {google} = require('googleapis');
-const { version } = require('process');
+//const { version } = require('process');
 
 //Service account key file location from google cloud console
 const key_file_path=process.env.KEYFILEPATH;
@@ -43,3 +43,5 @@ async function createAndUploadFile(auth)
             break;
     }
 }
+
+module.exports = {createAndUploadFile};
