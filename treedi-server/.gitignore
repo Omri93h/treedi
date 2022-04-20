@@ -11,3 +11,7 @@ node_modules/
 treediWevService.json
 
 credentials.json
+
+scratch/
+
+credentials_drive.json
