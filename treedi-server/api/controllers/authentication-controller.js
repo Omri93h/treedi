@@ -7,7 +7,6 @@ class Controller {
 
   // Endpoint to verify token of a user and get user details:
   async googleAuth(req, res) {
-    logger.error("Here");
     // Get the token from the body of the request:
     const { token } = req.body;
     // Verify the token and then get User details from the payload if verified:
