@@ -610,6 +610,86 @@ const TreediDraw = (props) => {
     }, 5000);
   }, []);
 
+
+
+  const JonisaveLocal = () => {
+    var canvas = document.querySelector("canvas");
+    var dataURL = canvas.toDataURL("image/png", 1.0);
+    data_format.FileName = "FILENAME";
+    data_format.LastModified = "DATE";
+    data_format.Owner = "GOOGLE_USER";
+    data_format.Screens.push({ Image: dataURL, LastModified: "DATE" });
+    // console.log(data_format)
+
+    // TEMP Currently Downloading...
+    downloadTrdiFile1(data_format, "NEW_TREEDI_FILE.trdi");
+  };
+  const [Url1, setUrl1] = useState(null);
+  const downloadTrdiFile1 = (jsonData, filename) => {
+    const fileData = JSON.stringify(jsonData);
+    const blob = new Blob([fileData], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.download = filename;
+    link.href = url;
+    setUrl1(link.href.slice(5));
+    console.log("MY HREF:",link.href.slice(5));
+    Jonisave();
+    console.log("URL1 IS :" , Url1);
+    // console.log( link.href.slice(5));
+    //console.log(link);
+    // link.click();
+  };
+
+
+
+  const Jonisave = async function(){
+    try{
+      const formData = {
+        'link' : Url1
+    };
+        let response = await fetch('http://localhost:5001/api/googleDrive/save', {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: formData
+        });
+        if (response.ok) {
+          console.log("OK"); 
+            // let json = await response.json();
+            // let user = json.profile;
+            // localStorage.setItem('userName', user.user_name );
+            // localStorage.setItem('userID', user._id );
+            // localStorage.setItem('userMail', user.email);;
+            // if(user.isAdmin) {localStorage.setItem('isAdmin', 'admin' );}
+            // else {localStorage.setItem('isAdmin', 'user' );}
+            // window.location.replace('/home');
+        }
+    }
+    catch(error){
+        console.log(`error - Save - ${error}`);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   return (
     <div>
       <div style={{ position: "fixed" }}>
@@ -658,19 +738,12 @@ const TreediDraw = (props) => {
         <button onClick={undo}>Undo</button>
         <button onClick={redo}>Redo</button>
 
-        {/* <Helmet>
-         <script>
-          window.___gcfg = {
-            parsetags': 'explicit'
-          };
-        </script>
-         </Helmet>  */}
-
         <GoogleDriveButton Url={Url} />
 
         <button onClick={() => saveLocal()}>saveLocal</button>
         <button onClick={() => loadLocal()}>loadLocal</button>
         <button onClick={() => handleOpenPicker()}>Open Picker</button>
+        <button onClick={() => JonisaveLocal()}>Joni save</button>
       </div>
 
       {action === "writing" ? (
