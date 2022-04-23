@@ -5,7 +5,6 @@ import "../App.css";
 const GoogleDriveButton = ({ Url }) => {
   if (Url)  
   {
-      console.log("Going to generate with :" , Url);
 
     return (<div>
         <Helmet>

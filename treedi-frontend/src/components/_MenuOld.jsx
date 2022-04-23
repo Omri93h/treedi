@@ -1,7 +1,7 @@
 import React from "react";
 import "../App.css";
 
-const Menu = ({ setLineColor, setLineWidth, setLineOpacity }) => {
+const MenuOld = ({ setLineColor, setLineWidth, setLineOpacity }) => {
 
 
     return (
@@ -47,4 +47,4 @@ const Menu = ({ setLineColor, setLineWidth, setLineOpacity }) => {
     );
 };
 
-export default Menu;
+export default MenuOld;

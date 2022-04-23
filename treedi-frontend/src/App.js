@@ -1,5 +1,4 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import Menu from "./components/Menu";
 import "./App.css";
 import useDrivePicker from "react-google-drive-picker";
 import data_format from "./utils/DataFormat";
@@ -168,11 +167,11 @@ function App(props) {
 
       </div>
       {pressureElement}
-      <Menu
+      {/* <Menu
         setLineColor={setLineColor}
         setLineWidth={setLineWidth}
         setLineOpacity={setLineOpacity}
-      />
+      /> */}
 
 
       {/* trial for saving image */}
