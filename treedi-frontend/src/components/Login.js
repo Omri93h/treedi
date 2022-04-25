@@ -31,7 +31,7 @@ const Login = () => {
         "http://localhost:5001/api/user-authentication",
         { token: response.tokenId }
       );
-
+        window.location.href = googleResponse.data.authUrl
       // Check if we have some result:
       if (Object.keys(googleResponse.data.payload).length !== 0) {
         /*
@@ -41,6 +41,7 @@ const Login = () => {
           User Profile Picture for Google
         */
         const { name, email, picture } = googleResponse.data.payload;
+        console.log(googleResponse);
         console.log("loading profile, ", name);
         setUser({
           ...user,

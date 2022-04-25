@@ -6,6 +6,8 @@ import data_format from "./utils/DataFormat";
 import Logout from "./components/Logout";
 import GoogleDriveButton from "./components/GoogleDriveButton";
 import TreediMenuBar from "./components/TreediMenuBar";
+import axios from "axios";
+
 
 const generator = rough.generator();
 var Pressure = require("pressure");
@@ -607,34 +609,35 @@ const TreediDraw = (props) => {
 		// link.click();
 	};
 
-	const Jonisave = async function() {
-		try {
-			const formData = {
-				link: Url1,
-			};
-			let response = await fetch("http://localhost:5001/api/googleDrive/save", {
-				method: "POST",
-				mode: "no-cors",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: formData,
-			});
-			if (response.ok) {
-				console.log("OK");
-				// let json = await response.json();
-				// let user = json.profile;
-				// localStorage.setItem('userName', user.user_name );
-				// localStorage.setItem('userID', user._id );
-				// localStorage.setItem('userMail', user.email);;
-				// if(user.isAdmin) {localStorage.setItem('isAdmin', 'admin' );}
-				// else {localStorage.setItem('isAdmin', 'user' );}
-				// window.location.replace('/home');
+	const Jonisave = async function(){
+		try{
+		//   const formData = {
+		//     'link' : Url1
+		// };
+		let params = (new URL(document.location)).searchParams;
+		let code = params.get("code");
+		const res = await axios.get(
+		  "http://localhost:5001/api/googleDrive/listFiles/?code="+code,
+		)
+	
+		console.log(res);
+			
+			// let response = await fetch('/api/googleDrive/listFiles?code='+code, {
+			//     method: 'GET',
+			//     mode: 'no-cors',
+			//     headers: {
+			//         'Content-Type': 'application/json'
+			//     },
+			//     //body: formData
+			// });
+			if (res.ok) {
+			  console.log("OK"); 
 			}
-		} catch (error) {
+		}
+		catch(error){
 			console.log(`error - Save - ${error}`);
 		}
-	};
+	}
 
 	return (
 		<div>
