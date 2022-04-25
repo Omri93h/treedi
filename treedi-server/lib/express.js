@@ -18,6 +18,7 @@ function initGlobRouter(){
     const getGlobbedpaths = globPattern => glob.sync(globPattern);
     const serverRoutes = getGlobbedpaths('api/routes/*-route.js');
     serverRoutes.forEach(tempPath => {
+        logger.debug(tempPath);
         const route = require(path.resolve(tempPath));
         if(tempPath != 'api/routes/default-route.js') 
             app.use(route);

@@ -182,3 +182,21 @@
 
 2022.04.20, 17:01:50.0460 UTC -> Error : null
 
+2022.04.22, 10:34:13.0229 UTC -> Error : THE PAYLOAD IS:{"iss":"accounts.google.com","azp":"101602613283-mg4l5v8f2ssl11qpusebl8n2dn0hrlil.apps.googleusercontent.com","aud":"101602613283-mg4l5v8f2ssl11qpusebl8n2dn0hrlil.apps.googleusercontent.com","sub":"101438521026997939049","email":"jkobany@gmail.com","email_verified":true,"at_hash":"bpM9UmIdkNnBxWlLALDlbQ","name":"יהונתן כובאני","picture":"https://lh3.googleusercontent.com/a/AATXAJwbuOQUotsAB-2DhWWYIC8BOXMIcJVm62OaG4lN=s96-c","given_name":"יהונתן","family_name":"כובאני","locale":"he","iat":1650623654,"exp":1650627254,"jti":"e29c6eb577ee3a5ae623fac01dbd39f14f00bc4b"}
+
+2022.04.22, 10:34:13.0266 UTC -> Error : null
+
+2022.04.22, 10:45:34.0669 UTC -> Error : You went into a 404 problem - Please try a valid route
+
+2022.04.22, 10:45:35.0900 UTC -> Error : You went into a 404 problem - Please try a valid route
+
+2022.04.25, 11:16:04.0185 UTC -> Error : You went into a 404 problem - Please try a valid route
+
+2022.04.25, 11:19:01.0603 UTC -> Error : You went into a 404 problem - Please try a valid route
+
+2022.04.25, 11:35:11.0658 UTC -> Error : You went into a 404 problem - Please try a valid route
+
+2022.04.25, 12:19:17.0535 UTC -> Error : You went into a 404 problem - Please try a valid route
+
+2022.04.25, 12:37:26.0952 UTC -> Error : You went into a 404 problem - Please try a valid route
+
