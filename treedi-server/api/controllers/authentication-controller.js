@@ -97,7 +97,7 @@ localStorage = new LocalStorage('./scratch')
         }
         console.log("token: " + token)
         oAuth2Client.setCredentials(JSON.parse(token));
-        callback(oAuth2Client);
+        callback(oAuth2Client.generateAuthUrl());
       });
     }
     
