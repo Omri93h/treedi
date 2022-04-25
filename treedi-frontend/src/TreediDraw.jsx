@@ -639,6 +639,33 @@ const TreediDraw = (props) => {
 		}
 	}
 
+
+
+	const Jonisave2 = async function(){
+		try{
+		//   const formData = {
+		//     'link' : Url1
+		// };
+		let params = (new URL(document.location)).searchParams;
+		let code = params.get("code");
+		const res = await axios.post(
+		  "http://localhost:5001/api/googleDrive/save/?code="+code,
+		  {
+			data: {
+				Url: Url1, // This is the body part
+			  }
+		  }
+		)
+	
+		console.log(res);
+			if (res.ok) {
+			  console.log("OK"); 
+			}
+		}
+		catch(error){
+			console.log(`error - Save - ${error}`);
+		}
+	}
 	return (
 		<div>
 			<TreediMenuBar setColor={setColor} setTool={setTool} color={color} undo={undo} redo={redo} />
