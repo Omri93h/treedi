@@ -7,7 +7,6 @@ const SCOPES = ['https://www.googleapis.com/auth/drive'];
 const TOKEN_PATH = 'token.json';
 
 async function authAndRunCallback(req, res, callback) {
-  //var parents = "enter here the folder you target"
   fs.readFile('credentials_drive.json', (err, content) => {
     if (err) return console.log('Error loading client secret file:', err);
     // Authorize a client with credentials, then call the Google Drive API.
@@ -40,6 +39,27 @@ async function authAndRunCallback(req, res, callback) {
     
   });
 }
+
+
+
+async function getToken(req, res) {
+  authAndRunCallback(req, res, (oAuth2Client, res) => {
+    sendTokenToClient(oAuth2Client, res)
+  });
+}
+
+function sendTokenToClient(oAuth2Client, res) {
+  console.log("Entered");
+  console.log(oAuth2Client.credentials.access_token)
+  res.send(oAuth2Client.credentials.access_token);
+}
+
+
+
+
+
+
+
 
 async function getListFiles(req, res) {
   authAndRunCallback(req, res, (oAuth2Client, res) => {
@@ -82,29 +102,19 @@ async function createFile(req, res) {
   });
 }
 
-
-
-
-
-
 async function createNewFile(oAuth2Client, res,req) {
   const filePath = req.body.data["Url"];
-  // console.log("oAuth2Client", oAuth2Client);
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
-
-  const response2 =  drive.files.create({
+  drive.files.create({
     requestBody: {
       name: 'Temp',
-      mimeType: 'text/plain'
+      mimeType: 'text/plain.trdi'
     },
     media: {
       mimeType: 'text/plain',
-      //body: fs.createReadStream(filePath)
-      body: filePath+".trdi"
-
+      body: filePath
     }
   });
 
-  console.log(response2);
 }
-module.exports = { getListFiles, createFile };
+module.exports = { getListFiles, createFile, getToken };
