@@ -306,7 +306,7 @@ const TreediDraw = (props) => {
 	};
 
 	Pressure.set("canvas", {
-		change: function(force, event) {
+		change: function (force, event) {
 			if (force > currMaxPressureValue) {
 				setCurrMaxPressureValue(force);
 			}
@@ -389,7 +389,7 @@ const TreediDraw = (props) => {
 				// console.log(parsed)
 				let image = new Image();
 				// var images = new Array();
-				image.onload = function() {
+				image.onload = function () {
 					var canvas = document.querySelector("canvas");
 					const ctx = canvas.getContext("2d");
 					ctx.globalAlpha = 1;
@@ -547,26 +547,6 @@ const TreediDraw = (props) => {
 		updateElement(id, x1, y1, null, null, type, { text: event.target.value });
 	};
 
-	const insertSvgToDifferentScreen = (stroke) => {
-		// base_image = new Image();
-		// base_image.src = 'img/base.svg';
-		// base_image.onload = function(){
-		//   context.drawImage(base_image, 0, 0);
-		// }
-	};
-	//   $("div.g-savetodrive").click(function(){
-	//     saveLocal();
-	// });
-
-	//   $( "#test" ).on( "click", function() {
-	//     console.log("cliked");
-	//     saveLocal();;
-	//  });
-
-	const handleL = () => {
-		console.log("fffffffffff");
-	};
-
 	useEffect(() => {
 		let iframe = document.getElementsByClassName("save-to-drive-button jfk-button jfk-button-standard jfk-button-rtl");
 
@@ -587,41 +567,45 @@ const TreediDraw = (props) => {
 		data_format.LastModified = "DATE";
 		data_format.Owner = "GOOGLE_USER";
 		data_format.Screens.push({ Image: dataURL, LastModified: "DATE" });
-		// console.log(data_format)
-
-		// TEMP Currently Downloading...
 		downloadTrdiFile1(data_format, "NEW_TREEDI_FILE.trdi");
 	};
-	const [Url1, setUrl1] = useState(null);
+	// const [Url1, setUrl1] = useState(null);
+	const [FileData, setFileData] = useState(null);
 	const downloadTrdiFile1 = (jsonData, filename) => {
 		const fileData = JSON.stringify(jsonData);
+		setFileData(fileData);
 		const blob = new Blob([fileData], { type: "text/plain" });
 		const url = URL.createObjectURL(blob);
 		const link = document.createElement("a");
 		link.download = filename;
 		link.href = url;
-		setUrl1(link.href.slice(5));
-		console.log("MY HREF:", link.href.slice(5));
+		// setUrl1(link.href.slice(5));
+		// console.log("MY HREF:", link.href.slice(5));
 		Jonisave();
-		console.log("URL1 IS :", Url1);
+		// console.log("URL1 IS :", Url1);
 		// console.log( link.href.slice(5));
 		//console.log(link);
 		// link.click();
 	};
 
-	const Jonisave = async function(){
-		try{
-		//   const formData = {
-		//     'link' : Url1
-		// };
-		let params = (new URL(document.location)).searchParams;
-		let code = params.get("code");
-		const res = await axios.get(
-		  "http://localhost:5001/api/googleDrive/listFiles/?code="+code,
-		)
-	
-		console.log(res);
-			
+	const Jonisave = async function () {
+		try {
+			let params = (new URL(document.location)).searchParams;
+			let code = params.get("code");
+
+			const res = await axios.post(
+				"http://localhost:5001/api/googleDrive/save/?code=" + code,
+				{
+					data: {
+						Url: FileData, // This is the body part
+					}
+				}
+			)
+
+
+
+			console.log(res);
+
 			// let response = await fetch('/api/googleDrive/listFiles?code='+code, {
 			//     method: 'GET',
 			//     mode: 'no-cors',
@@ -631,38 +615,31 @@ const TreediDraw = (props) => {
 			//     //body: formData
 			// });
 			if (res.ok) {
-			  console.log("OK"); 
+				console.log("OK");
 			}
 		}
-		catch(error){
+		catch (error) {
 			console.log(`error - Save - ${error}`);
 		}
 	}
 
 
 
-	const Jonisave2 = async function(){
-		try{
-		//   const formData = {
-		//     'link' : Url1
-		// };
-		let params = (new URL(document.location)).searchParams;
-		let code = params.get("code");
-		const res = await axios.post(
-		  "http://localhost:5001/api/googleDrive/save/?code="+code,
-		  {
-			data: {
-				Url: Url1, // This is the body part
-			  }
-		  }
-		)
-	
-		console.log(res);
+	const GetListOfItems = async function () {
+		try {
+			let params = (new URL(document.location)).searchParams;
+			let code = params.get("code");
+			const res = await axios.get(
+				"http://localhost:5001/api/googleDrive/listFiles/?code=" + code,
+			)
+
+
+			console.log(res);
 			if (res.ok) {
-			  console.log("OK"); 
+				console.log("OK");
 			}
 		}
-		catch(error){
+		catch (error) {
 			console.log(`error - Save - ${error}`);
 		}
 	}
@@ -696,7 +673,9 @@ const TreediDraw = (props) => {
 				<button onClick={() => saveLocal()}>saveLocal</button>
 				<button onClick={() => loadLocal()}>loadLocal</button>
 				<button onClick={() => handleOpenPicker()}>Open Picker</button>
+				<button onClick={() => GetListOfItems()}>Get List From Drive</button>
 				<button onClick={() => JonisaveLocal()}>Joni save</button>
+
 			</div>
 
 			{action === "writing" ? (
