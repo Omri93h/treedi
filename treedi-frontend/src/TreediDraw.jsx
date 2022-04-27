@@ -521,17 +521,41 @@ const TreediDraw = (props) => {
 
 	const clientId = process.env.REACT_APP_CLIENT_ID;
 	const developerKey = process.env.REACT_APP_DEVELOPER_KEY;
-	const TOKEN = process.env.REACT_APP_ACCESS_TOKEN;
+	//const TOKEN = process.env.REACT_APP_ACCESS_TOKEN;
+	const GetToken = async function (){
+		let params = (new URL(document.location)).searchParams;
+		let code = params.get("code");
+		try {
+			const res = await axios.get(
+				"http://localhost:5001/api/googleDrive/getToken/?code=" + code,
+			)
+			console.log(res.data);
+			localStorage.setItem("TOKEN" , res.data);
+			if (res.ok) {
+				console.log("OK");
+			}
+		}
+		catch (error) {
+			console.log(`error - GetToken - ${error}`);
+		}
+	}
+
+
 	const handleOpenPicker = () => {
+		GetToken();
+		const TOKEN =localStorage.getItem("TOKEN");
+		console.log(TOKEN);
+		console.log("Acess Token:" ,localStorage.getItem("TOKEN"));
+
 		openPicker({
 			clientId: clientId,
 			developerKey: developerKey,
 			token: TOKEN,
 			viewId: "DOCS",
-			showUploadView: true,
-			showUploadFolders: true,
+			//showUploadView: true,
+			//showUploadFolders: true,
 			supportDrives: true,
-			multiselect: true,
+			//multiselect: true,
 		});
 	};
 	useEffect(() => {
@@ -579,8 +603,6 @@ const TreediDraw = (props) => {
 		const link = document.createElement("a");
 		link.download = filename;
 		link.href = url;
-		// setUrl1(link.href.slice(5));
-		// console.log("MY HREF:", link.href.slice(5));
 		Jonisave();
 		// console.log("URL1 IS :", Url1);
 		// console.log( link.href.slice(5));
@@ -592,7 +614,6 @@ const TreediDraw = (props) => {
 		try {
 			let params = (new URL(document.location)).searchParams;
 			let code = params.get("code");
-
 			const res = await axios.post(
 				"http://localhost:5001/api/googleDrive/save/?code=" + code,
 				{
@@ -601,19 +622,7 @@ const TreediDraw = (props) => {
 					}
 				}
 			)
-
-
-
 			console.log(res);
-
-			// let response = await fetch('/api/googleDrive/listFiles?code='+code, {
-			//     method: 'GET',
-			//     mode: 'no-cors',
-			//     headers: {
-			//         'Content-Type': 'application/json'
-			//     },
-			//     //body: formData
-			// });
 			if (res.ok) {
 				console.log("OK");
 			}
@@ -623,8 +632,6 @@ const TreediDraw = (props) => {
 		}
 	}
 
-
-
 	const GetListOfItems = async function () {
 		try {
 			let params = (new URL(document.location)).searchParams;
@@ -632,15 +639,13 @@ const TreediDraw = (props) => {
 			const res = await axios.get(
 				"http://localhost:5001/api/googleDrive/listFiles/?code=" + code,
 			)
-
-
 			console.log(res);
 			if (res.ok) {
 				console.log("OK");
 			}
 		}
 		catch (error) {
-			console.log(`error - Save - ${error}`);
+			console.log(`error - ListOfItems - ${error}`);
 		}
 	}
 	return (
