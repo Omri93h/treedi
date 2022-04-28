@@ -40,8 +40,6 @@ async function authAndRunCallback(req, res, callback) {
   });
 }
 
-
-
 async function getToken(req, res) {
   authAndRunCallback(req, res, (oAuth2Client, res) => {
     sendTokenToClient(oAuth2Client, res)
@@ -49,17 +47,41 @@ async function getToken(req, res) {
 }
 
 function sendTokenToClient(oAuth2Client, res) {
-  console.log("Entered");
   console.log(oAuth2Client.credentials.access_token)
   res.send(oAuth2Client.credentials.access_token);
 }
 
+async function getFileData(req, res) {
+  authAndRunCallback(req, res, (oAuth2Client, res) => {
+    getData(oAuth2Client, res,req)
+  });
+}
 
 
+function getData(oAuth2Client, res,req)
+{
+  const fileId = req.body.data.fileid;
+  const drive = google.drive({ version: 'v3', auth: oAuth2Client });
+  let dataToSend;
+  drive.files.get(
+    { fileId, alt: 'media' },
+    { responseType: 'stream' }
+  ).then(localres => {
+    localres.data
+      .on('end', () => {
+        console.log('Done downloading file.');
+        console.log(dataToSend);
+        res.send(dataToSend);
+      })  
+      .on('error', err => {
+        console.error('Error downloading file.');
+      })  
+      .on('data', d => {
+        dataToSend = d;
+      })  
+  }); 
 
-
-
-
+}
 
 async function getListFiles(req, res) {
   authAndRunCallback(req, res, (oAuth2Client, res) => {
@@ -117,4 +139,4 @@ async function createNewFile(oAuth2Client, res,req) {
   });
 
 }
-module.exports = { getListFiles, createFile, getToken };
+module.exports = { getListFiles, createFile, getToken ,getFileData };
