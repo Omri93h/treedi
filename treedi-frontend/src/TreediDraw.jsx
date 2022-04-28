@@ -541,27 +541,47 @@ const TreediDraw = (props) => {
 	}
 
 
+	const GetFileData = async function (fileID) {
+		try {
+			let params = (new URL(document.location)).searchParams;
+			let code = params.get("code");
+			const res = await axios.post(
+				"http://localhost:5001/api/googleDrive/getFileData/?code="  + code,
+				{
+					data: {
+						fileid: fileID, // This is the body part
+					}
+				}
+			).then(bla => {
+				console.log("bla");
+				console.log(bla.data);
+			})
+		}
+		catch (error) {
+			console.log(`error - GetFile - ${error}`);
+		}
+	}
+
 	const handleOpenPicker = () => {
 		GetToken();
 		const TOKEN =localStorage.getItem("TOKEN");
 		console.log(TOKEN);
 		console.log("Acess Token:" ,localStorage.getItem("TOKEN"));
-
 		openPicker({
 			clientId: clientId,
 			developerKey: developerKey,
 			token: TOKEN,
 			viewId: "DOCS",
-			//showUploadView: true,
-			//showUploadFolders: true,
 			supportDrives: true,
-			//multiselect: true,
 		});
 	};
 	useEffect(() => {
 		if (data) {
-			data.docs.map((i) => console.log(i));
+			console.log(data.docs[0].id);
+			localStorage.setItem("fileId" , data.docs[0].id);
+			GetFileData(data.docs[0].id);
 		}
+
 	}, [data]);
 
 	const handleBlur = (event) => {
