@@ -78,13 +78,7 @@ const Toolbar = ({ setTool, setColor, Color, Undo, Redo }) => {
 		}
 	};
 
-	const displayColorPicker = () => {
-		return (
-			<div style={ColorToggleStyle}>
-				<HexColorPicker color={Color} onChange={setColor} />
-			</div>
-		);
-	};
+
 
 	const displayTools = () => {
 		return (

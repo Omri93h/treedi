@@ -31,30 +31,30 @@ const ToolSelection = ({ setTool }) => {
 	};
 
 	const displayPencilTool = (
-		<span className="menu-item">
+		<span className='menu-item'>
 			<PencilIcon /> &nbsp; Pencil
 		</span>
 	);
 	const displayRectangleTool = (
-		<span className="menu-item">
+		<span className='menu-item'>
 			<RectangleIcon /> &nbsp; Rectangle
 		</span>
 	);
 
 	const displayLineTool = (
-		<span className="menu-item">
+		<span className='menu-item'>
 			<LineIcon /> &nbsp; Line
 		</span>
 	);
 
 	const displayTextTool = (
-		<span className="menu-item">
+		<span className='menu-item'>
 			<TextIcon /> &nbsp; Text
 		</span>
 	);
 
 	const displaySelectionTool = (
-		<span className="menu-item">
+		<span className='menu-item'>
 			<SelectIcon /> &nbsp; Select
 		</span>
 	);
@@ -80,7 +80,7 @@ const ToolSelection = ({ setTool }) => {
 	return (
 		<div>
 			<Button
-				style={{height:"100%"}}
+				style={{ height: "100%" }}
 				aria-controls={open ? "basic-menu" : undefined}
 				aria-haspopup='true'
 				aria-expanded={open ? "true" : undefined}

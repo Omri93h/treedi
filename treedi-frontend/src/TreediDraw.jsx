@@ -133,7 +133,6 @@ const useHistory = (initialState) => {
 
 	const undo = () => index > 0 && setIndex((prevState) => prevState - 1);
 	const redo = () => index < history.length - 1 && setIndex((prevState) => prevState + 1);
-	// const redo_diff_screen = () => console.log(history);
 	return [history[index], setState, undo, redo];
 };
 
@@ -158,8 +157,8 @@ const adjustmentRequired = (type) => ["line", "rectangle"].includes(type);
 const TreediDraw = (props) => {
 	const [user, setUser] = useState({
 		name: localStorage.getItem("TreediUserName"),
-		email: localStorage.getItem("TreediUserName"),
-		img: localStorage.getItem("TreediUserEmail"),
+		email: localStorage.getItem("TreediUserEmail"),
+		img: localStorage.getItem("TreediUserImage"),
 	});
 
 	// console.log(user.name + " \n" + user.email + " \n" + user.img);
