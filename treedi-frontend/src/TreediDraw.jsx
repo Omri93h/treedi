@@ -8,7 +8,6 @@ import GoogleDriveButton from "./components/GoogleDriveButton";
 import TreediMenuBar from "./components/TreediMenuBar";
 import axios from "axios";
 
-
 const generator = rough.generator();
 var Pressure = require("pressure");
 
@@ -185,8 +184,7 @@ const TreediDraw = (props) => {
 	}, [elementToMove]);
 
 	const createElement = (id, x1, y1, x2, y2, type, elem_color, display) => {
-		const canvas = document.querySelector("canvas");
-		const ctx = canvas.getContext("2d");
+		console.log('x1:' + x1 + '\nx2:' + x2 + '\ny1:' + y1 + '\ny2:' + y2)
 		switch (type) {
 			case "line":
 			case "rectangle":
@@ -305,7 +303,7 @@ const TreediDraw = (props) => {
 	};
 
 	Pressure.set("canvas", {
-		change: function (force, event) {
+		change: function(force, event) {
 			if (force > currMaxPressureValue) {
 				setCurrMaxPressureValue(force);
 			}
@@ -322,8 +320,10 @@ const TreediDraw = (props) => {
 
 	const handleMouseDown = (event) => {
 		if (action === "writing") return;
-
-		const { clientX, clientY } = event;
+		console.log(event)
+		const { nativeEvent } = event;
+		const clientY = nativeEvent.offsetY;
+		const clientX = nativeEvent.offsetX;
 		if (tool === "selection") {
 			const element = getElementAtPosition(clientX, clientY, elements);
 			if (element) {
@@ -388,7 +388,7 @@ const TreediDraw = (props) => {
 				// console.log(parsed)
 				let image = new Image();
 				// var images = new Array();
-				image.onload = function () {
+				image.onload = function() {
 					var canvas = document.querySelector("canvas");
 					const ctx = canvas.getContext("2d");
 					ctx.globalAlpha = 1;
@@ -399,7 +399,9 @@ const TreediDraw = (props) => {
 	};
 
 	const handleMouseMove = (event) => {
-		const { clientX, clientY } = event;
+		const { nativeEvent } = event;
+		const clientY = nativeEvent.offsetY;
+		const clientX = nativeEvent.offsetX;
 
 		if (tool === "selection") {
 			const element = getElementAtPosition(clientX, clientY, elements);
@@ -521,51 +523,45 @@ const TreediDraw = (props) => {
 	const clientId = process.env.REACT_APP_CLIENT_ID;
 	const developerKey = process.env.REACT_APP_DEVELOPER_KEY;
 	//const TOKEN = process.env.REACT_APP_ACCESS_TOKEN;
-	const GetToken = async function (){
-		let params = (new URL(document.location)).searchParams;
+	const GetToken = async function() {
+		let params = new URL(document.location).searchParams;
 		let code = params.get("code");
 		try {
-			const res = await axios.get(
-				"http://localhost:5001/api/googleDrive/getToken/?code=" + code,
-			)
+			const res = await axios.get("http://localhost:5001/api/googleDrive/getToken/?code=" + code);
 			console.log(res.data);
-			localStorage.setItem("TOKEN" , res.data);
+			localStorage.setItem("TOKEN", res.data);
 			if (res.ok) {
 				console.log("OK");
 			}
-		}
-		catch (error) {
+		} catch (error) {
 			console.log(`error - GetToken - ${error}`);
 		}
-	}
+	};
 
-
-	const GetFileData = async function (fileID) {
+	const GetFileData = async function(fileID) {
 		try {
-			let params = (new URL(document.location)).searchParams;
+			let params = new URL(document.location).searchParams;
 			let code = params.get("code");
-			const res = await axios.post(
-				"http://localhost:5001/api/googleDrive/getFileData/?code="  + code,
-				{
+			const res = await axios
+				.post("http://localhost:5001/api/googleDrive/getFileData/?code=" + code, {
 					data: {
 						fileid: fileID, // This is the body part
-					}
-				}
-			).then(bla => {
-				console.log("bla");
-				console.log(bla.data);
-			})
-		}
-		catch (error) {
+					},
+				})
+				.then((bla) => {
+					console.log("bla");
+					console.log(bla.data);
+				});
+		} catch (error) {
 			console.log(`error - GetFile - ${error}`);
 		}
-	}
+	};
 
 	const handleOpenPicker = () => {
 		GetToken();
-		const TOKEN =localStorage.getItem("TOKEN");
+		const TOKEN = localStorage.getItem("TOKEN");
 		console.log(TOKEN);
-		console.log("Acess Token:" ,localStorage.getItem("TOKEN"));
+		console.log("Acess Token:", localStorage.getItem("TOKEN"));
 		openPicker({
 			clientId: clientId,
 			developerKey: developerKey,
@@ -577,10 +573,9 @@ const TreediDraw = (props) => {
 	useEffect(() => {
 		if (data) {
 			console.log(data.docs[0].id);
-			localStorage.setItem("fileId" , data.docs[0].id);
+			localStorage.setItem("fileId", data.docs[0].id);
 			GetFileData(data.docs[0].id);
 		}
-
 	}, [data]);
 
 	const handleBlur = (event) => {
@@ -629,61 +624,47 @@ const TreediDraw = (props) => {
 		// link.click();
 	};
 
-	const Jonisave = async function () {
+	const Jonisave = async function() {
 		try {
-			let params = (new URL(document.location)).searchParams;
+			let params = new URL(document.location).searchParams;
 			let code = params.get("code");
-			const res = await axios.post(
-				"http://localhost:5001/api/googleDrive/save/?code=" + code,
-				{
-					data: {
-						Url: FileData, // This is the body part
-					}
-				}
-			)
+			const res = await axios.post("http://localhost:5001/api/googleDrive/save/?code=" + code, {
+				data: {
+					Url: FileData, // This is the body part
+				},
+			});
 			console.log(res);
 			if (res.ok) {
 				console.log("OK");
 			}
-		}
-		catch (error) {
+		} catch (error) {
 			console.log(`error - Save - ${error}`);
 		}
-	}
+	};
 
-	const GetListOfItems = async function () {
+	const GetListOfItems = async function() {
 		try {
-			let params = (new URL(document.location)).searchParams;
+			let params = new URL(document.location).searchParams;
 			let code = params.get("code");
-			const res = await axios.get(
-				"http://localhost:5001/api/googleDrive/listFiles/?code=" + code,
-			)
+			const res = await axios.get("http://localhost:5001/api/googleDrive/listFiles/?code=" + code);
 			console.log(res);
 			if (res.ok) {
 				console.log("OK");
 			}
-		}
-		catch (error) {
+		} catch (error) {
 			console.log(`error - ListOfItems - ${error}`);
 		}
-	}
+	};
 	return (
 		<div>
-			<TreediMenuBar setColor={setColor} setTool={setTool} color={color} undo={undo} redo={redo} />
-			{/* <div style={{ position: "fixed" }}>
-				<Toolbar setTool={setTool} setColor={setColor} Color={color} Undo={undo} Redo={redo} />
-				<input type='radio' id='selection' checked={tool === "selection"} onChange={() => setTool("selection")} />
-				<label htmlFor='selection'>Selection</label>
-				<input type='radio' id='line' checked={tool === "line"} onChange={() => setTool("line")} />
-				<label htmlFor='line'>Line</label>
-				<input type='radio' id='rectangle' checked={tool === "rectangle"} onChange={() => setTool("rectangle")} />
-				<label htmlFor='rectangle'>Rectangle</label>
-				<input type='radio' id='text' checked={tool === "text"} onChange={() => setTool("text")} />
-
-				<label htmlFor='text'>Text</label>
-				<input type='radio' id='pencil' checked={tool === "pencil"} onChange={() => setTool("pencil")} />
-				<label htmlFor='pencil'>Pencil</label>
-			</div> */}
+			<TreediMenuBar
+				userImage={user["img"]}
+				setColor={setColor}
+				setTool={setTool}
+				color={color}
+				undo={undo}
+				redo={redo}
+			/>
 
 			{pressureElement}
 
@@ -699,7 +680,6 @@ const TreediDraw = (props) => {
 				<button onClick={() => handleOpenPicker()}>Open Picker</button>
 				<button onClick={() => GetListOfItems()}>Get List From Drive</button>
 				<button onClick={() => JonisaveLocal()}>Joni save</button>
-
 			</div>
 
 			{action === "writing" ? (

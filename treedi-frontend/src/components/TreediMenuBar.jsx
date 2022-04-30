@@ -10,10 +10,28 @@ import UserButton from "./MenuButtons/UserButton";
 
 import "../App.css";
 
-const TreediMenuBar = ({ setTool, color, setColor, undo, redo }) => {
+const TreediMenuBarStyle = {
+	position: "absolute",
+	justifyContent: "center",
+	display: "flex",
+	width: "450px",
+	height: "50px",
+	lineHeight: "50px",
+	verticalAlign: "middle",
+	marginLeft: "100px",
+	marginTop: "10px",
+	border: "2px solid #f0f0f0",
+	borderRadius: "25px",
+};
+
+const TreediMenuBar = ({ userImage, setTool, color, setColor, undo, redo }) => {
+
+
 	return (
 		<div style={{display:"flex"}}>
-			<UserButton/>
+			<div style={{marginTop:"10px", marginLeft:"10px", height:"50px", lineHeight:"50px", verticalAlign:"middle", textAlign:"center"}}>
+			<UserButton userImage={userImage}/>
+			</div>
 			<div style={TreediMenuBarStyle}>
 				<ToolSelection setTool={setTool} />
 
@@ -41,16 +59,4 @@ const TreediMenuBar = ({ setTool, color, setColor, undo, redo }) => {
 
 export default TreediMenuBar;
 
-const TreediMenuBarStyle = {
-	position: "absolute",
-	justifyContent: "center",
-	display: "flex",
-	width: "450px",
-	height: "50px",
-	lineHeight: "50px",
-	verticalAlign: "middle",
-	marginLeft: "20px",
-	marginTop: "10px",
-	border: "2px solid #f0f0f0",
-	borderRadius: "25px",
-};
+

@@ -26,7 +26,7 @@ const ColorSelection = ({ color, setColor }) => {
 	);
 
 	return (
-		<div>
+		<>
 			<Button
 				style={{height:"100%"}}
 
@@ -47,7 +47,7 @@ const ColorSelection = ({ color, setColor }) => {
 				}}>
 				<MenuItem>{displayColorPicker}</MenuItem>
 			</Menu>
-		</div>
+		</>
 	);
 };
 

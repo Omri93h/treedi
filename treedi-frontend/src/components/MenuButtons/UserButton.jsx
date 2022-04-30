@@ -5,13 +5,13 @@ import MenuItem from "@mui/material/MenuItem";
 import { default as UserIcon } from "@mui/icons-material/AccountCircleRounded";
 import "../../App.css";
 
+const UserButton = ({ userImage }) => {
+	const userImageElement = (
+		<img src={userImage} style={{ height: "40px", width: "40px", borderRadius: "100%" }} referrerpolicy='no-referrer' />
+	);
 
-
-const UserButton = ({ setTool }) => {
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
-
-	const [toolToDisplay, setToolToDisplay] = useState("pencil");
 
 	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget);
@@ -20,17 +20,15 @@ const UserButton = ({ setTool }) => {
 		setAnchorEl(null);
 	};
 
-
-
 	return (
 		<div>
 			<Button
-				style={{ height: "100%" }}
+				style={{ height: "100%",  }}
 				aria-controls={open ? "basic-menu" : undefined}
 				aria-haspopup='true'
 				aria-expanded={open ? "true" : undefined}
 				onClick={handleClick}>
-				<UserIcon/>	
+				{userImage ? userImageElement : <UserIcon />}
 			</Button>
 			<Menu
 				className='basic-menu'
@@ -40,9 +38,8 @@ const UserButton = ({ setTool }) => {
 				MenuListProps={{
 					"aria-labelledby": "basic-button",
 				}}>
-				<MenuItem onClick={() => {}}> Load Different</MenuItem>
-				<MenuItem onClick={() => {}}> LogOut</MenuItem>
-
+				<MenuItem onClick={() => {handleClose()}}> Load Different</MenuItem>
+				<MenuItem onClick={() => {handleClose()}}> Log Out</MenuItem>
 			</Menu>
 		</div>
 	);

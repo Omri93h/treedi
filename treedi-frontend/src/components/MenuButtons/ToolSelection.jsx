@@ -78,7 +78,7 @@ const ToolSelection = ({ setTool }) => {
 	};
 
 	return (
-		<div>
+		<>
 			<Button
 				style={{ height: "100%" }}
 				aria-controls={open ? "basic-menu" : undefined}
@@ -101,7 +101,7 @@ const ToolSelection = ({ setTool }) => {
 				<MenuItem onClick={() => handleSelected("line")}>{displayLineTool}</MenuItem>
 				<MenuItem onClick={() => handleSelected("selection")}>{displaySelectionTool}</MenuItem>
 			</Menu>
-		</div>
+		</>
 	);
 };
 
