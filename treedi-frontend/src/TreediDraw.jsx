@@ -7,6 +7,7 @@ import Logout from "./components/Logout";
 import GoogleDriveButton from "./components/GoogleDriveButton";
 import TreediMenuBar from "./components/TreediMenuBar";
 import axios from "axios";
+import Preload from "./components/Preload";
 
 const generator = rough.generator();
 var Pressure = require("pressure");
@@ -153,7 +154,11 @@ const getSvgPathFromStroke = (stroke) => {
 
 const adjustmentRequired = (type) => ["line", "rectangle"].includes(type);
 
+/////////////////////////////////////
+
 const TreediDraw = (props) => {
+	const [projectName, setProjectName] = useState('');
+
 	const [user, setUser] = useState({
 		name: localStorage.getItem("TreediUserName"),
 		email: localStorage.getItem("TreediUserEmail"),
@@ -184,7 +189,7 @@ const TreediDraw = (props) => {
 	}, [elementToMove]);
 
 	const createElement = (id, x1, y1, x2, y2, type, elem_color, display) => {
-		console.log('x1:' + x1 + '\nx2:' + x2 + '\ny1:' + y1 + '\ny2:' + y2)
+		console.log("x1:" + x1 + "\nx2:" + x2 + "\ny1:" + y1 + "\ny2:" + y2);
 		switch (type) {
 			case "line":
 			case "rectangle":
@@ -320,7 +325,7 @@ const TreediDraw = (props) => {
 
 	const handleMouseDown = (event) => {
 		if (action === "writing") return;
-		console.log(event)
+		console.log(event);
 		const { nativeEvent } = event;
 		const clientY = nativeEvent.offsetY;
 		const clientX = nativeEvent.offsetX;
@@ -573,7 +578,7 @@ const TreediDraw = (props) => {
 	useEffect(() => {
 		if (data) {
 			console.log(data.docs[0].id);
-			//localStorage.setItem("fileId", data.docs[0].id);
+			localStorage.setItem("fileId", data.docs[0].id);
 			GetFileData(data.docs[0].id);
 		}
 	}, [data]);
@@ -587,6 +592,9 @@ const TreediDraw = (props) => {
 
 	useEffect(() => {
 		let iframe = document.getElementsByClassName("save-to-drive-button jfk-button jfk-button-standard jfk-button-rtl");
+
+		console.log(iframe);
+		console.log(typeof iframe);
 	}, []);
 
 	useEffect(() => {
@@ -622,24 +630,22 @@ const TreediDraw = (props) => {
 			let params = new URL(document.location).searchParams;
 			let code = params.get("code");
 			let fileid = localStorage.getItem("fileId");
-			console.log("fileID is: ", fileid);
 			const res = await axios.post("http://localhost:5001/api/googleDrive/save/?code=" + code, {
 				data: {
 					fileData: FileData,
-					fileId:fileid				
+					fileId: fileid,
 				},
 			});
 			console.log(res);
-			console.log("The res Data is:",res.data);
-			if (res.status ==200) {
-				console.log("The File ID after created",res.data);
+			console.log(res.data);
+			if (res.status == 200) {
 				localStorage.setItem("fileId", res.data);
+				console.log("OK");
 			}
 		} catch (error) {
 			console.log(`error - Save - ${error}`);
 		}
 	};
-
 
 	const GetListOfItems = async function() {
 		try {
@@ -656,14 +662,9 @@ const TreediDraw = (props) => {
 	};
 	return (
 		<div>
-			<TreediMenuBar
-				user={user}
-				setColor={setColor}
-				setTool={setTool}
-				color={color}
-				undo={undo}
-				redo={redo}
-			/>
+			<Preload projectName={projectName} setProjectName={setProjectName} />
+
+			<TreediMenuBar user={user} setColor={setColor} setTool={setTool} color={color} undo={undo} redo={redo} />
 
 			{pressureElement}
 
