@@ -1,7 +1,7 @@
 const fs = require('fs');
 const { google } = require('googleapis');
 const LocalStorage = require('node-localstorage').LocalStorage,
-localStorage = new LocalStorage('./scratch')
+  localStorage = new LocalStorage('./scratch')
 require('dotenv').config();
 const SCOPES = ['https://www.googleapis.com/auth/drive'];
 const TOKEN_PATH = 'token.json';
@@ -14,29 +14,29 @@ async function authAndRunCallback(req, res, callback) {
     const { client_secret, client_id, redirect_uris } = credentials.web;
     const oAuth2Client = new google.auth.OAuth2(
       client_id, client_secret, redirect_uris[0]);
-      fs.readFile(TOKEN_PATH, (err, token) => {
-        if (err) {
-          console.log(err)
-          oAuth2Client.getToken(req.query.code).then(response => {
-            oAuth2Client.setCredentials(response.tokens);
-            fs.writeFile(TOKEN_PATH, JSON.stringify(response.tokens), (err) => {
-                if (err) return console.error(err);
-                console.log('Token stored to', TOKEN_PATH);
-                callback(oAuth2Client, res);
-                console.log("AFTER READ FROM DRIVE")
-              });
-          }).catch(error => {
-            console.log(error);
-          })
-        }
-        else {
-          console.log("token is ", JSON.parse(token));
-          oAuth2Client.setCredentials(JSON.parse(token));
-          callback(oAuth2Client, res);
-        }
+    fs.readFile(TOKEN_PATH, (err, token) => {
+      if (err) {
+        console.log(err)
+        oAuth2Client.getToken(req.query.code).then(response => {
+          oAuth2Client.setCredentials(response.tokens);
+          fs.writeFile(TOKEN_PATH, JSON.stringify(response.tokens), (err) => {
+            if (err) return console.error(err);
+            console.log('Token stored to', TOKEN_PATH);
+            callback(oAuth2Client, res);
+            console.log("AFTER READ FROM DRIVE")
+          });
+        }).catch(error => {
+          console.log(error);
+        })
+      }
+      else {
+        console.log("token is ", JSON.parse(token));
+        oAuth2Client.setCredentials(JSON.parse(token));
+        callback(oAuth2Client, res);
+      }
 
-      });
-    
+    });
+
   });
 }
 
@@ -53,13 +53,11 @@ function sendTokenToClient(oAuth2Client, res) {
 
 async function getFileData(req, res) {
   authAndRunCallback(req, res, (oAuth2Client, res) => {
-    getData(oAuth2Client, res,req)
+    getData(oAuth2Client, res, req)
   });
 }
 
-
-function getData(oAuth2Client, res,req)
-{
+function getData(oAuth2Client, res, req) {
   const fileId = req.body.data.fileid;
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
   let dataToSend;
@@ -72,14 +70,14 @@ function getData(oAuth2Client, res,req)
         console.log('Done downloading file.');
         console.log(dataToSend);
         res.send(dataToSend);
-      })  
+      })
       .on('error', err => {
         console.error('Error downloading file.');
-      })  
+      })
       .on('data', d => {
         dataToSend = d;
-      })  
-  }); 
+      })
+  });
 
 }
 
@@ -88,8 +86,6 @@ async function getListFiles(req, res) {
     readListFromDrive(oAuth2Client, res)
   });
 }
-
-
 
 function readListFromDrive(oAuth2Client, res) {
   console.log("oAuth2Client", oAuth2Client);
@@ -101,7 +97,7 @@ function readListFromDrive(oAuth2Client, res) {
   }, (err, response) => {
     if (err)
       return console.log('The API returned an error: ' + err);
-      console.log("response", response);
+    console.log("response", response);
     const files = response.data.files;
     if (files.length) {
       console.log('Files:');
@@ -116,17 +112,20 @@ function readListFromDrive(oAuth2Client, res) {
   });
 }
 
-
-
 async function createFile(req, res) {
   authAndRunCallback(req, res, (oAuth2Client, res) => {
-    createNewFile(oAuth2Client, res,req)
+    createNewFile(oAuth2Client, res, req)
   });
 }
 
-async function createNewFile(oAuth2Client, res,req) {
-  const filePath = req.body.data["Url"];
+async function createNewFile(oAuth2Client, res, req) {
+  const filePath = req.body.data["fileData"];
+  const fileID = req.body.data["fileId"];
+  console.log(fileID);
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
+  
+  
+  
   drive.files.create({
     requestBody: {
       name: 'Temp',
@@ -135,8 +134,101 @@ async function createNewFile(oAuth2Client, res,req) {
     media: {
       mimeType: 'text/plain',
       body: filePath
+    }}, (err, response) => {
+    if (err)
+      return console.log('The API returned an error: ' + err);
+    console.log("response", response);
+    console.log("responseID", response.data.id);
+    if (response.data.id) {
+        console.log('The ID of the create file is :' , response.data.id);
+      res.send(response.data.id);
+
+    } else {
+      console.log('Couldnt Create the file.');
     }
   });
 
+//   drive.files.create({
+//     requestBody: {
+//       name: 'Temp',
+//       mimeType: 'text/plain.trdi'
+//     },
+//     media: {
+//       mimeType: 'text/plain',
+//       body: filePath
+//     }
+//   },(err, response) => {
+//     if (err)
+//       return console.log('The API returned an error: ' + err);
+//     console.log("response", response);
+//     const files = response.data.files;
+//   res.send(200);
+// }
 }
-module.exports = { getListFiles, createFile, getToken ,getFileData };
+
+async function updateExistingFile(req, res) {
+  authAndRunCallback(req, res, (oAuth2Client, res) => {
+    updateFile(oAuth2Client, res, req)
+  });
+}
+
+
+function updateFile(oAuth2Client, res, req) {
+  const fileId = req.body.data["ID"];
+
+  const url = 'https://www.googleapis.com/upload/drive/v3/files/' + fileId + '?uploadType=media';
+  if (self.fetch) {
+    //var setHeaders = new Headers();
+    //setHeaders.append('Authorization', 'Bearer ' + authToken.access_token);
+    //setHeaders.append('Content-Type', mime);
+
+    var setOptions = {
+      method: 'PATCH',
+      //headers: setHeaders,
+      body: data
+    };
+    fetch(url, setOptions)
+      .then(response => {
+        if (response.ok) {
+          console.log("save to drive");
+        }
+        else {
+          console.log("Response wast not ok");
+        }
+      })
+      .catch(error => {
+        console.log("There is an error " + error.message);
+      });
+
+
+
+
+
+
+    // const fileId = req.body.data.fileid;
+    // const drive = google.drive({ version: 'v3', auth: oAuth2Client });
+    // let dataToSend;
+    // drive.files.get(
+    //   { fileId, alt: 'media' },
+    //   { responseType: 'stream' }
+    // ).then(localres => {
+    //   localres.data
+    //     .on('end', () => {
+    //       console.log('Done downloading file.');
+    //       console.log(dataToSend);
+    //       res.send(dataToSend);
+    //     })  
+    //     .on('error', err => {
+    //       console.error('Error downloading file.');
+    //     })  
+    //     .on('data', d => {
+    //       dataToSend = d;
+    //     })  
+    // }); 
+
+  }
+}
+
+
+
+module.exports = { getListFiles, createFile, getToken, getFileData, updateExistingFile };
