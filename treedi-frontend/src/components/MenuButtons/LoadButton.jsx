@@ -15,7 +15,6 @@ const LoadButton = (pickerCode) => {
 	const developerKey = process.env.REACT_APP_DEVELOPER_KEY;
 
 	// if changing to "let", it work, but not getting the information
-	let TOKEN = null;
 
 	useEffect(() => {
 		if (data) {
@@ -41,14 +40,16 @@ const LoadButton = (pickerCode) => {
 			console.log(`error - GetFile - ${error}`);
 		}
 	};
-
 	// WHY SAVED LOCAL STORAGE ?
 	const handleOpenPicker = async function() {
+		let TOKEN;
 		console.log("PICKER CODE:", pickerCode);
 		try {
 			const res = await axios.get("http://localhost:5001/api/googleDrive/getToken/?code=" + pickerCode);
+			console.log(res);
 			console.log(" Data:", res.data);
 			TOKEN = res.data;
+			console.log(TOKEN);
 			if (res.ok) {
 				console.log("OK");
 			}

@@ -630,6 +630,7 @@ const TreediDraw = (props) => {
 			let params = new URL(document.location).searchParams;
 			let code = params.get("code");
 			let fileid = localStorage.getItem("fileId");
+			console.log(code);
 			const res = await axios.post("http://localhost:5001/api/googleDrive/save/?code=" + code, {
 				data: {
 					fileData: FileData,
