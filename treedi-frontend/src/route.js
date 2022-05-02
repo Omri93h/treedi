@@ -1,8 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import React, { useState } from "react";
-import WelcomePage from './WelcomePage'
-import App from './App'
-import TreediDraw from './TreediDraw'
+import WelcomePage from './WelcomePage';
+import App from './App';
+import TreediDraw from './TreediDraw';
 
 function Routing() {
   const [loginData, setLoginData] = useState(localStorage.getItem('loginData') ? JSON.parse(localStorage.getItem('loginData')) : null)

@@ -628,7 +628,7 @@ const TreediDraw = (props) => {
 			const res = await axios.post("http://localhost:5001/api/googleDrive/save/?code=" + code, {
 				data: {
 					fileData: FileData,
-					fileId,fileid 					
+					fileId: fileid 					
 				},
 			});
 			console.log(res);
@@ -658,7 +658,7 @@ const TreediDraw = (props) => {
 	return (
 		<div>
 			<TreediMenuBar
-				userImage={user["img"]}
+				user={user}
 				setColor={setColor}
 				setTool={setTool}
 				color={color}

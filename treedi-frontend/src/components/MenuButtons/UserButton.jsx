@@ -7,7 +7,7 @@ import "../../App.css";
 
 const UserButton = ({ userImage }) => {
 	const userImageElement = (
-		<img src={userImage} style={{ height: "40px", width: "40px", borderRadius: "100%" }} referrerpolicy='no-referrer' />
+		<img src={userImage} style={{ height: "40px", width: "40px", borderRadius: "100%" }} referrerPolicy='no-referrer' />
 	);
 
 	const [anchorEl, setAnchorEl] = useState(null);
