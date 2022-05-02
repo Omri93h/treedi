@@ -362,7 +362,7 @@ const TreediDraw = (props) => {
 	const saveLocal = () => {
 		var canvas = document.querySelector("canvas");
 		var dataURL = canvas.toDataURL("image/png", 1.0);
-		data_format.FileName = "FILENAME";
+		data_format.FileName = projectName;
 		data_format.LastModified = "DATE";
 		data_format.Owner = "GOOGLE_USER";
 		data_format.Screens.push({ Image: dataURL, LastModified: "DATE" });
@@ -606,7 +606,7 @@ const TreediDraw = (props) => {
 	const JonisaveLocal = () => {
 		var canvas = document.querySelector("canvas");
 		var dataURL = canvas.toDataURL("image/png", 1.0);
-		data_format.FileName = "FILENAME";
+		data_format.FileName = projectName;
 		data_format.LastModified = "DATE";
 		data_format.Owner = "GOOGLE_USER";
 		data_format.Screens.push({ Image: dataURL, LastModified: "DATE" });

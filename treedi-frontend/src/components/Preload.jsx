@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Modal, Button, Box, TextField } from "@mui/material";
 
-const style = {
+const boxStyle = {
 	position: "absolute",
 	height: "200px",
 	top: "50%",
@@ -28,9 +28,9 @@ const Preload = ({ projectName, setProjectName }) => {
 	return (
 		<div>
 			<Modal open={preload} aria-labelledby='modal-modal-title' aria-describedby='modal-modal-description'>
-				<Box sx={style}>
+				<Box sx={boxStyle}>
 					{!isNewProject ? (
-						<Box sx={style}>
+						<Box sx={boxStyle}>
 							<Button onClick={() => setIsNewProject(true)} size='large' variant='outlined'>
 								New Project
 							</Button>
