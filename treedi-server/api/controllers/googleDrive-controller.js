@@ -1,7 +1,6 @@
 const fs = require('fs');
 const { google } = require('googleapis');
-const LocalStorage = require('node-localstorage').LocalStorage,
-  localStorage = new LocalStorage('./scratch')
+var async = require("async");
 require('dotenv').config();
 const SCOPES = ['https://www.googleapis.com/auth/drive'];
 const TOKEN_PATH = 'token.json';
@@ -115,12 +114,11 @@ function readListFromDrive(oAuth2Client, res) {
 async function createFile(req, res) {
   authAndRunCallback(req, res, (oAuth2Client, res) => {
     const fileID = req.body.data["fileId"];
-    console.log("Line 117",fileID);
-    if(typeof fileID !== 'undefined')
-    {
+    console.log("Line 117", fileID);
+    if (typeof fileID !== 'undefined') {
       updateFile(oAuth2Client, res, req);
     }
-    else{
+    else {
       createNewFile(oAuth2Client, res, req)
     }
   });
@@ -129,30 +127,31 @@ async function createFile(req, res) {
 async function createNewFile(oAuth2Client, res, req) {
   const filePath = req.body.data["fileData"];
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
-    drive.files.create({
-      requestBody: {
-        name: 'Temp',
-        mimeType: 'text/plain.trdi'
-      },
-      media: {
-        mimeType: 'text/plain',
-        body: filePath
-      }}, (err, response) => {
-      if (err){
-        return console.log('The API returned an error: ' + err);
-      }
-      console.log("response", response);
-      console.log("responseID", response.data.id);
-      if (response.data.id) {
-        console.log('The ID of the create file is :' , response.data.id);
-        res.send(response.data.id);
-  
-      } else {
-        console.log('Couldnt Create the file.');
-      }
-    });
-  
-  }
+  drive.files.create({
+    requestBody: {
+      name: 'Temp',
+      mimeType: 'text/plain.trdi'
+    },
+    media: {
+      mimeType: 'text/plain',
+      body: filePath
+    }
+  }, (err, response) => {
+    if (err) {
+      return console.log('The API returned an error: ' + err);
+    }
+    console.log("response", response);
+    console.log("responseID", response.data.id);
+    if (response.data.id) {
+      console.log('The ID of the create file is :', response.data.id);
+      res.send(response.data.id);
+
+    } else {
+      console.log('Couldnt Create the file.');
+    }
+  });
+
+}
 
 
 function updateFile(oAuth2Client, res, req) {
@@ -160,22 +159,66 @@ function updateFile(oAuth2Client, res, req) {
   const fileId = req.body.data["fileId"];
   console.log(fileId);
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
-  
+
   drive.files.update({
     fileId: fileId,
     media: {
       mimeType: 'text/plain',
       body: filePath
-    }}, (err, file) => {
+    }
+  }, (err, file) => {
     if (err) {
       return console.log('The API returned an error: ' + err);
     } else {
-      console.log('The File with the ID:', fileId,'Was updated');
+      console.log('The File with the ID:', fileId, 'Was updated');
       res.send(fileId);
     }
   });
 }
 
 
+async function shareFile(req, res) {
+  authAndRunCallback(req, res, (oAuth2Client, res) => {
+    shareFileWith(oAuth2Client, res, req)
+  });
+}
 
-module.exports = { getListFiles, createFile, getToken, getFileData, updateFile };
+
+function shareFileWith(oAuth2Client, res, req) {
+  var fileId = '14tFVAlJcfeWAu_CrV3efR5WPYKA5n4JF';
+  var permissions = [
+    {
+      'type': 'user',
+      'role': 'writer',
+      'emailAddress': 'Omri93h@gmail.com'
+    },
+  ];
+  // Using the NPM module 'async'
+  const drive = google.drive({ version: 'v3', auth: oAuth2Client });
+  async.eachSeries(permissions, function (permission, permissionCallback) {
+    drive.permissions.create({
+      resource: permission,
+      fileId: fileId,
+      fields: 'id',
+    }, function (err, res) {
+      if (err) {
+        // Handle error...
+        console.error(err);
+        permissionCallback(err);
+      } else {
+        console.log('Permission ID: ', res.id)
+        permissionCallback();
+      }
+    });
+  }, function (err) {
+    if (err) {
+      // Handle error
+      console.error(err);
+    } else {
+      // All permissions inserted
+    }
+  });
+}
+
+
+module.exports = { getListFiles, createFile, getToken, getFileData, updateFile,shareFile };
