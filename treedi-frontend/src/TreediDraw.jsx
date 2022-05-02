@@ -618,23 +618,23 @@ const TreediDraw = (props) => {
 		link.download = filename;
 		link.href = url;
 		Jonisave();
-		// console.log("URL1 IS :", Url1);
-		// console.log( link.href.slice(5));
-		//console.log(link);
-		// link.click();
 	};
 
 	const Jonisave = async function() {
 		try {
 			let params = new URL(document.location).searchParams;
 			let code = params.get("code");
+			let fileid = localStorage.getItem("fileId");
 			const res = await axios.post("http://localhost:5001/api/googleDrive/save/?code=" + code, {
 				data: {
-					Url: FileData, // This is the body part
+					fileData: FileData,
+					fileId,fileid 					
 				},
 			});
 			console.log(res);
-			if (res.ok) {
+			console.log(res.data)
+			if (res.status ==200) {
+				localStorage.setItem("fileId", res.data);
 				console.log("OK");
 			}
 		} catch (error) {
