@@ -35,13 +35,14 @@ const fs = require('fs');
     
       // Check if we have previously stored a token.
       fs.readFile(TOKEN_PATH, (err, token) => {
-        if (err) {
+        // if (err) 
+        // {
           console.log(err)
           return getAccessToken(oAuth2Client, callback);
-        }
-        console.log("token: " + token)
-        oAuth2Client.setCredentials(JSON.parse(token));
-        callback(oAuth2Client.generateAuthUrl());
+        // }
+        // console.log("token: " + token)
+        // oAuth2Client.setCredentials(JSON.parse(token));
+        // callback(oAuth2Client.generateAuthUrl());
       });
     }
     

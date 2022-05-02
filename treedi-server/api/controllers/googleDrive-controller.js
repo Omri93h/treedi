@@ -114,121 +114,68 @@ function readListFromDrive(oAuth2Client, res) {
 
 async function createFile(req, res) {
   authAndRunCallback(req, res, (oAuth2Client, res) => {
-    createNewFile(oAuth2Client, res, req)
+    const fileID = req.body.data["fileId"];
+    console.log("Line 117",fileID);
+    if(typeof fileID !== 'undefined')
+    {
+      updateFile(oAuth2Client, res, req);
+    }
+    else{
+      createNewFile(oAuth2Client, res, req)
+    }
   });
 }
 
 async function createNewFile(oAuth2Client, res, req) {
   const filePath = req.body.data["fileData"];
-  const fileID = req.body.data["fileId"];
-  console.log(fileID);
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
-  
-  
-  
-  drive.files.create({
-    requestBody: {
-      name: 'Temp',
-      mimeType: 'text/plain.trdi'
-    },
-    media: {
-      mimeType: 'text/plain',
-      body: filePath
-    }}, (err, response) => {
-    if (err)
-      return console.log('The API returned an error: ' + err);
-    console.log("response", response);
-    console.log("responseID", response.data.id);
-    if (response.data.id) {
+    drive.files.create({
+      requestBody: {
+        name: 'Temp',
+        mimeType: 'text/plain.trdi'
+      },
+      media: {
+        mimeType: 'text/plain',
+        body: filePath
+      }}, (err, response) => {
+      if (err){
+        return console.log('The API returned an error: ' + err);
+      }
+      console.log("response", response);
+      console.log("responseID", response.data.id);
+      if (response.data.id) {
         console.log('The ID of the create file is :' , response.data.id);
-      res.send(response.data.id);
-
-    } else {
-      console.log('Couldnt Create the file.');
-    }
-  });
-
-//   drive.files.create({
-//     requestBody: {
-//       name: 'Temp',
-//       mimeType: 'text/plain.trdi'
-//     },
-//     media: {
-//       mimeType: 'text/plain',
-//       body: filePath
-//     }
-//   },(err, response) => {
-//     if (err)
-//       return console.log('The API returned an error: ' + err);
-//     console.log("response", response);
-//     const files = response.data.files;
-//   res.send(200);
-// }
-}
-
-async function updateExistingFile(req, res) {
-  authAndRunCallback(req, res, (oAuth2Client, res) => {
-    updateFile(oAuth2Client, res, req)
-  });
-}
+        res.send(response.data.id);
+  
+      } else {
+        console.log('Couldnt Create the file.');
+      }
+    });
+  
+  }
 
 
 function updateFile(oAuth2Client, res, req) {
-  const fileId = req.body.data["ID"];
-
-  const url = 'https://www.googleapis.com/upload/drive/v3/files/' + fileId + '?uploadType=media';
-  if (self.fetch) {
-    //var setHeaders = new Headers();
-    //setHeaders.append('Authorization', 'Bearer ' + authToken.access_token);
-    //setHeaders.append('Content-Type', mime);
-
-    var setOptions = {
-      method: 'PATCH',
-      //headers: setHeaders,
-      body: data
-    };
-    fetch(url, setOptions)
-      .then(response => {
-        if (response.ok) {
-          console.log("save to drive");
-        }
-        else {
-          console.log("Response wast not ok");
-        }
-      })
-      .catch(error => {
-        console.log("There is an error " + error.message);
-      });
-
-
-
-
-
-
-    // const fileId = req.body.data.fileid;
-    // const drive = google.drive({ version: 'v3', auth: oAuth2Client });
-    // let dataToSend;
-    // drive.files.get(
-    //   { fileId, alt: 'media' },
-    //   { responseType: 'stream' }
-    // ).then(localres => {
-    //   localres.data
-    //     .on('end', () => {
-    //       console.log('Done downloading file.');
-    //       console.log(dataToSend);
-    //       res.send(dataToSend);
-    //     })  
-    //     .on('error', err => {
-    //       console.error('Error downloading file.');
-    //     })  
-    //     .on('data', d => {
-    //       dataToSend = d;
-    //     })  
-    // }); 
-
-  }
+  const filePath = req.body.data["fileData"];
+  const fileId = req.body.data["fileId"];
+  console.log(fileId);
+  const drive = google.drive({ version: 'v3', auth: oAuth2Client });
+  
+  drive.files.update({
+    fileId: fileId,
+    media: {
+      mimeType: 'text/plain',
+      body: filePath
+    }}, (err, file) => {
+    if (err) {
+      return console.log('The API returned an error: ' + err);
+    } else {
+      console.log('The File with the ID:', fileId,'Was updated');
+      res.send(fileId);
+    }
+  });
 }
 
 
 
-module.exports = { getListFiles, createFile, getToken, getFileData, updateExistingFile };
+module.exports = { getListFiles, createFile, getToken, getFileData, updateFile };
