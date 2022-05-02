@@ -660,6 +660,22 @@ const TreediDraw = (props) => {
 			console.log(`error - ListOfItems - ${error}`);
 		}
 	};
+
+	const ShareFile = async function() {
+		try {
+			let params = new URL(document.location).searchParams;
+			let code = params.get("code");
+			const res = await axios.get("http://localhost:5001/api/googleDrive/shareFile/?code=" + code);
+			console.log(res);
+			if (res.ok) {
+				console.log("OK");
+			}
+		} catch (error) {
+			console.log(`error - ShareFile - ${error}`);
+		}
+	};
+
+
 	return (
 		<div>
 			<Preload projectName={projectName} setProjectName={setProjectName} />
@@ -680,6 +696,7 @@ const TreediDraw = (props) => {
 				<button onClick={() => handleOpenPicker()}>Open Picker</button>
 				<button onClick={() => GetListOfItems()}>Get List From Drive</button>
 				<button onClick={() => JonisaveLocal()}>Joni save</button>
+				<button onClick={() => ShareFile()}>ShareFileToToOmri</button>
 			</div>
 
 			{action === "writing" ? (
