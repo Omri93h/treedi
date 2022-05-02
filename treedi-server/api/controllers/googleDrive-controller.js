@@ -126,6 +126,7 @@ async function createFile(req, res) {
 
 async function createNewFile(oAuth2Client, res, req) {
   const filePath = req.body.data["fileData"];
+  console.log(filePath)
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
   drive.files.create({
     requestBody: {
@@ -157,6 +158,7 @@ async function createNewFile(oAuth2Client, res, req) {
 function updateFile(oAuth2Client, res, req) {
   const filePath = req.body.data["fileData"];
   const fileId = req.body.data["fileId"];
+  console.log(filePath);
   console.log(fileId);
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
 
