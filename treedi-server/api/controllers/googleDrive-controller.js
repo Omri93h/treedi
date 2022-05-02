@@ -67,14 +67,15 @@ function getData(oAuth2Client, res, req) {
     localres.data
       .on('end', () => {
         console.log('Done downloading file.');
-        console.log(dataToSend);
+        //console.log(dataToSend);
         res.send(dataToSend);
       })
       .on('error', err => {
         console.error('Error downloading file.');
       })
       .on('data', d => {
-        dataToSend = d;
+        dataToSend = new Buffer.from(d).toString();
+        console.log(console.log(new Buffer.from(d).toString()));
       })
   });
 
