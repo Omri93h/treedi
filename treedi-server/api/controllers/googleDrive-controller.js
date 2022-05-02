@@ -75,7 +75,7 @@ function getData(oAuth2Client, res, req) {
       })
       .on('data', d => {
         dataToSend = new Buffer.from(d).toString();
-        console.log(console.log(new Buffer.from(d).toString()));
+        console.log(new Buffer.from(d).toString());
       })
   });
 
