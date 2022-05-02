@@ -573,7 +573,7 @@ const TreediDraw = (props) => {
 	useEffect(() => {
 		if (data) {
 			console.log(data.docs[0].id);
-			localStorage.setItem("fileId", data.docs[0].id);
+			//localStorage.setItem("fileId", data.docs[0].id);
 			GetFileData(data.docs[0].id);
 		}
 	}, [data]);
@@ -587,9 +587,6 @@ const TreediDraw = (props) => {
 
 	useEffect(() => {
 		let iframe = document.getElementsByClassName("save-to-drive-button jfk-button jfk-button-standard jfk-button-rtl");
-
-		console.log(iframe);
-		console.log(typeof iframe);
 	}, []);
 
 	useEffect(() => {
@@ -625,22 +622,24 @@ const TreediDraw = (props) => {
 			let params = new URL(document.location).searchParams;
 			let code = params.get("code");
 			let fileid = localStorage.getItem("fileId");
+			console.log("fileID is: ", fileid);
 			const res = await axios.post("http://localhost:5001/api/googleDrive/save/?code=" + code, {
 				data: {
 					fileData: FileData,
-					fileId: fileid 					
+					fileId:fileid				
 				},
 			});
 			console.log(res);
-			console.log(res.data)
+			console.log("The res Data is:",res.data);
 			if (res.status ==200) {
+				console.log("The File ID after created",res.data);
 				localStorage.setItem("fileId", res.data);
-				console.log("OK");
 			}
 		} catch (error) {
 			console.log(`error - Save - ${error}`);
 		}
 	};
+
 
 	const GetListOfItems = async function() {
 		try {
