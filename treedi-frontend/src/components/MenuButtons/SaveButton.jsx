@@ -36,7 +36,6 @@ const SaveButton = ({ fileName }) => {
 	const Jonisave = async function(data) {
 		try {
 			let params = new URL(document.location).searchParams;
-
 			let code = params.get("code");
 			console.log("CODE:", code);
 			console.log(data)

@@ -25,6 +25,8 @@ const LoadButton = (pickerCode) => {
 	}, [data]);
 
 	const GetFileData = async function(fileID) {
+		let params = new URL(document.location).searchParams;
+		let code = params.get("code");
 		try {
 			const res = await axios
 				.post("http://localhost:5001/api/googleDrive/getFileData/?code=" + pickerCode, {
@@ -43,9 +45,11 @@ const LoadButton = (pickerCode) => {
 	// WHY SAVED LOCAL STORAGE ?
 	const handleOpenPicker = async function() {
 		let TOKEN;
-		console.log("PICKER CODE:", pickerCode);
+		let params = new URL(document.location).searchParams;
+		let code = params.get("code");
+		console.log("PICKER CODE:", code);
 		try {
-			const res = await axios.get("http://localhost:5001/api/googleDrive/getToken/?code=" + pickerCode);
+			const res = await axios.get("http://localhost:5001/api/googleDrive/getToken/?code=" + code);
 			console.log(res);
 			console.log(" Data:", res.data);
 			TOKEN = res.data;
