@@ -8,7 +8,7 @@ import data_format from "../../utils/DataFormat";
 
 import "../../App.css";
 
-const LoadButton = (pickerCode) => {
+const LoadButton = () => {
 	const [openPicker, data] = useDrivePicker();
 
 	const clientId = process.env.REACT_APP_CLIENT_ID;
@@ -28,16 +28,15 @@ const LoadButton = (pickerCode) => {
 		let params = new URL(document.location).searchParams;
 		let code = params.get("code");
 		try {
-			const res = await axios
-				.post("http://localhost:5001/api/googleDrive/getFileData/?code=" + pickerCode, {
+			const res = await axios.post("http://localhost:5001/api/googleDrive/getFileData/?code=" + code, {
 					data: {
-						fileid: fileID, // This is the body part
-					},
+						fileid: fileID
+					}
 				})
-				.then((response) => {
-					console.log("response : ", response);
+				.then((res) => {
+					console.log("response : ", res);
+					console.log("response.data : ", JSON.stringify(res.data));
 				});
-			console.log("RES:", res);
 		} catch (error) {
 			console.log(`error - GetFile - ${error}`);
 		}
