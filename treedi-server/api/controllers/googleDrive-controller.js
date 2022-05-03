@@ -59,25 +59,27 @@ async function getFileData(req, res) {
 function getData(oAuth2Client, res, req) {
   const fileId = req.body.data.fileid;
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
-  let dataToSend;
   drive.files.get(
-    { fileId, alt: 'media' },
-    { responseType: 'stream' }
-  ).then(localres => {
-    localres.data
-      .on('end', () => {
-        console.log('Done downloading file.');
-        //console.log(dataToSend);
+    {fileId: fileId, alt: "media",},
+    {responseType: "stream"},
+    (err, { data }) => {
+      if (err) {
+        console.log(err);
+        return;
+      }
+      let buf = [];
+      data.on("data", (e) => buf.push(e));
+      data.on("end", () => {
+        console.log(buf);
+        const buffer = Buffer.concat(buf);
+        let dataToSend=new Buffer.from(buffer).toString();
+        console.log(buffer);
         res.send(dataToSend);
-      })
-      .on('error', err => {
-        console.error('Error downloading file.');
-      })
-      .on('data', d => {
-        dataToSend = new Buffer.from(d).toString();
-        console.log(new Buffer.from(d).toString());
-      })
-  });
+      });
+    }
+  );
+
+
 
 }
 
