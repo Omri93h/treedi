@@ -4,17 +4,13 @@ import Button from "@mui/material/Button";
 import useDrivePicker from "react-google-drive-picker";
 import { default as LoadIcon } from "@mui/icons-material/CloudUpload";
 
-import data_format from "../../utils/DataFormat";
 
 import "../../App.css";
 
 const LoadButton = () => {
 	const [openPicker, data] = useDrivePicker();
-
 	const clientId = process.env.REACT_APP_CLIENT_ID;
 	const developerKey = process.env.REACT_APP_DEVELOPER_KEY;
-
-	// if changing to "let", it work, but not getting the information
 
 	useEffect(() => {
 		if (data) {
