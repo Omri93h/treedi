@@ -73,7 +73,6 @@ function getData(oAuth2Client, res, req) {
         console.log(buf);
         const buffer = Buffer.concat(buf);
         let dataToSend=new Buffer.from(buffer).toString();
-        console.log(buffer);
         res.send(dataToSend);
       });
     }
@@ -118,7 +117,7 @@ async function createFile(req, res) {
   authAndRunCallback(req, res, (oAuth2Client, res) => {
     const fileID = req.body.data["fileId"];
     console.log("Line 117", fileID);
-    if (typeof fileID !== 'undefined') {
+    if (fileID !== 'undefined') {
       updateFile(oAuth2Client, res, req);
     }
     else {
@@ -129,7 +128,7 @@ async function createFile(req, res) {
 
 async function createNewFile(oAuth2Client, res, req) {
   const filePath = req.body.data["fileData"];
-  console.log(filePath)
+  //console.log(filePath)
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
   drive.files.create({
     requestBody: {
@@ -144,7 +143,7 @@ async function createNewFile(oAuth2Client, res, req) {
     if (err) {
       return console.log('The API returned an error: ' + err);
     }
-    console.log("response", response);
+    //console.log("response", response);
     console.log("responseID", response.data.id);
     if (response.data.id) {
       console.log('The ID of the create file is :', response.data.id);
@@ -157,11 +156,10 @@ async function createNewFile(oAuth2Client, res, req) {
 
 }
 
-
 function updateFile(oAuth2Client, res, req) {
   const filePath = req.body.data["fileData"];
   const fileId = req.body.data["fileId"];
-  console.log(filePath);
+  //console.log(filePath);
   console.log(fileId);
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
 
@@ -181,7 +179,6 @@ function updateFile(oAuth2Client, res, req) {
   });
 }
 
-
 async function shareFile(req, res) {
   authAndRunCallback(req, res, (oAuth2Client, res) => {
     shareFileWith(oAuth2Client, res, req)
@@ -198,7 +195,6 @@ function shareFileWith(oAuth2Client, res, req) {
       'emailAddress': 'Omri93h@gmail.com'
     },
   ];
-  // Using the NPM module 'async'
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
   async.eachSeries(permissions, function (permission, permissionCallback) {
     drive.permissions.create({
@@ -207,7 +203,6 @@ function shareFileWith(oAuth2Client, res, req) {
       fields: 'id',
     }, function (err, res) {
       if (err) {
-        // Handle error...
         console.error(err);
         permissionCallback(err);
       } else {
