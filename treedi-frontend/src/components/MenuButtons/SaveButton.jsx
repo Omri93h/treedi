@@ -9,7 +9,6 @@ import data_format from "../../utils/DataFormat";
 import "../../App.css";
 
 const SaveButton = ({ fileName }) => {
-	const [FileData, setFileData] = useState(null);
 
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
@@ -39,7 +38,7 @@ const SaveButton = ({ fileName }) => {
 			let code = params.get("code");
 			let fileid = localStorage.getItem("fileId");
 			console.log("CODE:", code);
-			console.log(data)
+			console.log(data);
 			await axios
 				.post("http://localhost:5001/api/googleDrive/save/?code=" + code, {
 					data: {
@@ -52,9 +51,6 @@ const SaveButton = ({ fileName }) => {
 			console.log(`error - Save - ${error}`);
 		}
 	};
-
-	fileName = '"' + fileName + '"';
-	// fileName = false;
 
 	return (
 		<>

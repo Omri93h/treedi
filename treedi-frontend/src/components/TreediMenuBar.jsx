@@ -6,7 +6,6 @@ import { default as UndoIcon } from "@mui/icons-material/UndoRounded";
 import { default as RedoIcon } from "@mui/icons-material/RedoRounded";
 import { default as ShareIcon } from "@mui/icons-material/ShareRounded";
 
-
 import UserButton from "./MenuButtons/UserButton";
 import SaveButton from "./MenuButtons/SaveButton";
 
@@ -27,7 +26,8 @@ const TreediMenuBarStyle = {
 	borderRadius: "25px",
 };
 
-const TreediMenuBar = ({ user, pickerCode, setTool, color, setColor, undo, redo }) => {
+const TreediMenuBar = ({ user, setTool, color, setColor, undo, redo, clear, setElements }) => {
+
 	return (
 		<div style={{ display: "flex" }}>
 			<div
@@ -39,24 +39,24 @@ const TreediMenuBar = ({ user, pickerCode, setTool, color, setColor, undo, redo 
 					verticalAlign: "middle",
 					textAlign: "center",
 				}}>
-				<UserButton userImage={user['img']} />
+				<UserButton userImage={user["img"]} />
 			</div>
 			<div style={TreediMenuBarStyle}>
 				<ToolSelection setTool={setTool} />
 
 				<ColorSelection color={color} setColor={setColor} />
 
-				<Button className='basic-button'>
-					<UndoIcon className='menu-item' onClick={undo} />
+				<Button className='basic-button' onClick={undo}>
+					<UndoIcon className='menu-item' />
 				</Button>
 
-				<Button className='basic-button'>
-					<RedoIcon className='menu-item' onClick={redo} />
+				<Button className='basic-button' onClick={redo}>
+					<RedoIcon className='menu-item' />
 				</Button>
 
-				<SaveButton fileName={'Untitled'} />
+				<SaveButton fileName={"Untitled"} />
 
-				<LoadButton pickerCode={pickerCode}/>
+				<LoadButton clear={clear} setElements={setElements}/>
 
 				<Button className='basic-button'>
 					<ShareIcon className='menu-item' />

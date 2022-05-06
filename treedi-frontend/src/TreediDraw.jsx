@@ -130,10 +130,14 @@ const useHistory = (initialState) => {
 			setIndex((prevState) => prevState + 1);
 		}
 	};
-
+	const clearElements = () => {
+		console.log('clearing elements')
+		setIndex(0);
+		setHistory([[]])
+	}
 	const undo = () => index > 0 && setIndex((prevState) => prevState - 1);
 	const redo = () => index < history.length - 1 && setIndex((prevState) => prevState + 1);
-	return [history[index], setState, undo, redo];
+	return [history[index], setState, undo, redo, clearElements];
 };
 
 const getSvgPathFromStroke = (stroke) => {
@@ -157,7 +161,7 @@ const adjustmentRequired = (type) => ["line", "rectangle"].includes(type);
 /////////////////////////////////////
 
 const TreediDraw = (props) => {
-	const [projectName, setProjectName] = useState('');
+	const [projectName, setProjectName] = useState("");
 
 	const [user, setUser] = useState({
 		name: localStorage.getItem("TreediUserName"),
@@ -169,8 +173,9 @@ const TreediDraw = (props) => {
 
 	////////
 
-	const [elements, setElements, undo, redo] = useHistory([]);
+	const [elements, setElements, undo, redo, clearElements] = useHistory([]);
 	const [elementToMove, setElementToMove] = useState(null);
+
 
 	useEffect(() => {
 		if (elementToMove !== null) {
@@ -188,7 +193,7 @@ const TreediDraw = (props) => {
 		}
 	}, [elementToMove]);
 
-	const createElement = (id, x1, y1, x2, y2, type, elem_color, display) => {
+	const createElement = (id, x1, y1, x2, y2, type, elem_color) => {
 		console.log("x1:" + x1 + "\nx2:" + x2 + "\ny1:" + y1 + "\ny2:" + y2);
 		switch (type) {
 			case "line":
@@ -197,11 +202,11 @@ const TreediDraw = (props) => {
 					type === "line"
 						? generator.line(x1, y1, x2, y2, { stroke: color })
 						: generator.rectangle(x1, y1, x2 - x1, y2 - y1, { stroke: color });
-				return { id, x1, y1, x2, y2, type, roughElement, elem_color, display };
+				return { id, x1, y1, x2, y2, type, roughElement, elem_color };
 			case "pencil":
-				return { id, type, points: [{ x: x1, y: y1 }], elem_color, display };
+				return { id, type, points: [{ x: x1, y: y1 }], elem_color };
 			case "text":
-				return { id, type, x1, y1, x2, y2, text: "", elem_color, display };
+				return { id, type, x1, y1, x2, y2, text: "", elem_color };
 			default:
 				throw new Error(`Type not recognised: ${type}`);
 		}
@@ -235,12 +240,19 @@ const TreediDraw = (props) => {
 				context.font = "24px sans-serif";
 				context.fillText(element.text, element.x1, element.y1);
 				break;
+			case "base64":
+				console.log(element)
+				break;
 			default:
 				throw new Error(`Type not recognised: ${element.type}`);
 		}
 	};
 
 	useLayoutEffect(() => {
+		if (!elements) {
+			console.log('zero elements')
+			return;
+		}
 		const canvas = document.getElementById("canvas");
 		const context = canvas.getContext("2d");
 		context.clearRect(0, 0, canvas.width, canvas.height);
@@ -250,6 +262,7 @@ const TreediDraw = (props) => {
 				return;
 			}
 			drawElement(roughCanvas, context, element);
+			console.log('elemnt drawed')
 		});
 	}, [elements, action, selectedElement]);
 
@@ -290,10 +303,7 @@ const TreediDraw = (props) => {
 				elementsCopy[id].points = [...elementsCopy[id].points, { x: x2, y: y2 }];
 				break;
 			case "text":
-				const textWidth = document
-					.getElementById("canvas")
-					.getContext("2d")
-					.measureText(options.text).width;
+				const textWidth = document.getElementById("canvas").getContext("2d").measureText(options.text).width;
 				const textHeight = 24;
 				elementsCopy[id] = {
 					...createElement(id, x1, y1, x1 + textWidth, y1 + textHeight, type),
@@ -308,7 +318,7 @@ const TreediDraw = (props) => {
 	};
 
 	Pressure.set("canvas", {
-		change: function(force, event) {
+		change: function (force, event) {
 			if (force > currMaxPressureValue) {
 				setCurrMaxPressureValue(force);
 			}
@@ -393,7 +403,7 @@ const TreediDraw = (props) => {
 				// console.log(parsed)
 				let image = new Image();
 				// var images = new Array();
-				image.onload = function() {
+				image.onload = function () {
 					var canvas = document.querySelector("canvas");
 					const ctx = canvas.getContext("2d");
 					ctx.globalAlpha = 1;
@@ -528,7 +538,7 @@ const TreediDraw = (props) => {
 	const clientId = process.env.REACT_APP_CLIENT_ID;
 	const developerKey = process.env.REACT_APP_DEVELOPER_KEY;
 	//const TOKEN = process.env.REACT_APP_ACCESS_TOKEN;
-	const GetToken = async function() {
+	const GetToken = async function () {
 		let params = new URL(document.location).searchParams;
 		let code = params.get("code");
 		try {
@@ -543,7 +553,7 @@ const TreediDraw = (props) => {
 		}
 	};
 
-	const GetFileData = async function(fileID) {
+	const GetFileData = async function (fileID) {
 		try {
 			let params = new URL(document.location).searchParams;
 			let code = params.get("code");
@@ -625,7 +635,7 @@ const TreediDraw = (props) => {
 		Jonisave();
 	};
 
-	const Jonisave = async function() {
+	const Jonisave = async function () {
 		try {
 			let params = new URL(document.location).searchParams;
 			let code = params.get("code");
@@ -648,7 +658,7 @@ const TreediDraw = (props) => {
 		}
 	};
 
-	const GetListOfItems = async function() {
+	const GetListOfItems = async function () {
 		try {
 			let params = new URL(document.location).searchParams;
 			let code = params.get("code");
@@ -662,7 +672,7 @@ const TreediDraw = (props) => {
 		}
 	};
 
-	const ShareFile = async function() {
+	const ShareFile = async function () {
 		try {
 			let params = new URL(document.location).searchParams;
 			let code = params.get("code");
@@ -677,11 +687,25 @@ const TreediDraw = (props) => {
 	};
 
 
+
 	return (
 		<div>
 			<Preload projectName={projectName} setProjectName={setProjectName} />
 
-			<TreediMenuBar user={user} setColor={setColor} setTool={setTool} color={color} undo={undo} redo={redo} />
+			<button onClick={() => clearElements()}>clear elements</button>	
+
+			<TreediMenuBar
+				user={user}
+				setTool={setTool}
+				color={color}
+				setColor={setColor}
+				undo={undo}
+				redo={redo}
+				clear={clearElements}
+				setElements={setElements}
+
+				// clearElements={clearElements}
+			/>
 
 			{pressureElement}
 

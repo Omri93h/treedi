@@ -116,19 +116,21 @@ function readListFromDrive(oAuth2Client, res) {
 async function createFile(req, res) {
   authAndRunCallback(req, res, (oAuth2Client, res) => {
     const fileID = req.body.data["fileId"];
+    console.log(req.body.data);
     console.log("Line 117", fileID);
-    if (fileID !== 'undefined') {
+    if (fileID !== 'undefined' && fileID !== null ) {
       updateFile(oAuth2Client, res, req);
     }
     else {
       createNewFile(oAuth2Client, res, req)
     }
-  });
+  }); 
 }
 
 async function createNewFile(oAuth2Client, res, req) {
+  console.log('HEREEEE');
   const filePath = req.body.data["fileData"];
-  //console.log(filePath)
+  console.log(filePath);
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
   drive.files.create({
     requestBody: {
@@ -157,8 +159,11 @@ async function createNewFile(oAuth2Client, res, req) {
 }
 
 function updateFile(oAuth2Client, res, req) {
+  console.log('HEREEEE - UOPDATEETEF');
+
   const filePath = req.body.data["fileData"];
   const fileId = req.body.data["fileId"];
+  console.log(fileId);
   //console.log(filePath);
   console.log(fileId);
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
