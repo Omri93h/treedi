@@ -25,13 +25,18 @@ const Preload = ({ projectName, setProjectName }) => {
 		setProjectName(event.target.value);
 	};
 
+	const delteLocalStorage = (event) => {
+		localStorage.removeItem("fileId");
+		setIsNewProject(true);
+	};
+
 	return (
 		<div>
 			<Modal open={preload} aria-labelledby='modal-modal-title' aria-describedby='modal-modal-description'>
 				<Box sx={boxStyle}>
 					{!isNewProject ? (
 						<Box sx={boxStyle}>
-							<Button onClick={() => setIsNewProject(true)} size='large' variant='outlined'>
+							<Button onClick={() => delteLocalStorage()} size='large' variant='outlined'>
 								New Project
 							</Button>
 							<Button onClick={() => setPreload(false)} size='large' variant='contained'>

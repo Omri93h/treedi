@@ -38,15 +38,15 @@ const SaveButton = ({ fileName, user }) => {
 			let code = params.get("code");
 			let fileid = localStorage.getItem("fileId");
 			console.log("CODE:", code);
-			console.log(data);
-			await axios
+			const response = await axios
 				.post("http://localhost:5001/api/googleDrive/save/?code=" + code, {
 					data: {
 						fileData: data,
 						fileId: fileid,
+						fileName: fileName,
 					},
 				})
-				.then((res) => console.log(res));
+				.then((res) => localStorage.setItem("fileId",res.data));
 		} catch (error) {
 			console.log(`error - Save - ${error}`);
 		}
