@@ -46,7 +46,7 @@ async function getToken(req, res) {
 }
 
 function sendTokenToClient(oAuth2Client, res) {
-  console.log(oAuth2Client.credentials.access_token)
+  //console.log(oAuth2Client.credentials.access_token)
   res.send(oAuth2Client.credentials.access_token);
 }
 
@@ -70,7 +70,7 @@ function getData(oAuth2Client, res, req) {
       let buf = [];
       data.on("data", (e) => buf.push(e));
       data.on("end", () => {
-        console.log(buf);
+        //console.log(buf);
         const buffer = Buffer.concat(buf);
         let dataToSend=new Buffer.from(buffer).toString();
         res.send(dataToSend);
@@ -116,7 +116,7 @@ function readListFromDrive(oAuth2Client, res) {
 async function createFile(req, res) {
   authAndRunCallback(req, res, (oAuth2Client, res) => {
     const fileID = req.body.data["fileId"];
-    console.log(req.body.data);
+    //console.log(req.body.data);
     console.log("Line 117", fileID);
     if (fileID !== 'undefined' && fileID !== null ) {
       updateFile(oAuth2Client, res, req);
@@ -130,11 +130,11 @@ async function createFile(req, res) {
 async function createNewFile(oAuth2Client, res, req) {
   console.log('HEREEEE\n' );
   const filePath = req.body.data["fileData"];
-  console.log(filePath);
+  const fileName = req.body.data["fileName"];
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
   drive.files.create({
     requestBody: {
-      name: 'Temp',
+      name: fileName,
       mimeType: 'text/plain.trdi'
     },
     media: {
@@ -165,7 +165,7 @@ function updateFile(oAuth2Client, res, req) {
   const fileId = req.body.data["fileId"];
   console.log(fileId);
   //console.log(filePath);
-  console.log(fileId);
+  //console.log(fileId);
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
 
   drive.files.update({
