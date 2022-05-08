@@ -241,7 +241,7 @@ const TreediDraw = (props) => {
 				context.fillText(element.text, element.x1, element.y1);
 				break;
 			case "base64":
-				console.log(element)
+				console.log('NEED TO DRAW BASE64 ELEMENT!')
 				break;
 			default:
 				throw new Error(`Type not recognised: ${element.type}`);
@@ -696,6 +696,7 @@ const TreediDraw = (props) => {
 
 			<TreediMenuBar
 				user={user}
+				projectName={projectName}
 				setTool={setTool}
 				color={color}
 				setColor={setColor}
@@ -703,6 +704,7 @@ const TreediDraw = (props) => {
 				redo={redo}
 				clear={clearElements}
 				setElements={setElements}
+			
 
 				// clearElements={clearElements}
 			/>

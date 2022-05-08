@@ -26,8 +26,7 @@ const TreediMenuBarStyle = {
 	borderRadius: "25px",
 };
 
-const TreediMenuBar = ({ user, setTool, color, setColor, undo, redo, clear, setElements }) => {
-
+const TreediMenuBar = ({ user, setTool, color, setColor, undo, redo, clear, setElements, projectName }) => {
 	return (
 		<div style={{ display: "flex" }}>
 			<div
@@ -54,9 +53,9 @@ const TreediMenuBar = ({ user, setTool, color, setColor, undo, redo, clear, setE
 					<RedoIcon className='menu-item' />
 				</Button>
 
-				<SaveButton fileName={"Untitled"} />
+				<SaveButton fileName={projectName} user={user} />
 
-				<LoadButton clear={clear} setElements={setElements}/>
+				<LoadButton clear={clear} setElements={setElements} />
 
 				<Button className='basic-button'>
 					<ShareIcon className='menu-item' />

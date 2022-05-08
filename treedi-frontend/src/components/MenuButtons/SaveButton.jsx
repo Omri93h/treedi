@@ -8,7 +8,7 @@ import { Divider } from "@mui/material";
 import data_format from "../../utils/DataFormat";
 import "../../App.css";
 
-const SaveButton = ({ fileName }) => {
+const SaveButton = ({ fileName, user }) => {
 
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
@@ -24,9 +24,9 @@ const SaveButton = ({ fileName }) => {
 		var canvas = document.querySelector("canvas");
 		var dataURL = canvas.toDataURL("image/png", 1.0);
 		data_format.FileName = fileName;
-		data_format.LastModified = "getDate";
-		data_format.Owner = "getUser";
-		data_format.Screens.push({ Image: dataURL, LastModified: "DATE" });
+		data_format.LastModified = new Date().toLocaleString();
+		data_format.Owner = user['name'];
+		data_format.Screens.push({ Image: dataURL, LastModified: new Date().toLocaleString() });
 		const data = JSON.stringify(data_format)
 		Jonisave(data);
 		handleClose();

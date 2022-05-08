@@ -128,7 +128,7 @@ async function createFile(req, res) {
 }
 
 async function createNewFile(oAuth2Client, res, req) {
-  console.log('HEREEEE');
+  console.log('HEREEEE\n' );
   const filePath = req.body.data["fileData"];
   console.log(filePath);
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
@@ -145,7 +145,7 @@ async function createNewFile(oAuth2Client, res, req) {
     if (err) {
       return console.log('The API returned an error: ' + err);
     }
-    //console.log("response", response);
+
     console.log("responseID", response.data.id);
     if (response.data.id) {
       console.log('The ID of the create file is :', response.data.id);
