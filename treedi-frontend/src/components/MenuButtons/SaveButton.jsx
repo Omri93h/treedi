@@ -6,10 +6,11 @@ import MenuItem from "@mui/material/MenuItem";
 import { default as SaveIcon } from "@mui/icons-material/SaveAltRounded";
 import { Divider } from "@mui/material";
 import data_format from "../../utils/DataFormat";
+import { toast } from "react-toastify";
+
 import "../../App.css";
 
 const SaveButton = ({ fileName, user }) => {
-
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
 
@@ -21,18 +22,27 @@ const SaveButton = ({ fileName, user }) => {
 	};
 
 	const handleSave = () => {
+		toast.info('Saving File ...', {
+			position: "bottom-left",
+			autoClose: 800,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+			});
 		var canvas = document.querySelector("canvas");
 		var dataURL = canvas.toDataURL("image/png", 1.0);
 		data_format.FileName = fileName;
 		data_format.LastModified = new Date().toLocaleString();
-		data_format.Owner = user['name'];
+		data_format.Owner = user["name"];
 		data_format.Screens.push({ Image: dataURL, LastModified: new Date().toLocaleString() });
-		const data = JSON.stringify(data_format)
+		const data = JSON.stringify(data_format);
 		Jonisave(data);
 		handleClose();
 	};
 
-	const Jonisave = async function(data) {
+	const Jonisave = async function (data) {
 		try {
 			let params = new URL(document.location).searchParams;
 			let code = params.get("code");
@@ -46,9 +56,40 @@ const SaveButton = ({ fileName, user }) => {
 						fileName: fileName,
 					},
 				})
-				.then((res) => localStorage.setItem("fileId",res.data));
+				.then((res) => {
+					localStorage.setItem("fileId", res.data);
+					if (res.status == 200) {
+						toast.success('Saved successfully', {
+							position: "bottom-left",
+							autoClose: 5000,
+							hideProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true,
+							draggable: true,
+							progress: undefined,
+							});
+					} else {
+						toast.error("Could not save file", {
+							position: "bottom-left",
+							autoClose: 5000,
+							hideProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true,
+							draggable: true,
+							progress: undefined,
+							});
+					}
+				});
 		} catch (error) {
-			console.log(`error - Save - ${error}`);
+			toast.error("Save error", {
+				position: "bottom-left",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+				});
 		}
 	};
 
@@ -83,6 +124,7 @@ const SaveButton = ({ fileName, user }) => {
 					Save As ..
 				</MenuItem>
 			</Menu>
+
 		</>
 	);
 };

@@ -3,7 +3,7 @@ import axios from "axios";
 import Button from "@mui/material/Button";
 import useDrivePicker from "react-google-drive-picker";
 import { default as LoadIcon } from "@mui/icons-material/CloudUpload";
-
+import { toast } from "react-toastify";
 import "../../App.css";
 
 const LoadButton = ({clear, setElements}) => {
@@ -23,9 +23,7 @@ const LoadButton = ({clear, setElements}) => {
 
 
 	const addElement = (data) => {
-
 		let image = new Image()
-
         image.onload = function () {
           var canvas = document.querySelector('canvas');
           const ctx = canvas.getContext("2d");
@@ -38,6 +36,15 @@ const LoadButton = ({clear, setElements}) => {
 	};
 
 	const GetFileData = async function (fileID) {
+		toast.info('Loading File ...', {
+			position: "bottom-left",
+			autoClose: 2000,
+			hideProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			draggable: true,
+			progress: undefined,
+			});
 		let params = new URL(document.location).searchParams;
 		let code = params.get("code");
 		try {
@@ -48,11 +55,41 @@ const LoadButton = ({clear, setElements}) => {
 					},
 				})
 				.then((res) => {
-					addElement(res.data)
+					addElement(res.data);
+					if (res.status == 200) {
+						toast.success('Loaded successfully', {
+							position: "bottom-left",
+							autoClose: 5000,
+							hideProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true,
+							draggable: true,
+							progress: undefined,
+							});
+					} else {
+						toast.error("Could not load file", {
+							position: "bottom-left",
+							autoClose: 5000,
+							hideProgressBar: false,
+							closeOnClick: true,
+							pauseOnHover: true,
+							draggable: true,
+							progress: undefined,
+							});
+					}
 				});
 		} catch (error) {
-			console.log(`error - GetFile - ${error}`);
+			toast.error("Load error", {
+				position: "bottom-left",
+				autoClose: 5000,
+				hideProgressBar: false,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true,
+				progress: undefined,
+				});
 		}
+		
 	};
 
 	const handleOpenPicker = async function () {
@@ -94,15 +131,6 @@ const LoadButton = ({clear, setElements}) => {
 		});
 	};
 
-	const handleClick = () => {
-		// clear();
-		handleOpenPicker();
-		if (data) {
-			console.log(data)
-			clear();
-		}
-		
-	}
 
 	return (
 		<Button className='basic-button' onClick={() => handleOpenPicker()}>

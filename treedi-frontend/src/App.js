@@ -74,7 +74,7 @@ function App(props) {
           ctx.globalAlpha = 1
           ctx.drawImage(image, 0, 0);
         };
-        image.src = parsed.Screens[0].Image
+        image.src = parsed.Screens[0].Image;
       });
   }
 

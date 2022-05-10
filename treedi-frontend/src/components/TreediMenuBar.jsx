@@ -8,9 +8,13 @@ import { default as ShareIcon } from "@mui/icons-material/ShareRounded";
 
 import UserButton from "./MenuButtons/UserButton";
 import SaveButton from "./MenuButtons/SaveButton";
+import LoadButton from "./MenuButtons/LoadButton";
+import ShareButton from "./MenuButtons/ShareButton";
 
 import "../App.css";
-import LoadButton from "./MenuButtons/LoadButton";
+
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const TreediMenuBarStyle = {
 	position: "absolute",
@@ -29,6 +33,17 @@ const TreediMenuBarStyle = {
 const TreediMenuBar = ({ user, setTool, color, setColor, undo, redo, clear, setElements, projectName }) => {
 	return (
 		<div style={{ display: "flex" }}>
+						<ToastContainer
+				position='bottom-left'
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
 			<div
 				style={{
 					marginTop: "10px",
@@ -57,9 +72,9 @@ const TreediMenuBar = ({ user, setTool, color, setColor, undo, redo, clear, setE
 
 				<LoadButton clear={clear} setElements={setElements} />
 
-				<Button className='basic-button'>
-					<ShareIcon className='menu-item' />
-				</Button>
+
+				<ShareButton />
+
 			</div>
 		</div>
 	);

@@ -131,10 +131,10 @@ const useHistory = (initialState) => {
 		}
 	};
 	const clearElements = () => {
-		console.log('clearing elements')
+		console.log("clearing elements");
 		setIndex(0);
-		setHistory([[]])
-	}
+		setHistory([[]]);
+	};
 	const undo = () => index > 0 && setIndex((prevState) => prevState - 1);
 	const redo = () => index < history.length - 1 && setIndex((prevState) => prevState + 1);
 	return [history[index], setState, undo, redo, clearElements];
@@ -175,7 +175,6 @@ const TreediDraw = (props) => {
 
 	const [elements, setElements, undo, redo, clearElements] = useHistory([]);
 	const [elementToMove, setElementToMove] = useState(null);
-
 
 	useEffect(() => {
 		if (elementToMove !== null) {
@@ -241,7 +240,26 @@ const TreediDraw = (props) => {
 				context.fillText(element.text, element.x1, element.y1);
 				break;
 			case "base64":
-				console.log('NEED TO DRAW BASE64 ELEMENT!')
+				console.log("NEED TO DRAW BASE64 ELEMENT!");
+				// console.log(parsed)
+				let image = new Image();
+				// var images = new Array();
+				image.onload = function () {
+					var canvas = document.querySelector("canvas");
+					const ctx = canvas.getContext("2d");
+					ctx.globalAlpha = 1;
+					ctx.drawImage(image, 0, 0);
+				};
+				console.log("ELEMENTTTTT\n\n\n", element);
+				const last_saved_idx = element.image.Screens.length
+				image.src = element.image.Screens[last_saved_idx-1].Image;
+				// element.image.Screens.forEach((img) => {
+				// 	image.src = img.Image
+				// })
+
+				
+
+				
 				break;
 			default:
 				throw new Error(`Type not recognised: ${element.type}`);
@@ -250,7 +268,7 @@ const TreediDraw = (props) => {
 
 	useLayoutEffect(() => {
 		if (!elements) {
-			console.log('zero elements')
+			console.log("zero elements");
 			return;
 		}
 		const canvas = document.getElementById("canvas");
@@ -262,7 +280,7 @@ const TreediDraw = (props) => {
 				return;
 			}
 			drawElement(roughCanvas, context, element);
-			console.log('elemnt drawed')
+			console.log("elemnt drawed");
 		});
 	}, [elements, action, selectedElement]);
 
@@ -613,15 +631,15 @@ const TreediDraw = (props) => {
 		}, 5000);
 	}, []);
 
-	const JonisaveLocal = () => {
-		var canvas = document.querySelector("canvas");
-		var dataURL = canvas.toDataURL("image/png", 1.0);
-		data_format.FileName = projectName;
-		data_format.LastModified = "DATE";
-		data_format.Owner = "GOOGLE_USER";
-		data_format.Screens.push({ Image: dataURL, LastModified: "DATE" });
-		downloadTrdiFile1(data_format, "NEW_TREEDI_FILE.trdi");
-	};
+	// const JonisaveLocal = () => {
+	// 	var canvas = document.querySelector("canvas");
+	// 	var dataURL = canvas.toDataURL("image/png", 1.0);
+	// 	data_format.FileName = projectName;
+	// 	data_format.LastModified = "DATE";
+	// 	data_format.Owner = "GOOGLE_USER";
+	// 	data_format.Screens.push({ Image: dataURL, LastModified: "DATE" });
+	// 	downloadTrdiFile1(data_format, "NEW_TREEDI_FILE.trdi");
+	// };
 	// const [Url1, setUrl1] = useState(null);
 	const [FileData, setFileData] = useState(null);
 	const downloadTrdiFile1 = (jsonData, filename) => {
@@ -686,13 +704,11 @@ const TreediDraw = (props) => {
 		}
 	};
 
-
-
 	return (
 		<div>
 			<Preload projectName={projectName} setProjectName={setProjectName} />
 
-			<button onClick={() => clearElements()}>clear elements</button>	
+			<button onClick={() => clearElements()}>clear elements</button>
 
 			<TreediMenuBar
 				user={user}
@@ -704,7 +720,6 @@ const TreediDraw = (props) => {
 				redo={redo}
 				clear={clearElements}
 				setElements={setElements}
-			
 
 				// clearElements={clearElements}
 			/>
@@ -722,7 +737,7 @@ const TreediDraw = (props) => {
 				<button onClick={() => loadLocal()}>loadLocal</button>
 				<button onClick={() => handleOpenPicker()}>Open Picker</button>
 				<button onClick={() => GetListOfItems()}>Get List From Drive</button>
-				<button onClick={() => JonisaveLocal()}>Joni save</button>
+				{/* <button onClick={() => JonisaveLocal()}>Joni save</button> */}
 				<button onClick={() => ShareFile()}>ShareFileToToOmri</button>
 			</div>
 
