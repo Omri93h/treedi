@@ -1,11 +1,6 @@
 import React, { useState } from "react";
-import axios from "axios";
 import Button from "@mui/material/Button";
-import Menu from "@mui/material/Menu";
-import MenuItem from "@mui/material/MenuItem";
 import { default as ShareIcon } from "@mui/icons-material/ShareRounded";
-import { Divider } from "@mui/material";
-import data_format from "../../utils/DataFormat";
 import { toast } from "react-toastify";
 import "../../App.css";
 
@@ -13,8 +8,10 @@ import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import Fade from "@mui/material/Fade";
-
 import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+
+import axios from "axios";
 
 const style = {
 	position: "absolute",
@@ -29,9 +26,15 @@ const style = {
 };
 
 const ShareButton = () => {
-	const [open, setOpen] = React.useState(false);
+	const [open, setOpen] = useState(false);
+	const [email, setEmail] = useState(false);
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
+
+	const handleChange = (event) => {
+		setEmail(event.target.value);
+		console.log(email)
+	};
 
 	return (
 		<>
@@ -51,10 +54,21 @@ const ShareButton = () => {
 				<Fade in={open}>
 					<Box sx={style}>
 						<Typography id='transition-modal-title' variant='h6' component='h2'>
-							Text in a modal
+						Enter Email:
 						</Typography>
 						<Typography id='transition-modal-description' sx={{ mt: 2 }}>
-							Enter Email (to develop)
+							<Box
+								sx={{
+									width: 500,
+									maxWidth: "100%",
+								}}>
+								<TextField onChange={handleChange} fullWidth label='E-mail' id='fullWidth' type='email' />
+								<br/> <br/>
+								<Button size='large' variant='outlined' onClick={()=>null}>
+							<ShareIcon className='menu-item'/> &nbsp;Share
+							</Button>
+							</Box>
+
 						</Typography>
 					</Box>
 				</Fade>
