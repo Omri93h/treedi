@@ -192,12 +192,13 @@ async function shareFile(req, res) {
 
 
 function shareFileWith(oAuth2Client, res, req) {
-  var fileId = '14tFVAlJcfeWAu_CrV3efR5WPYKA5n4JF';
+  let email = req.body.data["email"];
+  let fileId = req.body.data["fileId"];
   var permissions = [
     {
       'type': 'user',
       'role': 'writer',
-      'emailAddress': 'Omri93h@gmail.com'
+      'emailAddress': email
     },
   ];
   const drive = google.drive({ version: 'v3', auth: oAuth2Client });
@@ -211,7 +212,8 @@ function shareFileWith(oAuth2Client, res, req) {
         console.error(err);
         permissionCallback(err);
       } else {
-        console.log('Permission ID: ', res.id)
+        console.log('Permission ID: ', res.id);
+        res.send("The file Shared successfully");
         permissionCallback();
       }
     });

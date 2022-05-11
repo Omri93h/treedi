@@ -6,7 +6,7 @@ router.post('/api/googleDrive/save' , createFile);
 router.get('/api/googleDrive/listFiles/' , getListFiles);
 router.get('/api/googleDrive/getToken/' , getToken);
 router.post('/api/googleDrive/getFileData/' , getFileData);
-router.get('/api/googleDrive/shareFile/' , shareFile);
+router.post('/api/googleDrive/shareFile/' , shareFile);
 
 
 
