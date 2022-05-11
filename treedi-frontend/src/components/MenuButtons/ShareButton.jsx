@@ -36,6 +36,29 @@ const ShareButton = () => {
 		console.log(email)
 	};
 
+	const ShareFile = async function () {
+		try {
+			let params = new URL(document.location).searchParams;
+			let fileid = localStorage.getItem("fileId");
+			let code = params.get("code");
+			console.log("THE EMAIL IS:" ,email);
+			const res = await axios.post("http://localhost:5001/api/googleDrive/shareFile/?code=" + code, {
+				data: {
+					email: email,
+					fileId: fileid,
+				},
+			});
+			console.log(res);
+			console.log(email);
+
+			if (res.ok) {
+				console.log("OK");
+			}
+		} catch (error) {
+			console.log(`error - ShareFile - ${error}`);
+		}
+	};
+
 	return (
 		<>
 			<Button className='basic-button' onClick={handleOpen}>
@@ -64,7 +87,7 @@ const ShareButton = () => {
 								}}>
 								<TextField onChange={handleChange} fullWidth label='E-mail' id='fullWidth' type='email' />
 								<br/> <br/>
-								<Button size='large' variant='outlined' onClick={()=>null}>
+								<Button size='large' variant='outlined' onClick={ShareFile=>null}>
 							<ShareIcon className='menu-item'/> &nbsp;Share
 							</Button>
 							</Box>
