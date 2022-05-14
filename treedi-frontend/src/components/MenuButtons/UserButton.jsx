@@ -17,7 +17,7 @@ const UserButton = ({ userImage }) => {
 		setAnchorEl(event.currentTarget);
 	};
 	const handleClose = () => {
-		localStorage.clear();
+		// localStorage.clear();
 		setAnchorEl(null);
 	};
 

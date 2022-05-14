@@ -70,7 +70,6 @@ function getData(oAuth2Client, res, req) {
       let buf = [];
       data.on("data", (e) => buf.push(e));
       data.on("end", () => {
-        //console.log(buf);
         const buffer = Buffer.concat(buf);
         let dataToSend=new Buffer.from(buffer).toString();
         res.send(dataToSend);

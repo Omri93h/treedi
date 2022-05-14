@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import GoogleLogin from "react-google-login";
 import axios from "axios";
-import SimpleReactLightbox from "simple-react-lightbox";
+// import SimpleReactLightbox from "simple-react-lightbox";
 // import { refreshTokenSetup } from "../utils/refreshToken";
 
 const clientId = process.env.REACT_APP_CLIENT_ID;
@@ -25,12 +25,14 @@ const Login = () => {
 
   // If successfull return of data from google we run this function:
   const googleResponse = async (response) => {
+    console.log('going to API')
     // Check if a token was recieved and send it to our API:
     if (response.tokenId) {
       const googleResponse = await axios.post(
         "http://localhost:5001/api/user-authentication",
         { token: response.tokenId }
       );
+      console.log(googleResponse)
         window.location.href = googleResponse.data.authUrl
       // // Check if we have some result:
       // if (Object.keys(googleResponse.data.payload).length !== 0) {
@@ -56,6 +58,7 @@ const Login = () => {
 
   // when profile is loaded -> Save data locally
   useEffect(() => {
+    console.log(user)
     if (user.profile_loaded) {
       localStorage.setItem("TreediUserName", user.name);
       localStorage.setItem("TreediUserEmail", user.email);
@@ -85,7 +88,7 @@ const Login = () => {
   }, [isDataSavedLocally]);
 
   return (
-    <SimpleReactLightbox>
+
       <div className="Login">
         {!user.profile_loaded ? (
           <div>
@@ -100,7 +103,7 @@ const Login = () => {
           <div></div>
         )}
       </div>
-    </SimpleReactLightbox>
+
   );
 
   //                                               O L D                                       //

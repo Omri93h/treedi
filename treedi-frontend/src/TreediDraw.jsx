@@ -169,8 +169,6 @@ const TreediDraw = (props) => {
 		img: localStorage.getItem("TreediUserImage"),
 	});
 
-	// console.log(user.name + " \n" + user.email + " \n" + user.img);
-
 	////////
 
 	const [elements, setElements, undo, redo, clearElements] = useHistory([]);
@@ -223,7 +221,6 @@ const TreediDraw = (props) => {
 		switch (element.type) {
 			case "line":
 			case "rectangle":
-				// element.roughElement.options.stroke = color;
 				roughCanvas.draw(element.roughElement);
 				break;
 			case "pencil":
@@ -240,8 +237,6 @@ const TreediDraw = (props) => {
 				context.fillText(element.text, element.x1, element.y1);
 				break;
 			case "base64":
-				console.log("NEED TO DRAW BASE64 ELEMENT!");
-				// console.log(parsed)
 				let image = new Image();
 				// var images = new Array();
 				image.onload = function () {
@@ -251,15 +246,12 @@ const TreediDraw = (props) => {
 					ctx.drawImage(image, 0, 0);
 				};
 				console.log("ELEMENTTTTT\n\n\n", element);
-				const last_saved_idx = element.image.Screens.length
-				image.src = element.image.Screens[last_saved_idx-1].Image;
+				const last_saved_idx = element.image.Screens.length;
+				image.src = element.image.Screens[last_saved_idx - 1].Image;
 				// element.image.Screens.forEach((img) => {
 				// 	image.src = img.Image
 				// })
 
-				
-
-				
 				break;
 			default:
 				throw new Error(`Type not recognised: ${element.type}`);
