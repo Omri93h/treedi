@@ -216,6 +216,7 @@ const TreediDraw = (props) => {
 	const [pressureValue, setPressureValue] = useState(0);
 	const [currMaxPressureValue, setCurrMaxPressureValue] = useState(0);
 	const [color, setColor] = useState("black");
+	const [displayPressure, setDisplayPressure] = useState(false);
 
 	const drawElement = (roughCanvas, context, element) => {
 		switch (element.type) {
@@ -337,9 +338,8 @@ const TreediDraw = (props) => {
 	});
 
 	const pressureElement = (
-		<div id='pressure-element' style={{ textAlign: "right" }}>
-			{" "}
-			{pressureValue}{" "}
+		<div id='pressure-element' style={{ textAlign: "center" }}>
+			{pressureValue}
 		</div>
 	);
 
@@ -370,11 +370,13 @@ const TreediDraw = (props) => {
 				}
 			}
 		} else {
+			if (tool == 'pencil' || tool == 'rectangle') {
+				setDisplayPressure(true);
+			}
 			const id = elements.length;
 			const element = createElement(id, clientX, clientY, clientX, clientY, tool, color, true);
 			setElements((prevState) => [...prevState, element]);
 			setSelectedElement(element);
-
 			setAction(tool === "text" ? "writing" : "drawing");
 		}
 	};
@@ -480,6 +482,7 @@ const TreediDraw = (props) => {
 	};
 
 	const handleMouseUp = (event) => {
+		setDisplayPressure(false);
 		const canvas = document.querySelector("canvas");
 		const ctx = canvas.getContext("2d");
 		const { clientX, clientY } = event;
@@ -712,6 +715,8 @@ const TreediDraw = (props) => {
 				redo={redo}
 				clear={clearElements}
 				setElements={setElements}
+				displayPressure={displayPressure}
+				pressureValue={pressureValue}
 
 				// clearElements={clearElements}
 			/>

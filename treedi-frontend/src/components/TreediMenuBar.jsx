@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import ColorSelection from "./MenuButtons/ColorSelection";
 import ToolSelection from "./MenuButtons/ToolSelection";
 import Button from "@mui/material/Button";
 import { default as UndoIcon } from "@mui/icons-material/UndoRounded";
 import { default as RedoIcon } from "@mui/icons-material/RedoRounded";
-import { default as ShareIcon } from "@mui/icons-material/ShareRounded";
 
 import UserButton from "./MenuButtons/UserButton";
 import SaveButton from "./MenuButtons/SaveButton";
@@ -12,6 +11,7 @@ import LoadButton from "./MenuButtons/LoadButton";
 import ShareButton from "./MenuButtons/ShareButton";
 
 import "../App.css";
+import { Fade } from "@mui/material";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -30,10 +30,30 @@ const TreediMenuBarStyle = {
 	borderRadius: "25px",
 };
 
-const TreediMenuBar = ({ user, setTool, color, setColor, undo, redo, clear, setElements, projectName }) => {
+const displayPressureStyle = {
+	textAlign: "center",
+	height: "100%",
+	width: "64px",
+	fontSize: "20px",
+	color: "grey",
+};
+
+const TreediMenuBar = ({
+	user,
+	setTool,
+	color,
+	setColor,
+	undo,
+	redo,
+	clear,
+	setElements,
+	projectName,
+	displayPressure,
+	pressureValue,
+}) => {
 	return (
 		<div style={{ display: "flex" }}>
-						<ToastContainer
+			<ToastContainer
 				position='bottom-left'
 				autoClose={5000}
 				hideProgressBar={false}
@@ -55,8 +75,17 @@ const TreediMenuBar = ({ user, setTool, color, setColor, undo, redo, clear, setE
 				}}>
 				<UserButton userImage={user["img"]} />
 			</div>
+
 			<div style={TreediMenuBarStyle}>
-				<ToolSelection setTool={setTool} />
+				{displayPressure ? (
+					<div style={displayPressureStyle}>
+						<Fade in={displayPressure} timeout={300}>
+							<div>{Number(pressureValue).toFixed(2)}</div>
+						</Fade>
+					</div>
+				) : (	
+					<ToolSelection setTool={setTool} />
+				)}
 
 				<ColorSelection color={color} setColor={setColor} />
 
@@ -72,9 +101,7 @@ const TreediMenuBar = ({ user, setTool, color, setColor, undo, redo, clear, setE
 
 				<LoadButton clear={clear} setElements={setElements} />
 
-
 				<ShareButton />
-
 			</div>
 		</div>
 	);

@@ -24,11 +24,11 @@ import Switch from "@mui/material/Switch";
 import Checkbox from "@mui/material/Checkbox";
 import axios from "axios";
 import OutlinedInput from "@mui/material/OutlinedInput";
-
-const style = {
+const center = window.innerWidth / 6
+const modalStyle = {
 	position: "absolute",
 	top: "50%",
-	left: "50%",
+	left: center,
 	transform: "translate(-50%, -50%)",
 	width: 400,
 	bgcolor: "background.paper",
@@ -70,6 +70,9 @@ const ShareButton = () => {
 		setEditToggle(!editToggle);
 		setEditPermission(Array());
 	};
+
+
+
 	const handleReadPermissionChange = (event) => {
 		setReadPermission(getValues(event).sort());
 	};
@@ -171,7 +174,7 @@ const ShareButton = () => {
 					timeout: 500,
 				}}>
 				<Fade in={open}>
-					<Box sx={style}>
+					<Box sx={modalStyle}>
 						<Typography id='transition-modal-title' variant='h6' component='h2'>
 							Enter Email:
 							<TextField onChange={handleEmailChange} fullWidth label='Email ...' id='fullWidth' type='email' />

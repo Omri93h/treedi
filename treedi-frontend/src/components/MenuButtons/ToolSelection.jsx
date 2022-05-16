@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
@@ -15,7 +15,6 @@ import { default as PencilIcon } from "@mui/icons-material/CreateRounded";
 const ToolSelection = ({ setTool }) => {
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
-
 	const [toolToDisplay, setToolToDisplay] = useState("pencil");
 
 	const handleClick = (event) => {
@@ -29,6 +28,7 @@ const ToolSelection = ({ setTool }) => {
 		setToolToDisplay(selected);
 		setTool(selected);
 	};
+
 
 	const displayPencilTool = (
 		<span className='menu-item'>
