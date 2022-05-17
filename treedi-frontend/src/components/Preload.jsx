@@ -5,7 +5,7 @@ const boxStyle = {
 	position: "absolute",
 	height: "200px",
 	top: "50%",
-	left: "50%",
+	left: window.innerWidth/6,
 	transform: "translate(-50%, -50%)",
 	width: 400,
 	bgcolor: "background.paper",
@@ -32,8 +32,8 @@ const Preload = ({ projectName, setProjectName }) => {
 
 	return (
 		<div>
-			<Modal open={preload} aria-labelledby='modal-modal-title' aria-describedby='modal-modal-description'>
-				<Box sx={boxStyle}>
+			<Modal open={preload}>
+				<Box>
 					{!isNewProject ? (
 						<Box sx={boxStyle}>
 							<Button onClick={() => delteLocalStorage()} size='large' variant='outlined'>
@@ -44,7 +44,7 @@ const Preload = ({ projectName, setProjectName }) => {
 							</Button>
 						</Box>
 					) : (
-						<div>
+						<Box sx={boxStyle} style={{display: "block"}}>
 							<TextField
 								fullWidth
 								onChange={handleChange}
@@ -52,7 +52,7 @@ const Preload = ({ projectName, setProjectName }) => {
 								label='Project Name'
 								variant='outlined'
 							/>
-
+							<br/>
 							<Button
 								style={{ margin: "50px" }}
 								onClick={() => setPreload(false)}
@@ -61,7 +61,7 @@ const Preload = ({ projectName, setProjectName }) => {
 								variant='contained'>
 								Start Project
 							</Button>
-						</div>
+						</Box>
 					)}
 				</Box>
 			</Modal>

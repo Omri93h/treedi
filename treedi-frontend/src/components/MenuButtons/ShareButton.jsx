@@ -24,11 +24,13 @@ import Switch from "@mui/material/Switch";
 import Checkbox from "@mui/material/Checkbox";
 import axios from "axios";
 import OutlinedInput from "@mui/material/OutlinedInput";
-const center = window.innerWidth / 6
+
+// const screenOneCenter = window.innerWidth / 6
+
 const modalStyle = {
 	position: "absolute",
 	top: "50%",
-	left: center,
+	left: window.innerWidth / 6,
 	transform: "translate(-50%, -50%)",
 	width: 400,
 	bgcolor: "background.paper",

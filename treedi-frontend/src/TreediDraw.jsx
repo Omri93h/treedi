@@ -487,18 +487,29 @@ const TreediDraw = (props) => {
 		const ctx = canvas.getContext("2d");
 		const { clientX, clientY } = event;
 
-		if (currMaxPressureValue > 0.5) {
+		if (currMaxPressureValue > 0.33) {
 			const currElement = elements[elements.length - 1];
-
 			const new_elem = { id: currElement.id, type: "pencil", points: [] };
-			for (const i in currElement.points) {
-				new_elem.points.push({
-					x: currElement.points[i].x + 1600,
-					y: currElement.points[i].y,
-				});
+			if (currMaxPressureValue <= 0.66)
+			{
+				for (const i in currElement.points) {
+					new_elem.points.push({
+						x: currElement.points[i].x + 1800,
+						y: currElement.points[i].y,
+					});
+				}
 			}
-			console.log("OLD ELEM:,", currElement);
-			console.log("NEW ELEM:,", new_elem);
+			else {
+				for (const i in currElement.points) {
+					new_elem.points.push({
+						x: currElement.points[i].x + 3600,
+						y: currElement.points[i].y,
+					});
+				}
+			}
+
+			// console.log("OLD ELEM:,", currElement);
+			// console.log("NEW ELEM:,", new_elem);
 			undo();
 			setElementToMove(new_elem);
 			// const canvas = document.getElementById("canvas");
@@ -703,8 +714,6 @@ const TreediDraw = (props) => {
 		<div>
 			<Preload projectName={projectName} setProjectName={setProjectName} />
 
-			<button onClick={() => clearElements()}>clear elements</button>
-
 			<TreediMenuBar
 				user={user}
 				projectName={projectName}
@@ -721,20 +730,20 @@ const TreediDraw = (props) => {
 				// clearElements={clearElements}
 			/>
 
-			{pressureElement}
 
-			<div style={{ position: "fixed", bottom: 0, padding: 10 }}>
+
+			<div style={{ position: "fixed", bottom: 0, padding: 0 }}>
 				<Logout handleLogout={props.handleLogout} />
 				<button onClick={undo}>Undo</button>
 				<button onClick={redo}>Redo</button>
 
 				<GoogleDriveButton Url={Url} />
+				<button onClick={() => clearElements()}>clear elements</button>
 
 				<button onClick={() => saveLocal()}>saveLocal</button>
 				<button onClick={() => loadLocal()}>loadLocal</button>
 				<button onClick={() => handleOpenPicker()}>Open Picker</button>
 				<button onClick={() => GetListOfItems()}>Get List From Drive</button>
-				{/* <button onClick={() => JonisaveLocal()}>Joni save</button> */}
 				<button onClick={() => ShareFile()}>ShareFileToToOmri</button>
 			</div>
 
