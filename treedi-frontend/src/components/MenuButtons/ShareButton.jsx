@@ -73,8 +73,6 @@ const ShareButton = () => {
 		setEditPermission(Array());
 	};
 
-
-
 	const handleReadPermissionChange = (event) => {
 		setReadPermission(getValues(event).sort());
 	};
@@ -106,6 +104,8 @@ const ShareButton = () => {
 				data: {
 					email: email,
 					fileId: fileid,
+					read: readPermission,
+					edit: editPermission,
 				},
 			});
 			console.log(res);

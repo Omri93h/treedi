@@ -31,7 +31,7 @@ const Login = () => {
 			const googleResponse = await axios.post("http://localhost:5001/api/user-authentication", {
 				token: response.tokenId,
 			});
-			console.log(googleResponse);
+			console.log('google responseee:', googleResponse);
 			window.location.href = googleResponse.data.authUrl
 			// window.open(googleResponse.data.authUrl, "MyWindow", "_blank").focus();
 			// // Check if we have some result:
@@ -42,35 +42,40 @@ const Login = () => {
 			//     User Email
 			//     User Profile Picture for Google
 			//   */
-			//   const { name, email, picture } = googleResponse.data.payload;
+			  const { name, email, picture } = googleResponse.data.payload;
 			//   console.log(googleResponse);
 			//   console.log("loading profile, ", name);
-			//   setUser({
-			//     ...user,
-			//     name,
-			//     email,
-			//     picture,
-			//     profile_loaded: true,
-			//   });
+			  setUser({
+			    ...user,
+			    name,
+			    email,
+			    picture,
+			    profile_loaded: true,
+			  });
+        console.log('user Loaded', user);
 			// }
 		}
 	};
 
 	// when profile is loaded -> Save data locally
 	useEffect(() => {
-		console.log(user);
 		if (user.profile_loaded) {
+      console.log('user Loaded', user);
 			localStorage.setItem("TreediUserName", user.name);
 			localStorage.setItem("TreediUserEmail", user.email);
 			localStorage.setItem("TreediUserImage", user.picture);
 			setIsDataSavedLocally(true);
 			console.log("now setting to local storage");
 		}
+    else {
+      console.log('user not loaded')
+    }
 	}, [user.profile_loaded]);
 
 	// when data is saved locally - and params are communicating -> open the app
 	useEffect(() => {
 		if (isDataSavedLocally) {
+      console.log("saving data to local storage");
 			const savedData = { name: "", email: "", img: "" };
 			savedData.name = localStorage.getItem("TreediUserName");
 			savedData.email = localStorage.getItem("TreediUserEmail");
@@ -85,10 +90,13 @@ const Login = () => {
 				}
 			}
 		}
+    else {
+      console.log('cant save data to local storage yet..')
+    }
 	}, [isDataSavedLocally]);
 
 	return (
-		<div className='Login'>
+		<div className='Login' >
 			{!user.profile_loaded ? (
 				<div>
 					<GoogleLogin clientId={clientId} buttonText='Login' onSuccess={googleResponse} onFailure={onFailure} />

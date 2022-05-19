@@ -191,6 +191,11 @@ const TreediDraw = (props) => {
 	}, [elementToMove]);
 
 	const createElement = (id, x1, y1, x2, y2, type, elem_color) => {
+		if (screenToWrite > 0) {
+			x1 += window.screen.width * screenToWrite;
+			x2 += window.screen.width * screenToWrite;
+		}
+
 		console.log("x1:" + x1 + "\nx2:" + x2 + "\ny1:" + y1 + "\ny2:" + y2);
 		switch (type) {
 			case "line":
@@ -210,6 +215,7 @@ const TreediDraw = (props) => {
 	};
 
 	const [action, setAction] = useState("none");
+	const [screenToWrite, setScreenToWrite] = useState(0);
 	const [tool, setTool] = useState("pencil");
 	const [selectedElement, setSelectedElement] = useState(null);
 	const textAreaRef = useRef();
@@ -219,6 +225,8 @@ const TreediDraw = (props) => {
 	const [displayPressure, setDisplayPressure] = useState(false);
 
 	const drawElement = (roughCanvas, context, element) => {
+		console.log("for omri, ", element);
+
 		switch (element.type) {
 			case "line":
 			case "rectangle":
@@ -285,6 +293,18 @@ const TreediDraw = (props) => {
 				} else {
 					undo();
 				}
+			} else if (event.key === "1") {
+				console.log("one is pressed");
+				setScreenToWrite(0);
+			} else if (event.key === "2") {
+				console.log("two is pressed");
+				setScreenToWrite(1);
+			} else if (event.key === "3") {
+				console.log("three is pressed");
+				setScreenToWrite(2);
+			} else if (event.key === "0") {
+				console.log("0 is pressed");
+				setScreenToWrite(-1);
 			}
 		};
 
@@ -370,7 +390,7 @@ const TreediDraw = (props) => {
 				}
 			}
 		} else {
-			if (tool == 'pencil' || tool == 'rectangle') {
+			if (tool == "pencil" || tool == "rectangle") {
 				setDisplayPressure(true);
 			}
 			const id = elements.length;
@@ -388,7 +408,6 @@ const TreediDraw = (props) => {
 		data_format.LastModified = "DATE";
 		data_format.Owner = "GOOGLE_USER";
 		data_format.Screens.push({ Image: dataURL, LastModified: "DATE" });
-		// console.log(data_format)
 
 		// TEMP Currently Downloading...
 		downloadTrdiFile(data_format, "NEW_TREEDI_FILE.trdi");
@@ -427,29 +446,31 @@ const TreediDraw = (props) => {
 
 	const handleMouseMove = (event) => {
 		const { nativeEvent } = event;
-		const clientY = nativeEvent.offsetY;
-		const clientX = nativeEvent.offsetX;
+		let clientY = nativeEvent.offsetY;
+		let clientX = nativeEvent.offsetX;
 
 		if (tool === "selection") {
-			const element = getElementAtPosition(clientX, clientY, elements);
+			let element = getElementAtPosition(clientX, clientY, elements);
 			event.target.style.cursor = element ? cursorForPosition(element.position) : "default";
 		}
 		if (action === "drawing") {
 			const index = elements.length - 1;
-			const { x1, y1 } = elements[index];
+			let { x1, y1 } = elements[index];
+
 			if (event.type == "touchmove") {
-				console.log("Touchmove\n");
+				if (screenToWrite > 0) {
+					x1 += window.screen.width * screenToWrite;
+					event.changedTouches[0].clientX += window.screen.width * screenToWrite;
+				}
 				updateElement(index, x1, y1, event.changedTouches[0].clientX, event.changedTouches[0].clientY, tool);
 			} else {
+				console.log("clientX before", clientX);
+				if (screenToWrite > 0) {
+					clientX += window.screen.width * screenToWrite;
+				}
+
 				updateElement(index, x1, y1, clientX, clientY, tool);
 			}
-			//   console.log(
-			//     'index,', index, '\n',
-			//     'x1', x1, '\n',
-			//     'y1, ', y1, '\n',
-			//     'clientX', clientX, '\n',
-			//     'clientY', clientY, '\n',
-			//     'tool', tool)
 		} else if (action === "moving") {
 			if (selectedElement.type === "pencil") {
 				// console.log(event);
@@ -482,54 +503,35 @@ const TreediDraw = (props) => {
 	};
 
 	const handleMouseUp = (event) => {
+		console.log("mouse up");
 		setDisplayPressure(false);
 		const canvas = document.querySelector("canvas");
 		const ctx = canvas.getContext("2d");
 		const { clientX, clientY } = event;
 
-		if (currMaxPressureValue > 0.33) {
-			const currElement = elements[elements.length - 1];
-			const new_elem = { id: currElement.id, type: "pencil", points: [] };
-			if (currMaxPressureValue <= 0.66)
-			{
-				for (const i in currElement.points) {
-					new_elem.points.push({
-						x: currElement.points[i].x + 1800,
-						y: currElement.points[i].y,
-					});
+		if (screenToWrite > -1) {
+			if (currMaxPressureValue > 0.33) {
+				const currElement = elements[elements.length - 1];
+				const new_elem = { id: currElement.id, type: "pencil", points: [] };
+				if (currMaxPressureValue <= 0.66) {
+					for (const i in currElement.points) {
+						new_elem.points.push({
+							x: currElement.points[i].x + 1800,
+							y: currElement.points[i].y,
+						});
+					}
+				} else {
+					for (const i in currElement.points) {
+						new_elem.points.push({
+							x: currElement.points[i].x + 3600,
+							y: currElement.points[i].y,
+						});
+					}
 				}
+				undo();
+				setElementToMove(new_elem);
+				setCurrMaxPressureValue(0);
 			}
-			else {
-				for (const i in currElement.points) {
-					new_elem.points.push({
-						x: currElement.points[i].x + 3600,
-						y: currElement.points[i].y,
-					});
-				}
-			}
-
-			// console.log("OLD ELEM:,", currElement);
-			// console.log("NEW ELEM:,", new_elem);
-			undo();
-			setElementToMove(new_elem);
-			// const canvas = document.getElementById("canvas");
-			// const context = canvas.getContext("2d");
-
-			// const stroke = getSvgPathFromStroke(getStroke(new_elem.points));
-			// console.log("Stroke: ", stroke)
-			// context.strokeStyle = '#000';
-			// context.lineWidth = 1;
-			// context.fillStyle = 'rgb(200, 0, 0)';
-			// context.fillRect(x, y, width, height)
-			// var p = new Path2D(stroke)
-			// console.log("Path2D", p)
-			// context.stroke(p);
-			// context.fill(p)
-			// context.stroke(new Path2D(stroke));
-
-			// insertSvgToDifferentScreen(stroke)
-
-			setCurrMaxPressureValue(0);
 		} else if (selectedElement) {
 			if (
 				selectedElement.type === "text" &&
@@ -729,8 +731,6 @@ const TreediDraw = (props) => {
 
 				// clearElements={clearElements}
 			/>
-
-
 
 			<div style={{ position: "fixed", bottom: 0, padding: 0 }}>
 				<Logout handleLogout={props.handleLogout} />

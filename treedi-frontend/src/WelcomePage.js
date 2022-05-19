@@ -3,8 +3,8 @@ import "./WelcomePage.css";
 import Login from "./components/Login";
 
 
-function WelcomePage(props) {
-  // const [loginData, setLoginData] = useState(localStorage.getItem('loginData') ? JSON.parse(localStorage.getItem('loginData')) : null)
+function WelcomePage() {
+  const [loginData, setLoginData] = useState(localStorage.getItem('loginData') ? JSON.parse(localStorage.getItem('loginData')) : null)
 
   // const handleLogout = () => {
   //   setLoginData(null)
