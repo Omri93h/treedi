@@ -50,9 +50,13 @@ const TreediMenuBar = ({
 	projectName,
 	displayPressure,
 	pressureValue,
+	readPermission,
+	setReadPermission,
+	editPermission,
+	setEditPermission,
 }) => {
 	return (
-		<div style={{ display: "flex" }}>
+		<div style={{ display: "flex", position:'absolute' }}>
 			<ToastContainer
 				position='bottom-left'
 				autoClose={5000}
@@ -83,7 +87,7 @@ const TreediMenuBar = ({
 							<div>{Number(pressureValue).toFixed(2)}</div>
 						</Fade>
 					</div>
-				) : (	
+				) : (
 					<ToolSelection setTool={setTool} />
 				)}
 
@@ -97,11 +101,26 @@ const TreediMenuBar = ({
 					<RedoIcon className='menu-item' />
 				</Button>
 
-				<SaveButton fileName={projectName} user={user} />
+				<SaveButton
+					fileName={projectName}
+					user={user}
+					readPermission={readPermission}
+					editPermission={editPermission}
+				/>
 
-				<LoadButton clear={clear} setElements={setElements} />
+				<LoadButton
+					clear={clear}
+					setElements={setElements}
+					setEditPermission={setEditPermission}
+					setReadPermission={setReadPermission}
+				/>
 
-				<ShareButton />
+				<ShareButton
+					readPermission={readPermission}
+					setReadPermission={setReadPermission}
+					editPermission={editPermission}
+					setEditPermission={setEditPermission}
+				/>
 			</div>
 		</div>
 	);

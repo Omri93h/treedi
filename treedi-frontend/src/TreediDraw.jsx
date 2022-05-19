@@ -8,6 +8,7 @@ import GoogleDriveButton from "./components/GoogleDriveButton";
 import TreediMenuBar from "./components/TreediMenuBar";
 import axios from "axios";
 import Preload from "./components/Preload";
+import { border, textAlign } from "@mui/system";
 
 const generator = rough.generator();
 var Pressure = require("pressure");
@@ -162,6 +163,8 @@ const adjustmentRequired = (type) => ["line", "rectangle"].includes(type);
 
 const TreediDraw = (props) => {
 	const [projectName, setProjectName] = useState("");
+	const [readPermission, setReadPermission] = useState(Array());
+	const [editPermission, setEditPermission] = useState(Array());
 
 	const [user, setUser] = useState({
 		name: localStorage.getItem("TreediUserName"),
@@ -215,7 +218,8 @@ const TreediDraw = (props) => {
 	};
 
 	const [action, setAction] = useState("none");
-	const [screenToWrite, setScreenToWrite] = useState(0);
+	const [screenToWrite, setScreenToWrite] = useState(-1);
+	const [displayScreenToWrite, setDisplayScreenToWrite] = useState(false);
 	const [tool, setTool] = useState("pencil");
 	const [selectedElement, setSelectedElement] = useState(null);
 	const textAreaRef = useRef();
@@ -293,19 +297,15 @@ const TreediDraw = (props) => {
 				} else {
 					undo();
 				}
-			} else if (event.key === "1") {
-				console.log("one is pressed");
-				setScreenToWrite(0);
-			} else if (event.key === "2") {
-				console.log("two is pressed");
-				setScreenToWrite(1);
-			} else if (event.key === "3") {
-				console.log("three is pressed");
-				setScreenToWrite(2);
-			} else if (event.key === "0") {
-				console.log("0 is pressed");
-				setScreenToWrite(-1);
-			}
+			} else {
+				if (projectName) {
+					if (event.key === "1" || event.key === "2" || event.key === "3" || event.key === "0") {
+						console.log("key " + Number(event.key - 1) + " is pressed");
+						setScreenToWrite(Number(event.key - 1));
+						setDisplayScreenToWrite(true)
+
+				}
+			}}
 		};
 
 		document.addEventListener("keydown", undoRedoFunction);
@@ -509,7 +509,7 @@ const TreediDraw = (props) => {
 		const ctx = canvas.getContext("2d");
 		const { clientX, clientY } = event;
 
-		if (screenToWrite > -1) {
+		if (screenToWrite == -1) {
 			if (currMaxPressureValue > 0.33) {
 				const currElement = elements[elements.length - 1];
 				const new_elem = { id: currElement.id, type: "pencil", points: [] };
@@ -628,7 +628,6 @@ const TreediDraw = (props) => {
 
 	useEffect(() => {
 		let iframe = document.getElementsByClassName("save-to-drive-button jfk-button jfk-button-standard jfk-button-rtl");
-
 		console.log(iframe);
 		console.log(typeof iframe);
 	}, []);
@@ -728,24 +727,48 @@ const TreediDraw = (props) => {
 				setElements={setElements}
 				displayPressure={displayPressure}
 				pressureValue={pressureValue}
-
-				// clearElements={clearElements}
+				readPermission={readPermission}
+				setReadPermission={setReadPermission}
+				editPermission={editPermission}
+				setEditPermission={setEditPermission}
 			/>
+			{displayScreenToWrite? (
+				<div
+					onAnimationEnd={() => setDisplayScreenToWrite(false)}
+					style={{
+						position: "absolute",
+						margin:'1%',
+						height:String(window.screen.height/2) + 'px',
+						lineHeight:String(window.screen.height/2) + 'px',
+						width:String(window.screen.width) + 'px',
+						animation: "fadeOut 1s forwards",
+						animationDelay: "0.2s",
+						color:'black',
+						textAlign:'center',
+						fontSize:'100px',
+						zIndex:'-1',
+						opacity:'0.2',
+						background:'lightblue',
+						border: '1px solid green'
 
-			<div style={{ position: "fixed", bottom: 0, padding: 0 }}>
+
+					}}>
+					{screenToWrite >= 0 ? "Writing To Screen " + Number(screenToWrite + 1) : 'Pressure Mode'}
+				</div>
+
+			) : null}
+
+			{/* <div style={{ position: "fixed", bottom: 0, padding: 0 }}>
 				<Logout handleLogout={props.handleLogout} />
-				<button onClick={undo}>Undo</button>
-				<button onClick={redo}>Redo</button>
-
 				<GoogleDriveButton Url={Url} />
-				<button onClick={() => clearElements()}>clear elements</button>
+				<button disabled onClick={() => clearElements()}>clear elements</button>
 
-				<button onClick={() => saveLocal()}>saveLocal</button>
-				<button onClick={() => loadLocal()}>loadLocal</button>
-				<button onClick={() => handleOpenPicker()}>Open Picker</button>
-				<button onClick={() => GetListOfItems()}>Get List From Drive</button>
-				<button onClick={() => ShareFile()}>ShareFileToToOmri</button>
-			</div>
+				<button disabled onClick={() => saveLocal()}>saveLocal</button>
+				<button disabled onClick={() => loadLocal()}>loadLocal</button>
+				<button disabled onClick={() => handleOpenPicker()}>Open Picker</button>
+				<button disabled onClick={() => GetListOfItems()}>Get List From Drive</button>
+				<button disabled onClick={() => ShareFile()}>ShareFileToToOmri</button>
+			</div> */}
 
 			{action === "writing" ? (
 				<textarea

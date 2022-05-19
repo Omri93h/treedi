@@ -51,23 +51,18 @@ const MenuProps = {
 	},
 };
 
-const ShareButton = () => {
-	// Modal
+const ShareButton = ({ readPermission, setReadPermission, editPermission, setEditPermission }) => {
 	const [open, setOpen] = useState(false);
 	const handleOpen = () => setOpen(true);
 	const handleClose = () => setOpen(false);
-
-	// Email
+	const [editToggle, setEditToggle] = useState(false);
 	const [email, setEmail] = useState("");
+
 	const handleEmailChange = (event) => {
 		setEmail(event.target.value);
 		console.log(email);
 	};
 
-	// Permissions
-	const [readPermission, setReadPermission] = useState(Array());
-	const [editToggle, setEditToggle] = useState(false);
-	const [editPermission, setEditPermission] = useState(Array());
 	const handleEditToggle = () => {
 		setEditToggle(!editToggle);
 		setEditPermission(Array());
@@ -100,12 +95,12 @@ const ShareButton = () => {
 			let fileid = localStorage.getItem("fileId");
 			let code = params.get("code");
 			console.log("THE EMAIL IS:", email);
+
 			const res = await axios.post("http://localhost:5001/api/googleDrive/shareFile/?code=" + code, {
 				data: {
 					email: email,
 					fileId: fileid,
-					read: readPermission,
-					edit: editPermission,
+					edit: editPermission.length > 0 ? true : false,
 				},
 			});
 			console.log(res);

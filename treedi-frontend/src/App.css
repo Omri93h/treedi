@@ -1,5 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Lobster&display=swap");
-
+* {
+	margin: 0;
+	padding: 0;
+}
 html {
 	width: 100%;
 	position: absolute;
@@ -14,7 +17,11 @@ html {
 	align-items: center;
 	background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
 }
-
+@keyframes fadeOut {
+	to {
+		opacity: 0;
+	}
+}
 h1 {
 	font-family: "Lobster", cursive;
 	font-size: 50px;
@@ -60,14 +67,12 @@ h1 {
 	}
 }
 
-
 .menu-item {
 	font-size: 30px;
 	height: 40px;
 	line-height: 40px;
 	vertical-align: middle;
 }
-
 
 /* ColorSelection: Custom layout */
 .custom-layout .react-colorful {
