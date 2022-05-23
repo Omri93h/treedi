@@ -1,13 +1,7 @@
 const app = require('./lib/express');
 const logger = require('./lib/logger');
-
-
-const httpServer = require('http').createServer(app);
 require('dotenv').config();
-
-
-
-
+const httpServer = require('http').createServer(app);
 const io = require('socket.io')(httpServer, {
     cors: { origin: true }
 })
@@ -20,4 +14,4 @@ io.on('connection', (socket) => {
 })
 
 const port = process.env.port || 5001;
-app.listen(port , () => logger.info(`Lisining to Server : ${port}`));
+httpServer.listen(port , () => logger.info(`Lisining to Server : ${port}`));

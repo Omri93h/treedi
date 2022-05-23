@@ -29,7 +29,6 @@ async function authAndRunCallback(req, res, callback) {
         })
       }
       else {
-        console.log("token is ", JSON.parse(token));
         oAuth2Client.setCredentials(JSON.parse(token));
         callback(oAuth2Client, res);
       }
@@ -193,11 +192,20 @@ async function shareFile(req, res) {
 function shareFileWith(oAuth2Client, res, req) {
   let email = req.body.data["email"];
   let fileId = req.body.data["fileId"];
+  let edit = req.body.data["edit"];
+  let editable = 'writer';
+  if(edit == false){
+    console.log("false");
+    editable = 'reader';
+  }
+  else{
+  }
+  console.log(req.body.data);
   console.log('EMAIL\n\n' + email + '\n\n')
   var permissions = [
     {
       'type': 'user',
-      'role': 'writer',
+      'role': editable,
       'emailAddress': email
     },
   ];
