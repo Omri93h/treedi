@@ -37,7 +37,7 @@ const fs = require('fs');
       fs.readFile(TOKEN_PATH, (err, token) => {
         // if (err) 
         // {
-          console.log(err)
+          // console.log(err)
           return getAccessToken(oAuth2Client, callback);
         // }
         // console.log("token: " + token)
@@ -54,7 +54,7 @@ const fs = require('fs');
      */
     function getAccessToken(oAuth2Client, callback) {
       const authUrl = oAuth2Client.generateAuthUrl({
-        access_type: 'offline',
+        access_type: 'online',
         scope: SCOPES,
       });
       

@@ -1,16 +1,17 @@
 import React, { useState } from "react";
-import axios from "axios";
+
 import Button from "@mui/material/Button";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { default as SaveIcon } from "@mui/icons-material/SaveAltRounded";
 import { Divider } from "@mui/material";
-import data_format from "../../utils/DataFormat";
+import getTrdiFileData from "../../utils/getTrdiFileData";
+import saveTrdiFile from "../../utils/saveTrdiFile";
 import { toast } from "react-toastify";
 
 import "../../App.css";
 
-const SaveButton = ({ fileName, user }) => {
+const SaveButton = ({ fileName, user, readPermission, editPermission }) => {
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
 
@@ -22,7 +23,8 @@ const SaveButton = ({ fileName, user }) => {
 	};
 
 	const handleSave = () => {
-		toast.info('Saving File ...', {
+
+		toast.info("Saving File ...", {
 			position: "bottom-left",
 			autoClose: 800,
 			hideProgressBar: false,
@@ -30,69 +32,15 @@ const SaveButton = ({ fileName, user }) => {
 			pauseOnHover: true,
 			draggable: true,
 			progress: undefined,
-			});
-		var canvas = document.querySelector("canvas");
-		var dataURL = canvas.toDataURL("image/png", 1.0);
-		data_format.FileName = fileName;
-		data_format.LastModified = new Date().toLocaleString();
-		data_format.Owner = user["name"];
-		data_format.Screens.push({ Image: dataURL, LastModified: new Date().toLocaleString() });
-		const data = JSON.stringify(data_format);
-		Jonisave(data);
+		});
+		const trdi_file_data = getTrdiFileData(user, fileName);
+
+
+		saveTrdiFile(trdi_file_data, fileName);
 		handleClose();
 	};
 
-	const Jonisave = async function (data) {
-		try {
-			let params = new URL(document.location).searchParams;
-			let code = params.get("code");
-			let fileid = localStorage.getItem("fileId");
-			console.log("CODE:", code);
-			const response = await axios
-				.post("http://localhost:5001/api/googleDrive/save/?code=" + code, {
-					data: {
-						fileData: data,
-						fileId: fileid,
-						fileName: fileName,
-					},
-				})
-				.then((res) => {
-					localStorage.setItem("fileId", res.data);
-					if (res.status == 200) {
-						toast.success('Saved successfully', {
-							position: "bottom-left",
-							autoClose: 5000,
-							hideProgressBar: false,
-							closeOnClick: true,
-							pauseOnHover: true,
-							draggable: true,
-							progress: undefined,
-							});
-					} else {
-						toast.error("Could not save file", {
-							position: "bottom-left",
-							autoClose: 5000,
-							hideProgressBar: false,
-							closeOnClick: true,
-							pauseOnHover: true,
-							draggable: true,
-							progress: undefined,
-							});
-					}
-				});
-		} catch (error) {
-			toast.error("Save error", {
-				position: "bottom-left",
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-				});
-		}
-	};
-
+	
 	return (
 		<>
 			<Button
@@ -124,7 +72,6 @@ const SaveButton = ({ fileName, user }) => {
 					Save As ..
 				</MenuItem>
 			</Menu>
-
 		</>
 	);
 };

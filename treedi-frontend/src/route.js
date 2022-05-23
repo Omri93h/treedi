@@ -1,8 +1,8 @@
 import { Routes, Route } from "react-router-dom";
 import React, { useState } from "react";
 import WelcomePage from './WelcomePage';
-import App from './App';
-import TreediDraw from './TreediDraw';
+import App from "./App";
+// import TreediDraw from './TreediDraw';
 
 function Routing() {
   const [loginData, setLoginData] = useState(localStorage.getItem('loginData') ? JSON.parse(localStorage.getItem('loginData')) : null)
@@ -20,9 +20,11 @@ function Routing() {
       <Routes>
         <Route exact path="/" element={<WelcomePage handleLogin={handleLogin}/>}>
         </Route>
-        <Route path="/homepage" element={<App />}>
-        </Route>
-        <Route path="/treedi" element={<TreediDraw handleLogout={handleLogout}/>}>
+        {/* <Route path="/homepage" element={<App />}>
+        </Route> */}
+        {/* <Route path="/treedi" element={<TreediDraw handleLogout={handleLogout}/>}>
+        </Route> */}
+                <Route path="/treedi" element={<App handleLogout={handleLogout}/>}>
         </Route>
       </Routes>
     </div>

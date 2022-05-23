@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import Button from "@mui/material/Button";
 import { default as ShareIcon } from "@mui/icons-material/ShareRounded";
+import getTrdiFileData from "../../utils/getTrdiFileData";
+import saveTrdiFile from "../../utils/saveTrdiFile";
 import { toast } from "react-toastify";
 import "../../App.css";
-
 import InputLabel from "@mui/material/InputLabel";
-
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
-
 import Backdrop from "@mui/material/Backdrop";
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
@@ -24,8 +23,6 @@ import Switch from "@mui/material/Switch";
 import Checkbox from "@mui/material/Checkbox";
 import axios from "axios";
 import OutlinedInput from "@mui/material/OutlinedInput";
-
-// const screenOneCenter = window.innerWidth / 6
 
 const modalStyle = {
 	position: "absolute",
@@ -51,10 +48,23 @@ const MenuProps = {
 	},
 };
 
-const ShareButton = ({ readPermission, setReadPermission, editPermission, setEditPermission }) => {
+const ShareButton = ({
+	user,
+	fileName,
+	readPermission,
+	setReadPermission,
+	editPermission,
+	setEditPermission,
+	setIsDialogOpen,
+}) => {
 	const [open, setOpen] = useState(false);
-	const handleOpen = () => setOpen(true);
-	const handleClose = () => setOpen(false);
+	const handleOpen = () => {
+		setIsDialogOpen(true);	// for prevent using "keydowns" in app
+		setOpen(true);
+	};
+	const handleClose = () => {
+		setIsDialogOpen(false)
+		setOpen(false);}
 	const [editToggle, setEditToggle] = useState(false);
 	const [email, setEmail] = useState("");
 
@@ -86,6 +96,12 @@ const ShareButton = ({ readPermission, setReadPermission, editPermission, setEdi
 		} = event;
 		// On autofill we get a stringified value.
 		return typeof value === "string" ? value.split(",") : value;
+	};
+
+	const handleShare = async function () {
+		const trdi_file_data = getTrdiFileData(user, fileName);
+		await saveTrdiFile(trdi_file_data, fileName);
+		ShareFile();
 	};
 
 	// Share File
@@ -194,7 +210,7 @@ const ShareButton = ({ readPermission, setReadPermission, editPermission, setEdi
 						</List>
 						<br />
 						<div style={{ textAlign: "center" }}>
-							<Button size='large' variant='outlined' onClick={ShareFile}>
+							<Button size='large' variant='outlined' onClick={handleShare}>
 								<ShareIcon className='menu-item' /> &nbsp; Share
 							</Button>
 						</div>

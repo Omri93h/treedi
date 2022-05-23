@@ -5,7 +5,7 @@ const boxStyle = {
 	position: "absolute",
 	height: "200px",
 	top: "50%",
-	left: window.innerWidth/6,
+	left: window.innerWidth / 6,
 	transform: "translate(-50%, -50%)",
 	width: 400,
 	bgcolor: "background.paper",
@@ -17,12 +17,23 @@ const boxStyle = {
 	p: 4,
 };
 
-const Preload = ({ projectName, setProjectName }) => {
+const Preload = ({ projectName, setProjectName, setIsDialogOpen }) => {
 	const [preload, setPreload] = useState(true);
 	const [isNewProject, setIsNewProject] = useState(false);
-
+	const [input, setInput] = useState("");
+	const [error, setError] = useState(false);
 	const handleChange = (event) => {
-		setProjectName(event.target.value);
+		setInput(event.target.value);
+	};
+
+	const handleClick = () => {
+		if (input === "") {
+			setError(true);
+			return;
+		}
+		setProjectName(input);
+		setPreload(false);
+		setIsDialogOpen(false)
 	};
 
 	const delteLocalStorage = (event) => {
@@ -44,7 +55,7 @@ const Preload = ({ projectName, setProjectName }) => {
 							</Button>
 						</Box>
 					) : (
-						<Box sx={boxStyle} style={{display: "block"}}>
+						<Box sx={boxStyle} style={{ display: "block" }}>
 							<TextField
 								fullWidth
 								onChange={handleChange}
@@ -52,15 +63,12 @@ const Preload = ({ projectName, setProjectName }) => {
 								label='Project Name'
 								variant='outlined'
 							/>
-							<br/>
-							<Button
-								style={{ margin: "50px" }}
-								onClick={() => setPreload(false)}
-								disabled={projectName ? false : true}
-								size='large'
-								variant='contained'>
+							<br />
+							<Button style={{ margin: "50px" }} onClick={handleClick} size='large' variant='contained'>
 								Start Project
 							</Button>
+							<br />
+							{error ? <span style={{color:'red'}}>Please enter project name</span>: null}
 						</Box>
 					)}
 				</Box>

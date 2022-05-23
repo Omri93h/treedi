@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import "./App.css";
 import useDrivePicker from "react-google-drive-picker";
-import data_format from "./utils/DataFormat";
+import data_format from "./utils/getTrdiFileData";
 import { Helmet } from "react-helmet";
 import Logout from './components/Logout';
 

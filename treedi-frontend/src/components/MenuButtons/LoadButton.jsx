@@ -6,37 +6,37 @@ import { default as LoadIcon } from "@mui/icons-material/CloudUpload";
 import { toast } from "react-toastify";
 import "../../App.css";
 
-const LoadButton = ({clear, setElements}) => {
+const LoadButton = ({ setActions, setEditPermission, setReadPermission }) => {
 	const [openPicker, data] = useDrivePicker();
 	const clientId = process.env.REACT_APP_CLIENT_ID;
 	const developerKey = process.env.REACT_APP_DEVELOPER_KEY;
 
 	useEffect(() => {
 		if (data) {
-			clear();
+			setActions({ clear: true });
 			console.log(data.docs[0].id);
 			localStorage.setItem("fileId", data.docs[0].id);
 			GetFileData(data.docs[0].id);
 		}
 	}, [data]);
 
-
-
 	const addElement = (data) => {
-		let image = new Image()
-        image.onload = function () {
-          var canvas = document.querySelector('canvas');
-          const ctx = canvas.getContext("2d");
-          ctx.globalAlpha = 1
-          ctx.drawImage(image, 0, 0);
-        };
-		image.src = data.Screens[0].Image
-		const element = {id:0, type:'base64', image:data }
-		setElements([element])
+
+		let image = new Image();
+		image.onload = function () {
+			var canvas = document.querySelector("canvas");
+			const ctx = canvas.getContext("2d");
+			ctx.globalAlpha = 1;
+			ctx.drawImage(image, 0, 0);
+		};
+		image.src = data.Screens[0].Image;
+		const element = { id: 0, type: "base64", image: data };
+		setActions({ load: [element] }); // setElements([element])
+
 	};
 
 	const GetFileData = async function (fileID) {
-		toast.info('Loading File ...', {
+		toast.info("Loading File ...", {
 			position: "bottom-left",
 			autoClose: 2000,
 			hideProgressBar: false,
@@ -44,7 +44,7 @@ const LoadButton = ({clear, setElements}) => {
 			pauseOnHover: true,
 			draggable: true,
 			progress: undefined,
-			});
+		});
 		let params = new URL(document.location).searchParams;
 		let code = params.get("code");
 		try {
@@ -57,7 +57,7 @@ const LoadButton = ({clear, setElements}) => {
 				.then((res) => {
 					addElement(res.data);
 					if (res.status == 200) {
-						toast.success('Loaded successfully', {
+						toast.success("Loaded successfully", {
 							position: "bottom-left",
 							autoClose: 5000,
 							hideProgressBar: false,
@@ -65,7 +65,7 @@ const LoadButton = ({clear, setElements}) => {
 							pauseOnHover: true,
 							draggable: true,
 							progress: undefined,
-							});
+						});
 					} else {
 						toast.error("Could not load file", {
 							position: "bottom-left",
@@ -75,7 +75,7 @@ const LoadButton = ({clear, setElements}) => {
 							pauseOnHover: true,
 							draggable: true,
 							progress: undefined,
-							});
+						});
 					}
 				});
 		} catch (error) {
@@ -87,9 +87,8 @@ const LoadButton = ({clear, setElements}) => {
 				pauseOnHover: true,
 				draggable: true,
 				progress: undefined,
-				});
+			});
 		}
-		
 	};
 
 	const handleOpenPicker = async function () {
@@ -131,10 +130,9 @@ const LoadButton = ({clear, setElements}) => {
 		});
 	};
 
-
 	return (
 		<Button className='basic-button' onClick={() => handleOpenPicker()}>
-			<LoadIcon className='menu-item'  />
+			<LoadIcon className='menu-item' />
 		</Button>
 	);
 };

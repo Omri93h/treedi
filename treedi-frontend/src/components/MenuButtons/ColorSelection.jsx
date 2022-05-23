@@ -28,14 +28,13 @@ const ColorSelection = ({ color, setColor }) => {
 	return (
 		<>
 			<Button
-				style={{height:"100%"}}
-
+				style={{ height: "100%" }}
 				className='basic-button'
 				aria-controls={open ? "basic-menu" : undefined}
 				aria-haspopup='true'
 				aria-expanded={open ? "true" : undefined}
 				onClick={handleClick}>
-				<ColorIcon className="menu-item" style={{ color: color }} />
+				<ColorIcon className='menu-item' style={{ color: color }} />
 			</Button>
 			<Menu
 				className='basic-menu'

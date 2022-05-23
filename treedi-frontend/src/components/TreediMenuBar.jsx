@@ -43,10 +43,8 @@ const TreediMenuBar = ({
 	setTool,
 	color,
 	setColor,
-	undo,
-	redo,
-	clear,
-	setElements,
+	setActions,
+	setLoadedElement,
 	projectName,
 	displayPressure,
 	pressureValue,
@@ -54,20 +52,10 @@ const TreediMenuBar = ({
 	setReadPermission,
 	editPermission,
 	setEditPermission,
+	setIsDialogOpen,
 }) => {
-	return (
-		<div style={{ display: "flex", position:'absolute' }}>
-			<ToastContainer
-				position='bottom-left'
-				autoClose={5000}
-				hideProgressBar={false}
-				newestOnTop={false}
-				closeOnClick
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
-			/>
+	const userButton = React.useMemo(
+		() => (
 			<div
 				style={{
 					marginTop: "10px",
@@ -79,7 +67,24 @@ const TreediMenuBar = ({
 				}}>
 				<UserButton userImage={user["img"]} />
 			</div>
+		),
+		[]
+	);
+	return (
+		<div style={{ display: "flex", position: "absolute" }}>
+			<ToastContainer
+				position='bottom-left'
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+			/>
 
+			{userButton}
 			<div style={TreediMenuBarStyle}>
 				{displayPressure ? (
 					<div style={displayPressureStyle}>
@@ -93,11 +98,11 @@ const TreediMenuBar = ({
 
 				<ColorSelection color={color} setColor={setColor} />
 
-				<Button className='basic-button' onClick={undo}>
+				<Button className='basic-button' onClick={() => setActions({ undo: true })}>
 					<UndoIcon className='menu-item' />
 				</Button>
 
-				<Button className='basic-button' onClick={redo}>
+				<Button className='basic-button' onClick={() => setActions({ redo: true })}>
 					<RedoIcon className='menu-item' />
 				</Button>
 
@@ -108,18 +113,16 @@ const TreediMenuBar = ({
 					editPermission={editPermission}
 				/>
 
-				<LoadButton
-					clear={clear}
-					setElements={setElements}
-					setEditPermission={setEditPermission}
-					setReadPermission={setReadPermission}
-				/>
+				<LoadButton setActions={setActions} setEditPermission={setEditPermission} setReadPermission={setReadPermission} />
 
 				<ShareButton
+					user={user}
+					fileName={projectName}
 					readPermission={readPermission}
 					setReadPermission={setReadPermission}
 					editPermission={editPermission}
 					setEditPermission={setEditPermission}
+					setIsDialogOpen={setIsDialogOpen}
 				/>
 			</div>
 		</div>

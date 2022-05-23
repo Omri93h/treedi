@@ -193,6 +193,7 @@ async function shareFile(req, res) {
 function shareFileWith(oAuth2Client, res, req) {
   let email = req.body.data["email"];
   let fileId = req.body.data["fileId"];
+  console.log('EMAIL\n\n' + email + '\n\n')
   var permissions = [
     {
       'type': 'user',
@@ -206,13 +207,13 @@ function shareFileWith(oAuth2Client, res, req) {
       resource: permission,
       fileId: fileId,
       fields: 'id',
-    }, function (err, res) {
+    }, function (err, localRes) {
       if (err) {
         console.error(err);
         permissionCallback(err);
       } else {
-        console.log('Permission ID: ', res.id);
-        res.send("The file Shared successfully");
+        console.log('Permission ID: ', localRes.data.id);
+        res.send("success");
         permissionCallback();
       }
     });

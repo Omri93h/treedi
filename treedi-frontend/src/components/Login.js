@@ -42,7 +42,8 @@ const Login = () => {
 			//     User Email
 			//     User Profile Picture for Google
 			//   */
-			  const { name, email, picture } = googleResponse.data.payload;
+			  const { name, email } = response.profileObj;
+			  const picture = response.profileObj.imageUrl
 			//   console.log(googleResponse);
 			//   console.log("loading profile, ", name);
 			  setUser({
