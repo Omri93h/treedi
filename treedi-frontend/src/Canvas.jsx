@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
 import rough from "roughjs/bundled/rough.esm";
 import getStroke from "perfect-freehand";
-
+import io from 'socket.io-client';
 const generator = rough.generator();
 let Pressure = require("pressure");
 
@@ -486,6 +486,36 @@ const Canvas = (props) => {
 			setAction(props.tool === "text" ? "writing" : "drawing");
 		}
 	};
+
+	const { current: canvasDetails } = useRef({ color: 'green', socketUrl: '/' });
+
+	useEffect(() => {
+        // console.log('client env', process.env.NODE_ENV)
+        // if (process.env.NODE_ENV === 'development') {
+        //     
+        // }
+		canvasDetails.socketUrl= 'http://localhost:5001/api/collab/'
+
+		console.log('inside socket useEffect')
+		try {
+			canvasDetails.socket = io.connect(canvasDetails.socketUrl, () => {
+				console.log('connecting to server')
+			})
+		}
+		catch { 
+			console.log('Cant connect')
+		}
+
+        // canvasDetails.socket.on('image-data', (data) => {
+        //     const image = new Image()
+        //     const canvas = document.getElementById('canvas');
+        //     const context = canvas.getContext('2d');
+        //     image.src = data;
+        //     image.addEventListener('load', () => {
+        //         context.drawImage(image, 0, 0);
+        //     });
+        // })
+    }, []);
 
 	return (
 		<>

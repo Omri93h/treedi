@@ -227,5 +227,9 @@ function shareFileWith(oAuth2Client, res, req) {
   });
 }
 
+function collab()  {
+console.log('inside collab');
 
-module.exports = { getListFiles, createFile, getToken, getFileData, updateFile,shareFile };
+}
+
+module.exports = { getListFiles, createFile, getToken, getFileData, updateFile,shareFile, collab };
