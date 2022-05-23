@@ -1,7 +1,7 @@
 import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
 import rough from "roughjs/bundled/rough.esm";
 import getStroke from "perfect-freehand";
-import io from 'socket.io-client';
+import io from "socket.io-client";
 const generator = rough.generator();
 let Pressure = require("pressure");
 
@@ -27,7 +27,9 @@ const Canvas = (props) => {
 				setHistory(historyCopy);
 			} else {
 				const updatedState = [...history].slice(0, index + 1);
+				console.log('updated state: \n\n' +  updatedState + ' \n\n newState: \n\n' + newState)
 				setHistory([...updatedState, newState]);
+
 				setIndex((prevState) => prevState + 1);
 			}
 		};
@@ -53,8 +55,14 @@ const Canvas = (props) => {
 		} else if (props.actions.redo) {
 			redo();
 		} else if (props.actions.load) {
-			console.log("loading element", props.actions.load);
-			setElements(props.actions.load);
+			setElements(props.actions.load)
+			
+			// props.actions.load.forEach((element) => {
+			// 	console.log(element);
+			// 	setElements([element]);
+			// });
+			// console.log()
+			
 		}
 	}, [props.actions]);
 
@@ -148,7 +156,7 @@ const Canvas = (props) => {
 		}
 	}, [elementToMove]);
 
-	const createElement = (id, x1, y1, x2, y2, type, elem_color) => {
+	const createElement = (id, x1, y1, x2, y2, type, elem_color, screen = 1) => {
 		if (props.screenToWriteTo > 0) {
 			x1 += window.screen.width * props.screenToWriteTo;
 			x2 += window.screen.width * props.screenToWriteTo;
@@ -160,11 +168,11 @@ const Canvas = (props) => {
 					type === "line"
 						? generator.line(x1, y1, x2, y2, { stroke: props.color })
 						: generator.rectangle(x1, y1, x2 - x1, y2 - y1, { stroke: props.color });
-				return { id, x1, y1, x2, y2, type, roughElement, elem_color };
+				return { id, x1, y1, x2, y2, type, roughElement, elem_color, screen };
 			case "pencil":
-				return { id, type, points: [{ x: x1, y: y1 }], elem_color };
+				return { id, type, points: [{ x: x1, y: y1 }], elem_color, screen };
 			case "text":
-				return { id, type, x1, y1, x2, y2, text: "", elem_color };
+				return { id, type, x1, y1, x2, y2, text: "", elem_color, screen };
 			default:
 				throw new Error(`Type not recognised: ${type}`);
 		}
@@ -269,6 +277,7 @@ const Canvas = (props) => {
 			}
 			drawElement(roughCanvas, context, element);
 		});
+		props.setCurrElements(elements);
 	}, [elements, action, selectedElement]);
 
 	useEffect(() => {
@@ -295,14 +304,14 @@ const Canvas = (props) => {
 			document.removeEventListener("keydown", undoRedoFunction);
 		};
 	}, [undo, redo]);
-	const updateElement = (id, x1, y1, x2, y2, type, options) => {
+	const updateElement = (id, x1, y1, x2, y2, type, options, screen) => {
 		const elementsCopy = [...elements];
 		// const elementsCopy = null;
 
 		switch (type) {
 			case "line":
 			case "rectangle":
-				elementsCopy[id] = createElement(id, x1, y1, x2, y2, type);
+				elementsCopy[id] = createElement(id, x1, y1, x2, y2, type, screen);
 				break;
 			case "pencil":
 				elementsCopy[id].points = [...elementsCopy[id].points, { x: x2, y: y2 }];
@@ -311,7 +320,7 @@ const Canvas = (props) => {
 				const textWidth = document.getElementById("canvas").getContext("2d").measureText(options.text).width;
 				const textHeight = 24;
 				elementsCopy[id] = {
-					...createElement(id, x1, y1, x1 + textWidth, y1 + textHeight, type),
+					...createElement(id, x1, y1, x1 + textWidth, y1 + textHeight, type, screen),
 					text: options.text,
 				};
 				break;
@@ -358,10 +367,13 @@ const Canvas = (props) => {
 			} else {
 				if (props.screenToWriteTo == 1) {
 					clientX += width;
+					updateElement(index, x1, y1, clientX, clientY, props.tool, 2);
 				} else if (props.screenToWriteTo == 2) {
 					clientX += width + width;
+					updateElement(index, x1, y1, clientX, clientY, props.tool, 3);
+				} else {
+					updateElement(index, x1, y1, clientX, clientY, props.tool, 1);
 				}
-				updateElement(index, x1, y1, clientX, clientY, props.tool);
 			}
 		} else if (action === "moving") {
 			if (selectedElement.type === "pencil") {
@@ -396,14 +408,13 @@ const Canvas = (props) => {
 
 	const handleMouseUp = (event) => {
 		props.setDisplayPressure(false);
-		const canvas = document.querySelector("canvas");
-		const ctx = canvas.getContext("2d");
 		const { clientX, clientY } = event;
 
 		if (props.screenToWriteTo == -1) {
 			if (screenToWriteByPressure > 1) {
 				const currElement = elements[elements.length - 1];
-				const new_elem = { id: currElement.id, type: "pencil", points: [] };
+				const new_elem = { id: currElement.id, type: currElement.type, elem_color: currElement.elem_color, points: [] };
+				new_elem["screen"] = screenToWriteByPressure;
 				let width = window.screen.width;
 				if (screenToWriteByPressure == 2) {
 					for (const i in currElement.points) {
@@ -440,7 +451,6 @@ const Canvas = (props) => {
 			if ((action === "drawing" || action === "resizing") && adjustmentRequired(type)) {
 				const { x1, y1, x2, y2 } = adjustElementCoordinates(elements[index]);
 				updateElement(id, x1, y1, x2, y2, type);
-				// console.log('We are updating the element ', elements[index])
 			}
 		}
 		if (action === "writing") return;
@@ -465,7 +475,7 @@ const Canvas = (props) => {
 				} else {
 					const offsetX = clientX - element.x1;
 					const offsetY = clientY - element.y1;
-					// setSelectedElement({ ...element, offsetX, offsetY });
+					setSelectedElement({ ...element, offsetX, offsetY });
 				}
 				setElements((prevState) => prevState);
 
@@ -480,42 +490,44 @@ const Canvas = (props) => {
 				props.setDisplayPressure(true);
 			}
 			const id = elements.length;
-			const element = createElement(id, clientX, clientY, clientX, clientY, props.tool, props.color, true);
+			const element = createElement(id, clientX, clientY, clientX, clientY, props.tool, props.color);
 			setElements((prevState) => [...prevState, element]);
 			setSelectedElement(element);
 			setAction(props.tool === "text" ? "writing" : "drawing");
 		}
 	};
 
-	const { current: canvasDetails } = useRef({ color: 'green', socketUrl: '/' });
+	// const { current: canvasDetails } = useRef({ color: 'green', socketUrl: '/' });
 
-	useEffect(() => {
-        // console.log('client env', process.env.NODE_ENV)
-        // if (process.env.NODE_ENV === 'development') {
-        //     
-        // }
-		canvasDetails.socketUrl= 'http://localhost:5001/api/collab/'
+	// useEffect(() => {
+	//     // console.log('client env', process.env.NODE_ENV)
+	//     // if (process.env.NODE_ENV === 'development') {
+	//     //
+	//     // }
+	// 	canvasDetails.socketUrl= 'http://localhost:5001/api/collab/'
 
-		console.log('inside socket useEffect')
-		try {
-			canvasDetails.socket = io.connect(canvasDetails.socketUrl, () => {
-				console.log('connecting to server')
-			})
-		}
-		catch { 
-			console.log('Cant connect')
-		}
+	// 	console.log('inside socket useEffect')
+	// 	try {
+	// 		console.log('connecting to socket?')
+	// 		canvasDetails.socket = io.connect(canvasDetails.socketUrl, () => {
+	// 			console.log('CONNECTED!')
+	// 		})
+	// 	}
+	// 	catch {
+	// 		console.log('Cant connect')
+	// 	}
 
-        // canvasDetails.socket.on('image-data', (data) => {
-        //     const image = new Image()
-        //     const canvas = document.getElementById('canvas');
-        //     const context = canvas.getContext('2d');
-        //     image.src = data;
-        //     image.addEventListener('load', () => {
-        //         context.drawImage(image, 0, 0);
-        //     });
-        // })
-    }, []);
+	//     canvasDetails.socket.on('image-data', (data) => {
+	// 		console.log('we are trying to load the DATA')
+	//         const image = new Image()
+	//         const canvas = document.getElementById('canvas');
+	//         const context = canvas.getContext('2d');
+	//         image.src = data;
+	//         image.addEventListener('load', () => {
+	//             context.drawImage(image, 0, 0);
+	//         });
+	//     })
+	// }, []);
 
 	return (
 		<>
@@ -529,11 +541,11 @@ const Canvas = (props) => {
 				onMouseDown={handleMouseDown}
 				onMouseMove={handleMouseMove}
 				onMouseUp={handleMouseUp}
-				style={{ touchAction: "none", cursor: "crosshair"}}>
+				style={{ touchAction: "none", cursor: "crosshair" }}>
 				Canvas
 			</canvas>
 
-			{/* {action === "writing" ? (
+			{action === "writing" ? (
 				<textarea
 					ref={textAreaRef}
 					onBlur={handleBlur}
@@ -552,7 +564,7 @@ const Canvas = (props) => {
 						background: "transparent",
 					}}
 				/>
-			) : null} */}
+			) : null}
 		</>
 	);
 };

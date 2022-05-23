@@ -21,17 +21,18 @@ const LoadButton = ({ setActions, setEditPermission, setReadPermission }) => {
 	}, [data]);
 
 	const addElement = (data) => {
+		// let image = new Image();	
+		// image.onload = function () {
+		// 	var canvas = document.querySelector("canvas");
+		// 	const ctx = canvas.getContext("2d");
+		// 	ctx.globalAlpha = 1;
+		// 	ctx.drawImage(image, 0, 0);
+		// };
+		// image.src = data.Screens[0].Image;
+		console.log('data: \n', data );
+		console.log('\n\nelements: ', data.Elements)
 
-		let image = new Image();
-		image.onload = function () {
-			var canvas = document.querySelector("canvas");
-			const ctx = canvas.getContext("2d");
-			ctx.globalAlpha = 1;
-			ctx.drawImage(image, 0, 0);
-		};
-		image.src = data.Screens[0].Image;
-		const element = { id: 0, type: "base64", image: data };
-		setActions({ load: [element] }); // setElements([element])
+		setActions({ load: data.Elements }); // setElements([element])
 
 	};
 

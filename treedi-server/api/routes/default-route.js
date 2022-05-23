@@ -3,8 +3,8 @@ const router = express.Router();
 const { index, routeInvalid, errorHandler, method } = require('../controllers/default-controller');
 
 router.use(method);
-// router.get('/', function (req, res) {
-//     console.log('response received');
+// router.get('/api/collab', function (req, res) {
+//     console.log('response received', res);
 //     // res.sendFile(path.join(__dirname, '../ui/build', 'index.html'));
 // });  
 router.get('/', index);

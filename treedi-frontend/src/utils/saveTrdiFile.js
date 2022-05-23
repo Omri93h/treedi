@@ -3,6 +3,7 @@ import axios from "axios";
 
 const saveTrdiFile = async function (data, fileName) {
 	try {
+		console.log(data)
 		let params = new URL(document.location).searchParams;
 		let code = params.get("code");
 		let fileid = localStorage.getItem("fileId");
@@ -16,6 +17,7 @@ const saveTrdiFile = async function (data, fileName) {
 				},
 			})
 			.then((res) => {
+				console.log(res)
 				localStorage.setItem("fileId", res.data);
 				if (res.status == 200) {
 					toast.success("Saved successfully", {

@@ -654,6 +654,7 @@ const Controller = (props) => {
 				projectName={props.projectName}
 				setTool={props.setTool}
 				color={props.color}
+				elements={props.elements}
 				setColor={props.setColor}
 				setActions={props.setActions}
 				setElements={props.setElements}

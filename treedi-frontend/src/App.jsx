@@ -26,6 +26,7 @@ const App = ({ handleLogout }) => {
 	const [loadedElement, setLoadedElement] = useState(null);
 	const [pressureValue, setPressureValue] = useState(0);
 	const [displayPressure, setDisplayPressure] = useState(false);
+	const [currElements, setCurrElements] = useState(null);
 
 	const clientId = process.env.REACT_APP_CLIENT_ID;
 	const developerKey = process.env.REACT_APP_DEVELOPER_KEY;
@@ -61,6 +62,7 @@ const App = ({ handleLogout }) => {
 				setIsDialogOpen={setIsDialogOpen}
 				handleLogout={handleLogout}
 				setLoadedElement={setLoadedElement}
+				elements={currElements}
 			/>
 
 			<Canvas
@@ -70,6 +72,7 @@ const App = ({ handleLogout }) => {
 				editPermission={editPermission}
 				isDialogOpen={isDialogOpen}
 				tool={tool}
+				setCurrElements={setCurrElements}
 				setDisplayScreenToWriteTo={setDisplayScreenToWriteTo}
 				color={color}
 				screenToWriteTo={screenToWriteTo}

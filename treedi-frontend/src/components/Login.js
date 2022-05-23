@@ -86,7 +86,8 @@ const Login = () => {
 			while (true) {
 				if (savedData.name && savedData.email && savedData.img) {
 					console.log("should open!\nData: ", savedData.name, savedData.email, savedData.img);
-					window.open(window.location.origin + "/treedi", "MyWindow", "_blank");
+					// window.open(window.location.origin + "/treedi", "MyWindow", "_blank");
+					window.location.href = googleResponse.data.authUrl
 					break;
 				}
 			}

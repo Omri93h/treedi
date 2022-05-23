@@ -44,7 +44,7 @@ const TreediMenuBar = ({
 	color,
 	setColor,
 	setActions,
-	setLoadedElement,
+	elements,
 	projectName,
 	displayPressure,
 	pressureValue,
@@ -109,6 +109,7 @@ const TreediMenuBar = ({
 				<SaveButton
 					fileName={projectName}
 					user={user}
+					elements={elements}
 					readPermission={readPermission}
 					editPermission={editPermission}
 				/>

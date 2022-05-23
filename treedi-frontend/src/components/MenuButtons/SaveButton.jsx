@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 
 import "../../App.css";
 
-const SaveButton = ({ fileName, user, readPermission, editPermission }) => {
+const SaveButton = ({ fileName, user, elements, readPermission, editPermission }) => {
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
 
@@ -23,7 +23,6 @@ const SaveButton = ({ fileName, user, readPermission, editPermission }) => {
 	};
 
 	const handleSave = () => {
-
 		toast.info("Saving File ...", {
 			position: "bottom-left",
 			autoClose: 800,
@@ -33,14 +32,12 @@ const SaveButton = ({ fileName, user, readPermission, editPermission }) => {
 			draggable: true,
 			progress: undefined,
 		});
-		const trdi_file_data = getTrdiFileData(user, fileName);
-
-
+		const trdi_file_data = getTrdiFileData(user, fileName, elements, readPermission, editPermission);
+		console.log(trdi_file_data)
 		saveTrdiFile(trdi_file_data, fileName);
 		handleClose();
 	};
 
-	
 	return (
 		<>
 			<Button
