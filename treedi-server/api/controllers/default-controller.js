@@ -14,6 +14,9 @@ module.exports = {
         return res.status(200).json({ message: 'Hey and welcome to Smart Flix!' });
     },
     routeInvalid : (req, res) => {
+        var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+        logger.warn(fullUrl);
+        logger.debug(JSON.stringify(req.protocol));
         logger.error('You went into a 404 problem - Please try a valid route');
         return res.status(404).json({ message: 'You went into a 404 problem - Please try a valid route' })
     }
