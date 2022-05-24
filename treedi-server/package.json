@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon index.js",
+    "socket": "nodemon socketServer/socketServer.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -26,6 +27,7 @@
     "moment": "^2.29.3",
     "node-localstorage": "^2.2.1",
     "nodemon": "^2.0.16",
+    "simple-encryptor": "^4.0.0",
     "socket.io": "^4.5.1",
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.4.0"
   }
