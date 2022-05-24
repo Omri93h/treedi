@@ -172,6 +172,8 @@ const Canvas = (props) => {
 				return { id, type, points: [{ x: x1, y: y1 }], elem_color, screen };
 			case "text":
 				return { id, type, x1, y1, x2, y2, text: "", elem_color, screen };
+			case "prohibited":
+				return { id, type };
 			default:
 				throw new Error(`Type not recognised: ${type}`);
 		}
@@ -220,6 +222,9 @@ const Canvas = (props) => {
 				return betweenAnyPoint ? "inside" : null;
 			case "text":
 				return x >= x1 && x <= x2 && y >= y1 && y <= y2 ? "inside" : null;
+			case "prohibited":
+				return null;
+				break; // not allowed
 			default:
 				throw new Error(`Type not recognised: ${type}`);
 		}
@@ -233,6 +238,11 @@ const Canvas = (props) => {
 		}
 	}, [action, selectedElement]);
 	const drawElement = (roughCanvas, context, element) => {
+		if (props.user.email !== props.owner) {
+			if (props.readPermission[props.user.email].indexOf(element.screen) === -1) {
+				return; // Not allowed to read
+			}
+		}
 		switch (element.type) {
 			case "line":
 			case "rectangle":
@@ -256,9 +266,6 @@ const Canvas = (props) => {
 				};
 				const last_saved_idx = element.image.Screens.length;
 				image.src = element.image.Screens[last_saved_idx - 1].Image;
-				// element.image.Screens.forEach((img) => {
-				// 	image.src = img.Image
-				// })
 				break;
 			default:
 				throw new Error(`Type not recognised: ${element.type}`);
@@ -305,7 +312,6 @@ const Canvas = (props) => {
 	}, [undo, redo]);
 	const updateElement = (id, x1, y1, x2, y2, type, options, screen) => {
 		const elementsCopy = [...elements];
-		// const elementsCopy = null;
 
 		switch (type) {
 			case "line":
@@ -322,6 +328,8 @@ const Canvas = (props) => {
 					...createElement(id, x1, y1, x1 + textWidth, y1 + textHeight, type, screen),
 					text: options.text,
 				};
+				break;
+			case "prohibited":
 				break;
 			default:
 				throw new Error(`Type not recognised: ${type}`);
@@ -499,10 +507,6 @@ const Canvas = (props) => {
 	const { current: canvasDetails } = useRef({ color: "green", socketUrl: "http://localhost:8000/" });
 
 	useEffect(() => {
-		// console.log('client env', process.env.NODE_ENV)
-		// if (process.env.NODE_ENV === 'development') {
-		//
-		// }
 		canvasDetails.socketUrl = "http://localhost:8000/";
 
 		console.log("inside socket useEffect");
@@ -514,7 +518,7 @@ const Canvas = (props) => {
 			console.log("Cant connect");
 		}
 		canvasDetails.socket.on("image-data", (data) => {
-			console.log('Doing something with the socket')
+			console.log("Doing something with the socket");
 			// const image = new Image();
 			// const canvas = document.getElementById("canvas");
 			// const context = canvas.getContext("2d");
@@ -524,6 +528,48 @@ const Canvas = (props) => {
 			// });
 		});
 	}, []);
+
+
+	// const { current: canvasDetails } = useRef({ color: 'green', socketUrl: '/' });
+
+	// useEffect(() => {
+        // console.log('client env', process.env.NODE_ENV)
+        // if (process.env.NODE_ENV === 'development') {
+        //     
+        // }
+		// const socket = io('http://localhost:8000/');
+		// socket.on('connection');
+		// const sendElement =() =>{
+		// 	socket.emit('element' ,"Got it form the Front");
+		// }
+		// canvasDetails.socketUrl= 'http://localhost:8000/'
+		// canvasDetails.socket = io.connect(canvasDetails.socketUrl);
+		// console.log(canvasDetails);
+		// console.log(canvasDetails.socket);
+		// //console.log('inside socket useEffect')
+		// try {
+		// 	console.log('Inside the try')
+
+		// 	canvasDetails.socket = io.connect(canvasDetails.socketUrl, () => {
+		// 		console.log('connecting to server')
+		// 	})
+		// }
+		// catch { 
+		// 	console.log('Cant connect')
+		// }
+
+        // canvasDetails.socket.on('image-data', (data) => {
+        //     const image = new Image()
+		// 	console.log("On onnnnn");
+        //     const canvas = document.getElementById('canvas');
+        //     const context = canvas.getContext('2d');
+        //     image.src = data;
+        //     image.addEventListener('load', () => {
+        //         context.drawImage(image, 0, 0);
+        //     });
+        // })
+    // }, []);
+
 
 	return (
 		<>

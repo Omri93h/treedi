@@ -15,9 +15,10 @@ const App = ({ handleLogout }) => {
 	});
 
 	const [projectName, setProjectName] = useState("");
+	const [owner, setOwner] = useState('')
 	const [isDialogOpen, setIsDialogOpen] = useState(true);
-	const [readPermission, setReadPermission] = useState(Array());
-	const [editPermission, setEditPermission] = useState(Array());
+	const [readPermission, setReadPermission] = useState({});
+	const [editPermission, setEditPermission] = useState({});
 	const [screenToWriteTo, setScreenToWriteTo] = useState(-1);
 	const [displayScreenToWriteTo, setDisplayScreenToWriteTo] = useState(false);
 	const [color, setColor] = useState("black");
@@ -63,6 +64,7 @@ const App = ({ handleLogout }) => {
 				handleLogout={handleLogout}
 				setLoadedElement={setLoadedElement}
 				elements={currElements}
+				setOwner={setOwner}
 			/>
 
 			<Canvas
@@ -72,6 +74,8 @@ const App = ({ handleLogout }) => {
 				editPermission={editPermission}
 				isDialogOpen={isDialogOpen}
 				tool={tool}
+				owner={owner}
+				user={user}
 				setCurrElements={setCurrElements}
 				setDisplayScreenToWriteTo={setDisplayScreenToWriteTo}
 				color={color}

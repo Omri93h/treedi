@@ -53,6 +53,7 @@ const TreediMenuBar = ({
 	editPermission,
 	setEditPermission,
 	setIsDialogOpen,
+	setOwner
 }) => {
 	const userButton = React.useMemo(
 		() => (
@@ -114,10 +115,18 @@ const TreediMenuBar = ({
 					editPermission={editPermission}
 				/>
 
-				<LoadButton setActions={setActions} setEditPermission={setEditPermission} setReadPermission={setReadPermission} />
+				<LoadButton
+					readPermission={readPermission}
+					editPermission={editPermission}
+					setActions={setActions}
+					setEditPermission={setEditPermission}
+					setReadPermission={setReadPermission}
+					setOwner={setOwner}
+				/>
 
 				<ShareButton
 					user={user}
+					elements={elements}
 					fileName={projectName}
 					readPermission={readPermission}
 					setReadPermission={setReadPermission}

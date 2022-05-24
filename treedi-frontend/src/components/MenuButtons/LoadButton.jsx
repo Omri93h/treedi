@@ -6,7 +6,7 @@ import { default as LoadIcon } from "@mui/icons-material/CloudUpload";
 import { toast } from "react-toastify";
 import "../../App.css";
 
-const LoadButton = ({ setActions, setEditPermission, setReadPermission }) => {
+const LoadButton = ({ setActions, readPermission, editPermission, setEditPermission, setReadPermission, setOwner }) => {
 	const [openPicker, data] = useDrivePicker();
 	const clientId = process.env.REACT_APP_CLIENT_ID;
 	const developerKey = process.env.REACT_APP_DEVELOPER_KEY;
@@ -21,19 +21,15 @@ const LoadButton = ({ setActions, setEditPermission, setReadPermission }) => {
 	}, [data]);
 
 	const addElement = (data) => {
-		// let image = new Image();	
-		// image.onload = function () {
-		// 	var canvas = document.querySelector("canvas");
-		// 	const ctx = canvas.getContext("2d");
-		// 	ctx.globalAlpha = 1;
-		// 	ctx.drawImage(image, 0, 0);
-		// };
-		// image.src = data.Screens[0].Image;
-		console.log('data: \n', data );
-		console.log('\n\nelements: ', data.Elements)
+		console.log("data: \n", data);
+		let newReadPermission = Object.assign({}, data.ReadPermission, readPermission);
+		let newEditPermission = Object.assign({}, data.EditPermission, editPermission);
+		setEditPermission(newEditPermission);
+		setReadPermission(newReadPermission);
 
-		setActions({ load: data.Elements }); // setElements([element])
+		console.log("\n\nelements: ", data.Elements);
 
+		setActions({ load: data.Elements });
 	};
 
 	const GetFileData = async function (fileID) {
@@ -56,11 +52,12 @@ const LoadButton = ({ setActions, setEditPermission, setReadPermission }) => {
 					},
 				})
 				.then((res) => {
-					addElement(res.data);
 					if (res.status == 200) {
-						console.log(res.data)
-						setReadPermission(res.data.ReadPermission)
-						setEditPermission(res.data.EditPermission)
+						console.log(res.data);
+						addElement(res.data);
+						setOwner(res.data.Owner);
+						setReadPermission(res.data.ReadPermission);
+						setEditPermission(res.data.EditPermission);
 						toast.success("Loaded successfully", {
 							position: "bottom-left",
 							autoClose: 5000,
@@ -70,7 +67,6 @@ const LoadButton = ({ setActions, setEditPermission, setReadPermission }) => {
 							draggable: true,
 							progress: undefined,
 						});
-
 					} else {
 						toast.error("Could not load file", {
 							position: "bottom-left",

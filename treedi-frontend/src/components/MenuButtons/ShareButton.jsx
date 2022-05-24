@@ -119,9 +119,19 @@ const ShareButton = ({
 	};
 
 	const handleShare = async function () {
-		setCurrEditPermission([...editPermission, {email:{read:currReadPermission,edit:currEditPermission}}])
-		const trdi_file_data = getTrdiFileData(user, fileName, elements, readPermission, editPermission);
-		await saveTrdiFile(trdi_file_data, fileName);
+		console.log("setting Permissions");
+		let newReadPermissions = readPermission;
+		newReadPermissions[email] = currReadPermission;
+
+		let newEditPermissions = editPermission;
+		editPermission[email] = currEditPermission;
+
+		setReadPermission(newReadPermissions);
+		setEditPermission(newEditPermissions);
+		console.log("newReadPerm : ", newReadPermissions);
+		console.log("newEditPerm : ", newEditPermissions);
+		const trdiFileData = getTrdiFileData(user, fileName, elements, newReadPermissions, newEditPermissions);
+		await saveTrdiFile(trdiFileData, fileName);
 		ShareFile();
 	};
 

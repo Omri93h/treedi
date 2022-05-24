@@ -666,6 +666,7 @@ const Controller = (props) => {
 				setEditPermission={props.setEditPermission}
 				setIsDialogOpen={props.setIsDialogOpen}
 				setLoadedElement={props.setLoadedElement}
+				setOwner={props.setOwner}
 			/>
 
 			{/* {pressureValue} */}
