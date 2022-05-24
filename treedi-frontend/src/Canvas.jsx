@@ -27,7 +27,7 @@ const Canvas = (props) => {
 				setHistory(historyCopy);
 			} else {
 				const updatedState = [...history].slice(0, index + 1);
-				console.log('updated state: \n\n' +  updatedState + ' \n\n newState: \n\n' + newState)
+
 				setHistory([...updatedState, newState]);
 
 				setIndex((prevState) => prevState + 1);
@@ -55,14 +55,13 @@ const Canvas = (props) => {
 		} else if (props.actions.redo) {
 			redo();
 		} else if (props.actions.load) {
-			setElements(props.actions.load)
-			
+			setElements(props.actions.load);
+
 			// props.actions.load.forEach((element) => {
 			// 	console.log(element);
 			// 	setElements([element]);
 			// });
 			// console.log()
-			
 		}
 	}, [props.actions]);
 
@@ -497,37 +496,34 @@ const Canvas = (props) => {
 		}
 	};
 
-	const { current: canvasDetails } = useRef({ color: 'green', socketUrl: 'http://localhost:8000/' });
+	const { current: canvasDetails } = useRef({ color: "green", socketUrl: "http://localhost:8000/" });
 
 	useEffect(() => {
-        // console.log('client env', process.env.NODE_ENV)
-        // if (process.env.NODE_ENV === 'development') {
-        //     
-        // }
-		canvasDetails.socketUrl= 'http://localhost:8000/'
+		// console.log('client env', process.env.NODE_ENV)
+		// if (process.env.NODE_ENV === 'development') {
+		//
+		// }
+		canvasDetails.socketUrl = "http://localhost:8000/";
 
-		console.log('inside socket useEffect')
+		console.log("inside socket useEffect");
 		try {
 			canvasDetails.socket = io.connect(canvasDetails.socketUrl, () => {
-				console.log('connecting to server')
-			})
+				console.log("connecting to server");
+			});
+		} catch {
+			console.log("Cant connect");
 		}
-		catch { 
-			console.log('Cant connect')
-		}
-
-        canvasDetails.socket.on('image-data', (data) => {
-            const image = new Image()
-            const canvas = document.getElementById('canvas');
-            const context = canvas.getContext('2d');
-            image.src = data;
-            image.addEventListener('load', () => {
-                context.drawImage(image, 0, 0);
-            });
-        })
-    }, []);
-	
-	
+		canvasDetails.socket.on("image-data", (data) => {
+			console.log('Doing something with the socket')
+			// const image = new Image();
+			// const canvas = document.getElementById("canvas");
+			// const context = canvas.getContext("2d");
+			// image.src = data;
+			// image.addEventListener("load", () => {
+			// 	context.drawImage(image, 0, 0);
+			// });
+		});
+	}, []);
 
 	return (
 		<>

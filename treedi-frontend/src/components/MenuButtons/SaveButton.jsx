@@ -33,7 +33,6 @@ const SaveButton = ({ fileName, user, elements, readPermission, editPermission }
 			progress: undefined,
 		});
 		const trdi_file_data = getTrdiFileData(user, fileName, elements, readPermission, editPermission);
-		console.log(trdi_file_data)
 		saveTrdiFile(trdi_file_data, fileName);
 		handleClose();
 	};

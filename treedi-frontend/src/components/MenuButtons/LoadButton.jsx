@@ -58,6 +58,9 @@ const LoadButton = ({ setActions, setEditPermission, setReadPermission }) => {
 				.then((res) => {
 					addElement(res.data);
 					if (res.status == 200) {
+						console.log(res.data)
+						setReadPermission(res.data.ReadPermission)
+						setEditPermission(res.data.EditPermission)
 						toast.success("Loaded successfully", {
 							position: "bottom-left",
 							autoClose: 5000,
@@ -67,6 +70,7 @@ const LoadButton = ({ setActions, setEditPermission, setReadPermission }) => {
 							draggable: true,
 							progress: undefined,
 						});
+
 					} else {
 						toast.error("Could not load file", {
 							position: "bottom-left",
