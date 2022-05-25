@@ -34,6 +34,7 @@ const App = ({ handleLogout }) => {
 	const [socket, setSocket] = useState(null);
 	const clientId = process.env.REACT_APP_CLIENT_ID;
 	const developerKey = process.env.REACT_APP_DEVELOPER_KEY;
+	
 
 	const preload = React.useMemo(
 		() => <Preload projectName={projectName} setProjectName={setProjectName} setIsDialogOpen={setIsDialogOpen} />,

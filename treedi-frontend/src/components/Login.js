@@ -26,10 +26,12 @@ const Login = () => {
 	// If successfull return of data from google we run this function:
 	const googleResponse = async (response) => {
 		console.log("going to API");
+		console.log(JSON.stringify(response))
 		// Check if a token was recieved and send it to our API:
+		const tokenData = localStorage.getItem('tokenData');
 		if (response.tokenId) {
 			const googleResponse = await axios.post("http://localhost:5001/api/user-authentication", {
-				token: response.tokenId,
+				token: tokenData
 			});
 			console.log('google responseee:', googleResponse);
 			window.location.href = googleResponse.data.authUrl

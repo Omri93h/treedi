@@ -6,7 +6,7 @@ const getToken = async function () {
 	try {
 		const res = await axios.get("http://localhost:5001/api/googleDrive/getToken/?code=" + code);
 		console.log('ACCESS TOKEN RESPONSE\n',res.data);
-		localStorage.setItem("TOKEN", res.data);
+		localStorage.setItem("tokenData", JSON.stringify(res.data));
 		if (res.ok) {
 			console.log("OK");
 		}

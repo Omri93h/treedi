@@ -97,18 +97,25 @@ const LoadButton = ({ setActions, readPermission, editPermission, setEditPermiss
 		let params = new URL(document.location).searchParams;
 		let code = params.get("code");
 		console.log("PICKER CODE:", code);
-		try {
-			const res = await axios.get("http://localhost:5001/api/googleDrive/getToken/?code=" + code);
-			console.log(res);
-			console.log(" Data:", res.data);
-			TOKEN = res.data;
-			console.log(TOKEN);
-			if (res.ok) {
-				console.log("OK");
-			}
-		} catch (error) {
-			console.log(`error - GetToken - ${error}`);
+		const tokenDataRaw = localStorage.getItem('tokenData');
+		let tokenData = {};
+		if (tokenDataRaw) {
+			tokenData = JSON.parse(tokenDataRaw);
 		}
+
+		// try {
+		// 	const res = await axios.get("http://localhost:5001/api/googleDrive/getToken/?code=" + code);
+		// 	localStorage.setItem('tokenData', JSON.stringify(res.data))
+		// 	console.log(res);
+		// 	console.log(" Data:", res.data);
+		// 	TOKEN = res.data;
+		// 	console.log(TOKEN);
+		// 	if (res.ok) {
+		// 		console.log("OK");
+		// 	}
+		// } catch (error) {
+		// 	console.log(`error - GetToken - ${error}`);
+		// }
 
 		console.log(
 			"PARAMS FOR PICKER:\n\n",
@@ -119,13 +126,13 @@ const LoadButton = ({ setActions, readPermission, editPermission, setEditPermiss
 			developerKey,
 			"\n\n",
 			"token:",
-			TOKEN
+			tokenData
 		);
 
 		openPicker({
 			clientId: clientId,
 			developerKey: developerKey,
-			token: TOKEN,
+			token: tokenData,
 			viewId: "DOCS",
 			supportDrives: true,
 		});
