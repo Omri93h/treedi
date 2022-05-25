@@ -6,42 +6,6 @@ const encryptor = require('simple-encryptor')(key);
 
 const TOKEN_PATH = "token.json";
 
-// function encrypt(text) {
-// 	// const cryptoInfo = crypto.AES.encrypt(JSON.stringify({ text }), key).toString();
-
-// 	// var data = crypto.AES.encrypt(JSON.stringify({text}, key)).toString();
-// 	// data = data.toString()
-// 	// console.log(cryptoInfo);
-// 	// return cryptoInfo;
-// 	let Algorithm = process.env.ALGORITHM;
-// 	let cipher = crypto.createCipheriv(Algorithm, Buffer.from(key), iv);
-// 	let encrypted = cipher.update(text);
-// 	encrypted = Buffer.concat([encrypted, cipher.final()]);
-// 	return { iv: iv.toString('hex'), encryptedData: encrypted.toString('hex') };
-// }
-
-// function decrypt(text) {
-// 	// /var decrypte = crypto.AES.decrypt(text, key);
-// 	//decrypte= decrypte.toString(crypto.enc.Utf8);
-// 	// const info2 = crypto.AES.decrypt(text, key).toString('utf8');
-// 	// decrypte = crypto.enc.Utf8;
-// 	// const decr = crypto.AES.decrypt(text, key).toString(crypto.enc.Utf8.parse);
-
-// 	// let decr = crypto.AES.decrypt(text, key).toString(crypto.enc.Utf8);
-// 	// decr = decr.toString(crypto.enc.Utf8);
-// 	// console.log({ info2 })
-// 	// return info2;
-// 	let Algorithm = process.env.ALGORITHM;
-// 	let parsed = JSON.parse(text);
-// 	let iv = Buffer.from(parsed.iv, 'hex');
-// 	let encryptedText = Buffer.from(parsed.encryptedData, 'hex');
-// 	let decipher = crypto.createDecipheriv(Algorithm, Buffer.from(key), iv);
-// 	let decrypted = decipher.update(encryptedText, 'hex');
-// 	// decipher.setAutoPadding(false);
-// 	decrypted = Buffer.concat([decrypted, decipher.final()]);
-
-// 	return decrypted.toString();
-// }
 
 async function authAndRunCallback(req, res, callback) {
 	fs.readFile("credentials_drive.json", (err, content) => {
@@ -171,8 +135,8 @@ async function createNewFile(oAuth2Client, res, req) {
 	drive.files.create(
 		{
 			requestBody: {
-				name: fileName,
-				mimeType: "text/plain.trdi",
+				name: fileName+".trdi",
+				mimeType: "text/plain",
 			},
 			media: {
 				mimeType: "text/plain",
