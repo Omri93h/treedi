@@ -62,6 +62,12 @@ const App = ({ handleLogout }) => {
 					// Respond with a message including this clients' id sent from the server
 					socket.emit("i am client", { data: "foo!", id: data.id });
 				});
+				socket.on("data", (data) => {
+					console.log("data recaived:", data);
+					if (data) {
+						setActions({ live: [data] });
+					}
+				});
 			}
 		}
 
@@ -72,16 +78,17 @@ const App = ({ handleLogout }) => {
 	}, [socket]);
 
 	const sendElementToSocket = () => {
-		if (socket) {
-			socket.emit("data", currElements[currElements.length - 1]);
-			socket.on("data", (data) => {
-				console.log("data recaived:", data);
-				if (data) {
-					setActions({ live: [data] });
-				}
-			});
-		}
+		socket.emit("data", currElements[currElements.length - 1]);
 	};
+
+	useEffect(() => {
+		if (currElements) {
+			if (currElements[0] !== null) {
+				console.log('now should be sent')
+				// socket.emit("data", currElements[currElements.length - 1]);
+			}
+		}
+	}, [currElements]);
 
 	return (
 		<div style={{ backgroundColor: "#f0f0f0" }}>
@@ -112,6 +119,7 @@ const App = ({ handleLogout }) => {
 			</button>
 
 			<Canvas
+			socket={socket}
 				setDisplayPressure={setDisplayPressure}
 				loadedElement={loadedElement}
 				readPermission={readPermission}

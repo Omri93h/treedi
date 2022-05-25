@@ -59,13 +59,22 @@ const Canvas = (props) => {
 		} else if (props.actions.live) {
 			if (props.actions.live.length > 0) {
 				let elementToAdd = props.actions.live[0];
-				elementToAdd.id +=1
-				console.log('element to add:', elementToAdd)
-				let elementsCopy = [...elements]
-				console.log('elementsCopy', elementsCopy)
-				elementsCopy[elementToAdd.id] = elementToAdd
-				// console.log("curr elem ", last_element);
-				setElements(elementsCopy);
+				let elementsCopy = [...elements];
+
+				if (elementsCopy[0] !== null) {
+					console.log("elementsCopy[0] is not null");
+					const idx = elementsCopy.length - 1;
+					console.log("idxxxx", idx, "\n");
+					if (elementsCopy[idx + 1] !== elementToAdd) {
+						console.log("they are not the same");
+						console.log("element to add:", elementToAdd);
+						console.log("elementsCopy1", elementsCopy);
+
+						elementsCopy[elementToAdd.id] = elementToAdd;
+						// console.log("curr elem ", last_element);
+						setElements(elementsCopy);
+					}
+				}
 			}
 		}
 	}, [props.actions]);
@@ -187,6 +196,7 @@ const Canvas = (props) => {
 	const handleBlur = (event) => {
 		const { id, x1, y1, type } = selectedElement;
 		setAction("none");
+
 		setSelectedElement(null);
 		updateElement(id, x1, y1, null, null, type, { text: event.target.value }, -1);
 	};
@@ -446,6 +456,7 @@ const Canvas = (props) => {
 		// if Pressure mode
 		else if (props.screenToWriteTo == 0) {
 			console.log("screenToWriteByPressure | ", screenToWriteByPressure);
+			const currElement = elements[elements.length - 1];
 			if (screenToWriteByPressure === 1) {
 				console.log("screen 1");
 				// if not allowed to write to screen 1
@@ -453,10 +464,13 @@ const Canvas = (props) => {
 					if (props.editPermission[props.user.email].indexOf(elements[elements.length - 1].screen) === -1) {
 						undo();
 						console.log("not allowed");
+					} else {
+						props.socket.emit("data", currElement);
 					}
+				} else {
+					props.socket.emit("data", currElement);
 				}
 			} else if (screenToWriteByPressure > 1) {
-				const currElement = elements[elements.length - 1];
 				let new_elem = { id: currElement.id, type: currElement.type, elem_color: currElement.elem_color, points: [] };
 				new_elem["screen"] = screenToWriteByPressure;
 				let width = window.screen.width;
@@ -484,7 +498,11 @@ const Canvas = (props) => {
 					if (props.editPermission[props.user.email].indexOf(new_elem.screen) === -1) {
 						undo();
 						console.log("cant edit this screen");
+					} else {
+						props.socket.emit("data", new_elem);
 					}
+				} else {
+					props.socket.emit("data", new_elem);
 				}
 			}
 		} else if (selectedElement) {
@@ -494,7 +512,6 @@ const Canvas = (props) => {
 				clientY - selectedElement.offsetY === selectedElement.y1
 			) {
 				setAction("writing");
-
 				return;
 			}
 
