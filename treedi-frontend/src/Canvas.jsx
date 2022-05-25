@@ -1,7 +1,8 @@
 import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
 import rough from "roughjs/bundled/rough.esm";
 import getStroke from "perfect-freehand";
-import io from "socket.io-client";
+
+
 const generator = rough.generator();
 let Pressure = require("pressure");
 
@@ -11,7 +12,7 @@ const Canvas = (props) => {
 	const [selectedElement, setSelectedElement] = useState(null);
 	const textAreaRef = useRef();
 
-	const [screenToWriteByPressure, setScreenToWriteByPressure] = useState(0);
+	const [screenToWriteByPressure, setScreenToWriteByPressure] = useState(1);
 
 	const [elementToMove, setElementToMove] = useState(null);
 
@@ -417,8 +418,30 @@ const Canvas = (props) => {
 		props.setDisplayPressure(false);
 		const { clientX, clientY } = event;
 
+		// dicard if not allowed
+		if (props.screenToWriteTo >= 0) {
+			console.log("screen to write to by key = ", props.screenToWriteTo);
+			if (props.user.email !== props.owner) {
+				if (props.editPermission[props.user.email].indexOf(props.screenToWriteTo + 1) === -1) {
+					undo();
+					console.log("not allowed!!!!!!!!!!!");
+				}
+			}
+		}
+
+		// if Pressure mode
 		if (props.screenToWriteTo == -1) {
-			if (screenToWriteByPressure > 1) {
+			console.log("screenToWriteByPressure | ", screenToWriteByPressure);
+			if (screenToWriteByPressure === 1) {
+				console.log("screen 1");
+				// if not allowed to write to screen 1
+				if (props.user.email !== props.owner) {
+					if (props.editPermission[props.user.email].indexOf(elements[elements.length - 1].screen) === -1) {
+						undo();
+						console.log("not allowed");
+					}
+				}
+			} else if (screenToWriteByPressure > 1) {
 				const currElement = elements[elements.length - 1];
 				const new_elem = { id: currElement.id, type: currElement.type, elem_color: currElement.elem_color, points: [] };
 				new_elem["screen"] = screenToWriteByPressure;
@@ -438,9 +461,16 @@ const Canvas = (props) => {
 						});
 					}
 				}
+
 				undo();
+				if (props.user.email !== props.owner) {
+					if (props.editPermission[props.user.email].indexOf(new_elem.screen) === -1) {
+						undo();
+						console.log("cant edit this screen");
+					}
+				}
 				setElementToMove(new_elem);
-				setScreenToWriteByPressure(0);
+				setScreenToWriteByPressure(1);
 			}
 		} else if (selectedElement) {
 			if (
@@ -504,71 +534,26 @@ const Canvas = (props) => {
 		}
 	};
 
-	const { current: canvasDetails } = useRef({ color: "green", socketUrl: "http://localhost:8000/" });
-
-	useEffect(() => {
-		canvasDetails.socketUrl = "http://localhost:8000/";
-
-		console.log("inside socket useEffect");
-		try {
-			canvasDetails.socket = io.connect(canvasDetails.socketUrl, () => {
-				console.log("connecting to server");
-			});
-		} catch {
-			console.log("Cant connect");
-		}
-		canvasDetails.socket.on("image-data", (data) => {
-			console.log("Doing something with the socket");
-			// const image = new Image();
-			// const canvas = document.getElementById("canvas");
-			// const context = canvas.getContext("2d");
-			// image.src = data;
-			// image.addEventListener("load", () => {
-			// 	context.drawImage(image, 0, 0);
-			// });
-		});
-	}, []);
-
-
-	// const { current: canvasDetails } = useRef({ color: 'green', socketUrl: '/' });
+	// const { current: canvasDetails } = useRef({ color: "green", socketUrl: "http://localhost:8000/" });
 
 	// useEffect(() => {
-        // console.log('client env', process.env.NODE_ENV)
-        // if (process.env.NODE_ENV === 'development') {
-        //     
-        // }
-		// const socket = io('http://localhost:8000/');
-		// socket.on('connection');
-		// const sendElement =() =>{
-		// 	socket.emit('element' ,"Got it form the Front");
-		// }
-		// canvasDetails.socketUrl= 'http://localhost:8000/'
-		// canvasDetails.socket = io.connect(canvasDetails.socketUrl);
-		// console.log(canvasDetails);
-		// console.log(canvasDetails.socket);
-		// //console.log('inside socket useEffect')
-		// try {
-		// 	console.log('Inside the try')
+	// 	canvasDetails.socketUrl = "http://localhost:8000/";
 
-		// 	canvasDetails.socket = io.connect(canvasDetails.socketUrl, () => {
-		// 		console.log('connecting to server')
-		// 	})
-		// }
-		// catch { 
-		// 	console.log('Cant connect')
-		// }
+	// 	console.log("inside socket useEffect");
+	// 	try {
+	// 		canvasDetails.socket = io.connect(canvasDetails.socketUrl, () => {
+	// 			console.log("connecting to server");
+	// 		});
+	// 	} catch {
+	// 		console.log("Cant connect");
+	// 	}
+	// 	canvasDetails.socket.on("image-data", (data) => {
+	// 		console.log("Doing something with the socket");
+	// 	});
+	// }, []);
 
-        // canvasDetails.socket.on('image-data', (data) => {
-        //     const image = new Image()
-		// 	console.log("On onnnnn");
-        //     const canvas = document.getElementById('canvas');
-        //     const context = canvas.getContext('2d');
-        //     image.src = data;
-        //     image.addEventListener('load', () => {
-        //         context.drawImage(image, 0, 0);
-        //     });
-        // })
-    // }, []);
+
+
 
 
 	return (
