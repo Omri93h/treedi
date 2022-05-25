@@ -46,7 +46,6 @@ async function getToken(req, res) {
 }
 
 function sendTokenToClient(oAuth2Client, res) {
-	//console.log(oAuth2Client.credentials.access_token)
 	res.send(oAuth2Client.credentials.access_token);
 }
 
@@ -135,13 +134,12 @@ async function createNewFile(oAuth2Client, res, req) {
 	drive.files.create(
 		{
 			requestBody: {
-				name: fileName+".trdi",
+				name: fileName + ".trdi",
 				mimeType: "text/plain",
 			},
 			media: {
 				mimeType: "text/plain",
 				body: encrypted,
-				// body: filePath,
 			},
 		},
 		(err, response) => {
@@ -162,25 +160,18 @@ async function createNewFile(oAuth2Client, res, req) {
 
 function updateFile(oAuth2Client, res, req) {
 	console.log("HEREEEE - UOPDATEETEF");
-
 	const filePath = req.body.data["fileData"];
 	const fileId = req.body.data["fileId"];
 	const encrypted = encryptor.encrypt(filePath);
 	// Should print gibberish:
 	console.log('encrypted: %s', encrypted);
-	// console.log(fileId);
-	//console.log(filePath);
-	//console.log(fileId);
 	const drive = google.drive({ version: "v3", auth: oAuth2Client });
-
 	drive.files.update(
 		{
 			fileId: fileId,
 			media: {
 				mimeType: "text/plain",
 				body: encrypted,
-				// body: filePath,
-
 			},
 		},
 		(err, file) => {
@@ -244,8 +235,21 @@ function shareFileWith(oAuth2Client, res, req) {
 	);
 }
 
-function collab() {
-	console.log("inside collab");
+async function HandleLogout(req, res) {
+	authAndRunCallback(req, res, (oAuth2Client, res) => {
+		logout(oAuth2Client, res);
+	});
 }
 
-module.exports = { getListFiles, createFile, getToken, getFileData, updateFile, shareFile, collab };
+function logout(oAuth2Client, res) {
+	console.log("inside the sever");
+	// delete file named 'sample.txt'
+	fs.unlink(TOKEN_PATH, function (err) {
+		if (err) throw err;
+		// if no error, file has been deleted successfully
+		console.log('File deleted!');
+	});
+	res.send("Deleted");
+}
+
+module.exports = { getListFiles, createFile, getToken, getFileData, updateFile, shareFile, HandleLogout };
