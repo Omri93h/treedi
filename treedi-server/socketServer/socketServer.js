@@ -57,26 +57,67 @@
 //     })
 // })
 
-let express = require('express');
-let app = express();
-let host = 4000
-let server = app.listen(host)
+// let express = require('express');
+// let app = express();
+// let host = 4000
+// let server = app.listen(host)
 
 
-console.log("Socket server is running. localhost:" + host)
+// console.log("Socket server is running. localhost:" + host)
 
-let socket = require('socket.io')
-const io = require('socket.io')(server , {cors :{origin :"*"}});
-//let io = socket(server);
+// let socket = require('socket.io')
+// const io = require('socket.io')(server , {cors :{origin :"*"}});
+// //let io = socket(server);
 
-io.sockets.on('connection', newConnection)
+// io.sockets.on('connection', newConnection)
 
-function newConnection(socket){
-	console.log('connection:',	socket.id);
-	socket.on('mouse', mouseMsg);
+// function newConnection(socket){
+// 	console.log('connection:',	socket.id);
+// 	socket.on('mouse', mouseMsg);
 	
-	function mouseMsg(data) {
-		socket.broadcast.emit('mouse', data)
-		console.log(data)
-	}
+// 	function mouseMsg(data) {
+// 		socket.broadcast.emit('mouse', data)
+// 		console.log(data)
+// 	}
+// }
+
+const express = require('express');
+const app = express();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server , {cors :{origin :"*"}});
+
+// const http = require('http'),
+    // fs = require('fs')
+    // NEVER use a Sync function except at start-up!
+    // index = fs.readFileSync(__dirname + '/index.html');
+
+// Send index.html to all requests
+// const app = http.createServer(function(req, res) {
+//     res.writeHead(200, {'Content-Type': 'text/html'});
+//     res.end(index);
+// });
+
+// // Socket.io server listens to our app
+// const io = require('socket.io').listen(app);
+
+// Send current time to all connected clients
+function sendTime() {
+    io.emit('time', { time: new Date().toJSON() });
 }
+
+// Send current time every 10 secs
+setInterval(sendTime, 10000);
+
+// Emit welcome message on connection
+io.on('connection', function(socket) {
+    // Use socket to communicate with this particular client only, sending it it's own id
+    socket.emit('welcome', { message: 'Welcome!', id: socket.id });
+
+    socket.on('i am client', console.log);
+});
+
+
+
+const port = 4000;
+server.listen(port , () => console.log(`Lisining to Server : ${port}`));
+// console.log("Socket server is running. localhost:" + 4001)
