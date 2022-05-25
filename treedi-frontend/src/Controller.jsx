@@ -10,6 +10,7 @@ import axios from "axios";
 import Preload from "./components/Preload";
 import { border, textAlign } from "@mui/system";
 
+
 // const generator = rough.generator();
 // var Pressure = require("pressure");
 
@@ -158,9 +159,6 @@ import { border, textAlign } from "@mui/system";
 
 const Controller = (props) => {
 	// const [projectName, setProjectName] = useState("");
-
-
-
 
 	////////
 
@@ -342,8 +340,6 @@ const Controller = (props) => {
 	// 	},
 	// });
 
-
-
 	// const handleMouseDown = (event) => {
 	// 	if (action === "writing") return;
 
@@ -381,9 +377,6 @@ const Controller = (props) => {
 	// 		setAction(tool === "text" ? "writing" : "drawing");
 	// 	}
 	// };
-
-	
-
 
 	// const handleMouseMove = (event) => {
 	// 	const canvas = document.querySelector("canvas");
@@ -509,7 +502,6 @@ const Controller = (props) => {
 	// const clientId = process.env.REACT_APP_CLIENT_ID;
 	// const developerKey = process.env.REACT_APP_DEVELOPER_KEY;
 	//const TOKEN = process.env.REACT_APP_ACCESS_TOKEN;
-
 
 	const GetFileData = async function (fileID) {
 		try {
@@ -642,11 +634,10 @@ const Controller = (props) => {
 			console.log(`error - ShareFile - ${error}`);
 		}
 	};
-	// const preload = React.useMemo(() => <Preload projectName={projectName} setProjectName={setProjectName} />, []);
-	// const menu = React.useMemo(() => <></>, []);
+
 
 	return (
-		<div style={{position:'absolute'}}>
+		<div style={{ position: "absolute" }}>
 			{/* {preload} */}
 			{/* {menu} */}
 			<TreediMenuBar
@@ -671,19 +662,19 @@ const Controller = (props) => {
 
 			{/* {pressureValue} */}
 			<div style={{ position: "fixed", bottom: 0 }}>
-				<Logout handleLogout={props.handleLogout} /> 
+				<Logout handleLogout={props.handleLogout} />
 				{/* <GoogleDriveButton Url={Url} /> */}
-				<button onClick={() => {props.setActions({'clear':true})}}>
-					clear elements 
+				<button
+					onClick={() => {
+						props.setActions({ clear: true });
+					}}>
+					clear elements
 				</button>
 
 				<button disabled onClick={() => GetListOfItems()}>
 					Get List From Drive
 				</button>
-
 			</div>
-
-
 		</div>
 	);
 };
