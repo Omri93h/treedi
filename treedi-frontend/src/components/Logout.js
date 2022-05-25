@@ -3,12 +3,8 @@ import { GoogleLogout } from 'react-google-login';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
-
-const clientId = process.env.CLIENT_ID;
-
 const Logout = (props) => {
   const navigate = useNavigate();
-
   const HandleLogOut = async (response) => {
     let params = new URL(document.location).searchParams;
     let code = params.get("code");

@@ -47,38 +47,69 @@ const App = ({ handleLogout }) => {
 
 	const sendElementToSocket = (element) => {
 		
-		const socket = io("http://localhost:4001");
-		socket.on("connection");
-		// const sendElement = () => {
-		socket.emit("element", "Got it form the Front");
-		// };
-		// canvasDetails.socketUrl = "http://localhost:4000/";
-		// canvasDetails.socket = io.connect(canvasDetails.socketUrl);
-		// console.log(canvasDetails);
-		// console.log(canvasDetails.socket);
-		//console.log('inside socket useEffect')
-		try {
-			console.log("Inside the try");
-			console.log(element)
-			socket = io.connect(4001,'localhost', () => {
-				console.log("connecting to server");
-			});
+		const socket = io("http://localhost:4000");
+		socket.on('welcome', function(data) {
+			console.log(data.message);
 
-		} catch {
-			console.log("Cant connect");
-		}
-		console.log('outside try')
-		socket.on("addElement", (data) => {
-			// const image = new Image();
-			console.log("On onnnnn");
-			console.log(data);
-			// const canvas = document.getElementById("canvas");
-			// const context = canvas.getContext("2d");
-			// image.src = data;
-			// image.addEventListener("load", () => {
-			// 	context.drawImage(image, 0, 0);
-			// });
+			// Respond with a message including this clients' id sent from the server
+			socket.emit('i am client', {data: 'foo!', id: data.id});
 		});
+		socket.on('time', function(data) {
+			console.log(data.time);
+		});
+
+		socket.on('error', console.error.bind(console));
+		socket.on('message', console.log.bind(console));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		// const socket = io("http://localhost:4001");
+		// socket.on("connection");
+		// // const sendElement = () => {
+		// socket.emit("element", "Got it form the Front");
+		// // };
+		// // canvasDetails.socketUrl = "http://localhost:4000/";
+		// // canvasDetails.socket = io.connect(canvasDetails.socketUrl);
+		// // console.log(canvasDetails);
+		// // console.log(canvasDetails.socket);
+		// //console.log('inside socket useEffect')
+		// try {
+		// 	console.log("Inside the try");
+		// 	console.log(element)
+		// 	socket = io.connect(4001,'localhost', () => {
+		// 		console.log("connecting to server");
+		// 	});
+
+		// } catch {
+		// 	console.log("Cant connect");
+		// }
+		// console.log('outside try')
+		// socket.on("addElement", (data) => {
+		// 	// const image = new Image();
+		// 	console.log("On onnnnn");
+		// 	console.log(data);
+		// 	// const canvas = document.getElementById("canvas");
+		// 	// const context = canvas.getContext("2d");
+		// 	// image.src = data;
+		// 	// image.addEventListener("load", () => {
+		// 	// 	context.drawImage(image, 0, 0);
+		// 	// });
+		// });
 	};
 
 	return (
