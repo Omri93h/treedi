@@ -1,0 +1,13 @@
+import io from "socket.io-client";
+
+function Socket() {
+	const socket = io("http://localhost:4001");
+	socket.on("welcome", function (data) {
+		console.log(data);
+		// Respond with a message including this clients' id sent from the server
+		socket.broadcast.emit("i am client", { data: "foo!", id: data.id });
+	});
+	return socket;
+}
+
+export default Socket

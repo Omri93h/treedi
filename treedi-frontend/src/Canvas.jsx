@@ -1,7 +1,8 @@
 import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
 import rough from "roughjs/bundled/rough.esm";
 import getStroke from "perfect-freehand";
-
+import io from "socket.io-client";
+// import Socket from "./utils/socket";
 
 const generator = rough.generator();
 let Pressure = require("pressure");
@@ -28,9 +29,7 @@ const Canvas = (props) => {
 				setHistory(historyCopy);
 			} else {
 				const updatedState = [...history].slice(0, index + 1);
-
 				setHistory([...updatedState, newState]);
-
 				setIndex((prevState) => prevState + 1);
 			}
 		};
@@ -57,12 +56,17 @@ const Canvas = (props) => {
 			redo();
 		} else if (props.actions.load) {
 			setElements(props.actions.load);
-
-			// props.actions.load.forEach((element) => {
-			// 	console.log(element);
-			// 	setElements([element]);
-			// });
-			// console.log()
+		} else if (props.actions.live) {
+			if (props.actions.live.length > 0) {
+				let elementToAdd = props.actions.live[0];
+				elementToAdd.id +=1
+				console.log('element to add:', elementToAdd)
+				let elementsCopy = [...elements]
+				console.log('elementsCopy', elementsCopy)
+				elementsCopy[elementToAdd.id] = elementToAdd
+				// console.log("curr elem ", last_element);
+				setElements(elementsCopy);
+			}
 		}
 	}, [props.actions]);
 
@@ -157,9 +161,9 @@ const Canvas = (props) => {
 	}, [elementToMove]);
 
 	const createElement = (id, x1, y1, x2, y2, type, elem_color, screen = 1) => {
-		if (props.screenToWriteTo > 0) {
-			x1 += window.screen.width * props.screenToWriteTo;
-			x2 += window.screen.width * props.screenToWriteTo;
+		if (props.screenToWriteTo > 1) {
+			x1 += window.screen.width * (props.screenToWriteTo - 1);
+			x2 += window.screen.width * (props.screenToWriteTo - 1);
 		}
 		switch (type) {
 			case "line":
@@ -184,7 +188,7 @@ const Canvas = (props) => {
 		const { id, x1, y1, type } = selectedElement;
 		setAction("none");
 		setSelectedElement(null);
-		updateElement(id, x1, y1, null, null, type, { text: event.target.value });
+		updateElement(id, x1, y1, null, null, type, { text: event.target.value }, -1);
 	};
 
 	const nearPoint = (x, y, x1, y1, name) => {
@@ -241,7 +245,12 @@ const Canvas = (props) => {
 	const drawElement = (roughCanvas, context, element) => {
 		if (props.user.email !== props.owner) {
 			if (props.readPermission[props.user.email].indexOf(element.screen) === -1) {
+				console.log("\nnot allowed to read element");
+				console.log(JSON.stringify(element), "\n");
 				return; // Not allowed to read
+			} else {
+				console.log("\nallowed to read element");
+				console.log(JSON.stringify(element), "\n");
 			}
 		}
 		switch (element.type) {
@@ -298,8 +307,8 @@ const Canvas = (props) => {
 			} else {
 				if (!props.isDialogOpen) {
 					if (event.key === "1" || event.key === "2" || event.key === "3" || event.key === "0") {
-						console.log("key " + Number(event.key - 1) + " is pressed");
-						props.setScreenToWriteTo(Number(event.key - 1));
+						console.log("key " + Number(event.key) + " is pressed");
+						props.setScreenToWriteTo(Number(event.key));
 						props.setDisplayScreenToWriteTo(true);
 					}
 				}
@@ -366,21 +375,26 @@ const Canvas = (props) => {
 			if (event.type == "touchmove") {
 				console.log("TOUCHMOVE!");
 				if (props.screenToWriteTo > 0) {
-					x1 += width * props.screenToWriteTo;
 					clientX = event.changedTouches[0].clientX;
-					clientX += width * props.screenToWriteTo;
+					x1 += width * (props.screenToWriteTo - 1);
+					clientX += width * (props.screenToWriteTo - 1);
 					console.log("Touch client x is , ", clientX);
 				}
 				updateElement(index, x1, y1, event.changedTouches[0].clientX, event.changedTouches[0].clientY, props.tool);
 			} else {
-				if (props.screenToWriteTo == 1) {
+				if (props.screenToWriteTo === 2) {
+					console.log("updating to 2?");
 					clientX += width;
-					updateElement(index, x1, y1, clientX, clientY, props.tool, 2);
-				} else if (props.screenToWriteTo == 2) {
+					updateElement(index, x1, y1, clientX, clientY, props.tool, "", 2);
+				} else if (props.screenToWriteTo === 3) {
+					console.log("updating to 3?");
+
 					clientX += width + width;
-					updateElement(index, x1, y1, clientX, clientY, props.tool, 3);
+					updateElement(index, x1, y1, clientX, clientY, props.tool, "", 3);
 				} else {
-					updateElement(index, x1, y1, clientX, clientY, props.tool, 1);
+					console.log("updating to 1?");
+
+					updateElement(index, x1, y1, clientX, clientY, props.tool, "", 1);
 				}
 			}
 		} else if (action === "moving") {
@@ -419,10 +433,10 @@ const Canvas = (props) => {
 		const { clientX, clientY } = event;
 
 		// dicard if not allowed
-		if (props.screenToWriteTo >= 0) {
+		if (props.screenToWriteTo > 0) {
 			console.log("screen to write to by key = ", props.screenToWriteTo);
 			if (props.user.email !== props.owner) {
-				if (props.editPermission[props.user.email].indexOf(props.screenToWriteTo + 1) === -1) {
+				if (props.editPermission[props.user.email].indexOf(props.screenToWriteTo) === -1) {
 					undo();
 					console.log("not allowed!!!!!!!!!!!");
 				}
@@ -430,7 +444,7 @@ const Canvas = (props) => {
 		}
 
 		// if Pressure mode
-		if (props.screenToWriteTo == -1) {
+		else if (props.screenToWriteTo == 0) {
 			console.log("screenToWriteByPressure | ", screenToWriteByPressure);
 			if (screenToWriteByPressure === 1) {
 				console.log("screen 1");
@@ -443,7 +457,7 @@ const Canvas = (props) => {
 				}
 			} else if (screenToWriteByPressure > 1) {
 				const currElement = elements[elements.length - 1];
-				const new_elem = { id: currElement.id, type: currElement.type, elem_color: currElement.elem_color, points: [] };
+				let new_elem = { id: currElement.id, type: currElement.type, elem_color: currElement.elem_color, points: [] };
 				new_elem["screen"] = screenToWriteByPressure;
 				let width = window.screen.width;
 				if (screenToWriteByPressure == 2) {
@@ -463,14 +477,15 @@ const Canvas = (props) => {
 				}
 
 				undo();
+				setElementToMove(new_elem);
+				setScreenToWriteByPressure(1);
+
 				if (props.user.email !== props.owner) {
 					if (props.editPermission[props.user.email].indexOf(new_elem.screen) === -1) {
 						undo();
 						console.log("cant edit this screen");
 					}
 				}
-				setElementToMove(new_elem);
-				setScreenToWriteByPressure(1);
 			}
 		} else if (selectedElement) {
 			if (
@@ -527,37 +542,54 @@ const Canvas = (props) => {
 				props.setDisplayPressure(true);
 			}
 			const id = elements.length;
-			const element = createElement(id, clientX, clientY, clientX, clientY, props.tool, props.color);
+			const screen = props.screenToWriteTo ? props.screenToWriteTo : screenToWriteByPressure;
+			const element = createElement(id, clientX, clientY, clientX, clientY, props.tool, props.color, screen);
 			setElements((prevState) => [...prevState, element]);
 			setSelectedElement(element);
 			setAction(props.tool === "text" ? "writing" : "drawing");
 		}
 	};
-
-	// const { current: canvasDetails } = useRef({ color: "green", socketUrl: "http://localhost:8000/" });
-
-	// useEffect(() => {
-	// 	canvasDetails.socketUrl = "http://localhost:8000/";
-
-	// 	console.log("inside socket useEffect");
-	// 	try {
-	// 		canvasDetails.socket = io.connect(canvasDetails.socketUrl, () => {
-	// 			console.log("connecting to server");
-	// 		});
-	// 	} catch {
-	// 		console.log("Cant connect");
-	// 	}
-	// 	canvasDetails.socket.on("image-data", (data) => {
-	// 		console.log("Doing something with the socket");
+	// const sendElementToSocket = (currElements) => {
+	// 	const socket = io("http://localhost:4001");
+	// 	socket.on("welcome", function (data) {
+	// 		console.log("DATA::::", data);
+	// 		console.log();
+	// 		// Respond with a message including this clients' id sent from the server
+	// 		socket.emit("i am client", { data: "foo!", id: data.id });
 	// 	});
-	// }, []);
+	// 	socket.on("time", function (data) {
+	// 		console.log("here data\n", data, "\n");
+	// 		console.log(currElements);
+	// 		socket.emit({ elem: currElements });
+	// 	});
 
+	// 	socket.emit("data", elements[elements.length - 1]);
 
+	// 	socket.on("data", (data) => {
+	// 		console.log(data);
+	// 	});
+	// };
 
+	// 	socket.on("error", console.error.bind(console));
+	// 	socket.on("message", console.log.bind(console));
+	// };
+	// React.useMemo
+	// useEffect(() => {
+	// 	if (elements.length) {
+	// 		socket.on("time", function (data) {
+	// 			console.log("here data\n", data, "\n");
+	// 			console.log(elements);
+	// 		});
 
+	// 		// socket.on("error", console.error.bind(console));
+	// 		// socket.on("message", console.log.bind(console));
+	// 	}
+	// }, [elements]);
 
 	return (
 		<>
+			{/* <button onClick={() => sendElementToSocket(elements)}>Send Element</button> */}
+
 			<canvas
 				id='canvas'
 				width={window.innerWidth}

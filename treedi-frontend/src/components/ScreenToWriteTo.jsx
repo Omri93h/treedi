@@ -20,7 +20,7 @@ const ScreenToWriteTo = ({setDisplayScreenToWriteTo, screenToWriteTo}) => {
         background: "lightblue",
         border: "1px solid green",
     }}>
-    {screenToWriteTo >= 0 ? "Writing To Screen " + Number(screenToWriteTo + 1) : "Pressure Mode"}
+    {screenToWriteTo > 0 ? "Writing To Screen " + Number(screenToWriteTo) : "Pressure Mode"}
 </div>
   )
 }

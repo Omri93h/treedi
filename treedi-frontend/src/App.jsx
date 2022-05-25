@@ -1,11 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import Controller from "./Controller";
 import Canvas from "./Canvas";
 import Preload from "./components/Preload";
 import getToken from "./utils/getToken";
 import ScreenToWriteTo from "./components/ScreenToWriteTo";
-
 import io from "socket.io-client";
+import getTrdiFileData from "./utils/getTrdiFileData";
 
 getToken();
 
@@ -21,7 +21,7 @@ const App = ({ handleLogout }) => {
 	const [isDialogOpen, setIsDialogOpen] = useState(true);
 	const [readPermission, setReadPermission] = useState({});
 	const [editPermission, setEditPermission] = useState({});
-	const [screenToWriteTo, setScreenToWriteTo] = useState(-1);
+	const [screenToWriteTo, setScreenToWriteTo] = useState(0);
 	const [displayScreenToWriteTo, setDisplayScreenToWriteTo] = useState(false);
 	const [color, setColor] = useState("black");
 	const [tool, setTool] = useState("pencil");
@@ -30,7 +30,8 @@ const App = ({ handleLogout }) => {
 	const [pressureValue, setPressureValue] = useState(0);
 	const [displayPressure, setDisplayPressure] = useState(false);
 	const [currElements, setCurrElements] = useState(null);
-
+	const [liveApi, setLiveApi] = useState(false);
+	const [socket, setSocket] = useState(null);
 	const clientId = process.env.REACT_APP_CLIENT_ID;
 	const developerKey = process.env.REACT_APP_DEVELOPER_KEY;
 
@@ -45,71 +46,41 @@ const App = ({ handleLogout }) => {
 
 	// const { current: canvasDetails } = useRef({ socketUrl: "/" });
 
-	const sendElementToSocket = (element) => {
-		
-		const socket = io("http://localhost:4000");
-		socket.on('welcome', function(data) {
-			console.log(data.message);
+	// socket.on("time", function (data) {
+	// 	console.log("here data\n", data, "\n");
+	// 	console.log(currElements);
+	// 	socket.emit({ elem: currElements });
+	// });
 
-			// Respond with a message including this clients' id sent from the server
-			socket.emit('i am client', {data: 'foo!', id: data.id});
-		});
-		socket.on('time', function(data) {
-			console.log(data.time);
-		});
+	useEffect(() => {
+		function initSocket() {
+			if (socket) {
+				console.log("inside init socket");
+				setLiveApi(true);
+				socket.on("welcome", function (data) {
+					console.log("DATA::::", data);
+					// Respond with a message including this clients' id sent from the server
+					socket.emit("i am client", { data: "foo!", id: data.id });
+				});
+			}
+		}
 
-		socket.on('error', console.error.bind(console));
-		socket.on('message', console.log.bind(console));
+		if (!liveApi) {
+			setSocket(io("http://localhost:4001"));
+			initSocket();
+		}
+	}, [socket]);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		// const socket = io("http://localhost:4001");
-		// socket.on("connection");
-		// // const sendElement = () => {
-		// socket.emit("element", "Got it form the Front");
-		// // };
-		// // canvasDetails.socketUrl = "http://localhost:4000/";
-		// // canvasDetails.socket = io.connect(canvasDetails.socketUrl);
-		// // console.log(canvasDetails);
-		// // console.log(canvasDetails.socket);
-		// //console.log('inside socket useEffect')
-		// try {
-		// 	console.log("Inside the try");
-		// 	console.log(element)
-		// 	socket = io.connect(4001,'localhost', () => {
-		// 		console.log("connecting to server");
-		// 	});
-
-		// } catch {
-		// 	console.log("Cant connect");
-		// }
-		// console.log('outside try')
-		// socket.on("addElement", (data) => {
-		// 	// const image = new Image();
-		// 	console.log("On onnnnn");
-		// 	console.log(data);
-		// 	// const canvas = document.getElementById("canvas");
-		// 	// const context = canvas.getContext("2d");
-		// 	// image.src = data;
-		// 	// image.addEventListener("load", () => {
-		// 	// 	context.drawImage(image, 0, 0);
-		// 	// });
-		// });
+	const sendElementToSocket = () => {
+		if (socket) {
+			socket.emit("data", currElements[currElements.length - 1]);
+			socket.on("data", (data) => {
+				console.log("data recaived:", data);
+				if (data) {
+					setActions({ live: [data] });
+				}
+			});
+		}
 	};
 
 	return (
@@ -117,7 +88,6 @@ const App = ({ handleLogout }) => {
 			{preload}
 
 			{displayScreenToWriteTo ? divScreenToWriteTo : null}
-			<button onClick={() => sendElementToSocket(currElements[currElements.length - 1])}>Send Element</button>
 			<Controller
 				user={user}
 				projectName={projectName}
@@ -137,6 +107,9 @@ const App = ({ handleLogout }) => {
 				elements={currElements}
 				setOwner={setOwner}
 			/>
+			<button style={{ position: "absolute", bottom: "50px", left: "200px" }} onClick={() => sendElementToSocket()}>
+				Send Element
+			</button>
 
 			<Canvas
 				setDisplayPressure={setDisplayPressure}
@@ -155,7 +128,6 @@ const App = ({ handleLogout }) => {
 				actions={actions}
 				setPressureValue={setPressureValue}
 			/>
-			
 		</div>
 	);
 };
