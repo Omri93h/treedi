@@ -15,7 +15,7 @@ const ScreenToWriteTo = ({setDisplayScreenToWriteTo, screenToWriteTo}) => {
         color: "black",
         textAlign: "center",
         fontSize: "100px",
-        zIndex: "-1",
+        zIndex: "99",
         opacity: "0.2",
         background: "lightblue",
         border: "1px solid green",

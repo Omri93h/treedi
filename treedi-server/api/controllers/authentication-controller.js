@@ -3,7 +3,6 @@ const logger = require('../../lib/logger');
 // const client_secret=process.env.CLIENT_SECRET;
 const fs = require('fs');
 
-
   async function googleAuth(req, res) {
 
     const {google} = require('googleapis');
@@ -56,7 +55,7 @@ const fs = require('fs');
       const authUrl = oAuth2Client.generateAuthUrl({
         access_type: 'offline',
         scope: SCOPES,
-        prompt:'consent'
+        // prompt:'consent'
       });
       
       console.log('Authorize this app by visiting this url:', authUrl);

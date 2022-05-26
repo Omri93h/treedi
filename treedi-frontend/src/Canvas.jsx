@@ -253,16 +253,18 @@ const Canvas = (props) => {
 		}
 	}, [action, selectedElement]);
 	const drawElement = (roughCanvas, context, element) => {
+		if (!element) {
+			return;
+		}
 		if (props.user.email !== props.owner) {
 			if (props.readPermission[props.user.email].indexOf(element.screen) === -1) {
-				console.log("\nnot allowed to read element");
 				console.log(JSON.stringify(element), "\n");
 				return; // Not allowed to read
 			} else {
-				console.log("\nallowed to read element");
 				console.log(JSON.stringify(element), "\n");
 			}
 		}
+
 		switch (element.type) {
 			case "line":
 			case "rectangle":
@@ -393,17 +395,12 @@ const Canvas = (props) => {
 				updateElement(index, x1, y1, event.changedTouches[0].clientX, event.changedTouches[0].clientY, props.tool);
 			} else {
 				if (props.screenToWriteTo === 2) {
-					console.log("updating to 2?");
 					clientX += width;
 					updateElement(index, x1, y1, clientX, clientY, props.tool, "", 2);
 				} else if (props.screenToWriteTo === 3) {
-					console.log("updating to 3?");
-
 					clientX += width + width;
 					updateElement(index, x1, y1, clientX, clientY, props.tool, "", 3);
 				} else {
-					console.log("updating to 1?");
-
 					updateElement(index, x1, y1, clientX, clientY, props.tool, "", 1);
 				}
 			}
@@ -441,7 +438,7 @@ const Canvas = (props) => {
 	const handleMouseUp = (event) => {
 		props.setDisplayPressure(false);
 		const { clientX, clientY } = event;
-
+		const currElement = elements[elements.length - 1];
 		// dicard if not allowed
 		if (props.screenToWriteTo > 0) {
 			console.log("screen to write to by key = ", props.screenToWriteTo);
@@ -449,14 +446,18 @@ const Canvas = (props) => {
 				if (props.editPermission[props.user.email].indexOf(props.screenToWriteTo) === -1) {
 					undo();
 					console.log("not allowed!!!!!!!!!!!");
+				} else {
+					props.socket.emit("data", currElement);
 				}
+			} else {
+				props.socket.emit("data", currElement);
 			}
 		}
 
 		// if Pressure mode
 		else if (props.screenToWriteTo == 0) {
 			console.log("screenToWriteByPressure | ", screenToWriteByPressure);
-			const currElement = elements[elements.length - 1];
+
 			if (screenToWriteByPressure === 1) {
 				console.log("screen 1");
 				// if not allowed to write to screen 1
@@ -496,7 +497,12 @@ const Canvas = (props) => {
 
 				if (props.user.email !== props.owner) {
 					if (props.editPermission[props.user.email].indexOf(new_elem.screen) === -1) {
-						undo();
+						if (!elementToMove) {
+							// undo();
+							{
+							}
+						}
+
 						console.log("cant edit this screen");
 					} else {
 						props.socket.emit("data", new_elem);

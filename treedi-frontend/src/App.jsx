@@ -81,14 +81,14 @@ const App = ({ handleLogout }) => {
 		socket.emit("data", currElements[currElements.length - 1]);
 	};
 
-	useEffect(() => {
-		if (currElements) {
-			if (currElements[0] !== null) {
-				console.log('now should be sent')
-				// socket.emit("data", currElements[currElements.length - 1]);
-			}
-		}
-	}, [currElements]);
+	// useEffect(() => {
+	// 	if (currElements) {
+	// 		if (currElements[0] !== null) {
+	// 			console.log('now should be sent')
+	// 			// socket.emit("data", currElements[currElements.length - 1]);
+	// 		}
+	// 	}
+	// }, [currElements]);
 
 	return (
 		<div style={{ backgroundColor: "#f0f0f0" }}>
