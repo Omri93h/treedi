@@ -44,10 +44,8 @@ const App = ({ handleLogout }) => {
 
 	const [pressureValue, setPressureValue] = useState(0);
 
-	const displayPressure = useRef(false);
-	function setDisplayPressure(ref) {
-		displayPressure.current = ref;
-	}
+	const [displayPressure, setDisplayPressure] = useState(false);
+
 
 	const currElements = useRef(null);
 	function setCurrElements(ref) {
@@ -136,7 +134,7 @@ const App = ({ handleLogout }) => {
 				setColor={setColor}
 				color={color}
 				setActions={setActions}
-				displayPressure={displayPressure.current}
+				displayPressure={displayPressure}
 				pressureValue={pressureValue}
 				setTool={setTool}
 				readPermission={readPermission}

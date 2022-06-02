@@ -257,8 +257,8 @@ const Canvas = (props) => {
 			return;
 		}
 		if (props.user.email !== props.owner) {
-			console.log(props.user.email)
-			console.log(props.owner)
+			console.log(props.user.email);
+			console.log(props.owner);
 			if (props.readPermission[props.user.email].indexOf(element.screen) === -1) {
 				console.log(JSON.stringify(element), "\n");
 				return; // Not allowed to read
