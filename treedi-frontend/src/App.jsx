@@ -10,6 +10,8 @@ import getTrdiFileData from "./utils/getTrdiFileData";
 getToken();
 
 const App = ({ handleLogout }) => {
+	const [fileId, setFileId] = useState(null);
+
 	console.log("APP IS rendered");
 	const user = useRef({
 		name: localStorage.getItem("TreediUserName"),
@@ -46,7 +48,6 @@ const App = ({ handleLogout }) => {
 
 	const [displayPressure, setDisplayPressure] = useState(false);
 
-
 	const currElements = useRef(null);
 	function setCurrElements(ref) {
 		currElements.current = ref;
@@ -73,7 +74,13 @@ const App = ({ handleLogout }) => {
 	);
 
 	const divScreenToWriteTo = (
-		<ScreenToWriteTo screenToWriteTo={screenToWriteTo} setDisplayScreenToWriteTo={setDisplayScreenToWriteTo} />
+		<ScreenToWriteTo
+			user={user.current}
+			owner={owner.current}
+			screenToWriteTo={screenToWriteTo}
+			setDisplayScreenToWriteTo={setDisplayScreenToWriteTo}
+			editPermission={editPermission}
+		/>
 	);
 
 	// const { current: canvasDetails } = useRef({ socketUrl: "/" });
@@ -94,6 +101,7 @@ const App = ({ handleLogout }) => {
 					// Respond with a message including this clients' id sent from the server
 					socket.current.emit("i am client", { data: "foo!", id: data.id });
 				});
+
 				socket.current.on("data", (data) => {
 					console.log("data recaived:", data);
 					if (data) {
@@ -109,6 +117,15 @@ const App = ({ handleLogout }) => {
 			console.log("sending socket.current!");
 		}
 	}, [socket.current]);
+
+	useEffect(() => {
+		if (fileId) {
+			console.log("Creating Room, fileID:\n", fileId);
+			socket.current.emit("create", fileId);
+		} else {
+			console.log("NO FILE IDDDDDD");
+		}
+	}, [fileId]);
 
 	const sendElementToSocket = () => {
 		socket.current.emit("data", currElements.current[currElements.ref.length - 1]);
@@ -129,6 +146,7 @@ const App = ({ handleLogout }) => {
 
 			{displayScreenToWriteTo ? divScreenToWriteTo : null}
 			<Controller
+				setFileId={setFileId}
 				user={user.current}
 				projectName={projectName.current}
 				setColor={setColor}

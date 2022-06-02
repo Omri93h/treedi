@@ -6,7 +6,15 @@ import { default as LoadIcon } from "@mui/icons-material/CloudUpload";
 import { toast } from "react-toastify";
 import "../../App.css";
 
-const LoadButton = ({ setActions, readPermission, editPermission, setEditPermission, setReadPermission, setOwner }) => {
+const LoadButton = ({
+	setActions,
+	readPermission,
+	editPermission,
+	setEditPermission,
+	setReadPermission,
+	setOwner,
+	setFileId,
+}) => {
 	const [openPicker, data] = useDrivePicker();
 	const clientId = process.env.REACT_APP_CLIENT_ID;
 	const developerKey = process.env.REACT_APP_DEVELOPER_KEY;
@@ -16,6 +24,7 @@ const LoadButton = ({ setActions, readPermission, editPermission, setEditPermiss
 			setActions({ clear: true });
 			console.log(data.docs[0].id);
 			localStorage.setItem("fileId", data.docs[0].id);
+			setFileId(data.docs[0].id);
 			GetFileData(data.docs[0].id);
 		}
 	}, [data]);

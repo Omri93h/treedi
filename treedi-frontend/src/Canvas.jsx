@@ -257,8 +257,6 @@ const Canvas = (props) => {
 			return;
 		}
 		if (props.user.email !== props.owner) {
-			console.log(props.user.email);
-			console.log(props.owner);
 			if (props.readPermission[props.user.email].indexOf(element.screen) === -1) {
 				console.log(JSON.stringify(element), "\n");
 				return; // Not allowed to read
@@ -269,6 +267,8 @@ const Canvas = (props) => {
 
 		switch (element.type) {
 			case "line":
+				roughCanvas.draw(element.roughElement);
+				break;
 			case "rectangle":
 				roughCanvas.draw(element.roughElement);
 				break;
@@ -449,12 +449,10 @@ const Canvas = (props) => {
 					undo();
 					console.log("not allowed!!!!!!!!!!!");
 				} else {
-					console.log("trying to send socket 1");
-					if (props.socket) props.socket.emit("data", currElement);
+					props.socket.emit("data", currElement);
 				}
 			} else {
-				console.log("trying to send socket 2");
-				if (props.socket) props.socket.emit("data", currElement);
+				props.socket.emit("data", currElement);
 			}
 		}
 
@@ -470,13 +468,10 @@ const Canvas = (props) => {
 						undo();
 						console.log("not allowed");
 					} else {
-						console.log("trying to send socket 3");
-						if (props.socket) props.socket.emit("data", currElement);
+						props.socket.emit("data", currElement);
 					}
 				} else {
-					console.log("trying to send socket 4");
-					console.log("here is socket:", props.socket);
-					if (props.socket) props.socket.emit("data", currElement);
+					props.socket.emit("data", currElement);
 				}
 			} else if (screenToWriteByPressure > 1) {
 				let new_elem = { id: currElement.id, type: currElement.type, elem_color: currElement.elem_color, points: [] };
@@ -542,6 +537,7 @@ const Canvas = (props) => {
 	};
 
 	const handleMouseDown = (event) => {
+		
 		if (action === "writing") return;
 
 		const { nativeEvent } = event;

@@ -1,7 +1,7 @@
 import { toast } from "react-toastify";
 import axios from "axios";
 
-const saveTrdiFile = async function (data, fileName) {
+const saveTrdiFile = async function (data, fileName,setFileId) {
 	try {
 		console.log(data)
 		let params = new URL(document.location).searchParams;
@@ -19,6 +19,7 @@ const saveTrdiFile = async function (data, fileName) {
 			.then((res) => {
 				console.log(res)
 				localStorage.setItem("fileId", res.data);
+				setFileId(res.data)
 				if (res.status == 200) {
 					toast.success("Saved successfully", {
 						position: "bottom-left",

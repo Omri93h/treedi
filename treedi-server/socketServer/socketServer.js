@@ -96,9 +96,21 @@ const io = require("socket.io")(server, { cors: { origin: "*" } });
 
 // Emit welcome message on connection
 io.on("connection", async function (socket) {
-	console.log('Connection!', socket.id);
+	socket.on("create", function (room) {
+		console.log("Tryng to create a room");
+		socket.join(room);
+		console.log(room);
+		socket.on("data", (e) => {
+			// socket.broadcast.emit("data", e);
+			io.sockets.in(room).emit("data", e);
+		});
+	});
+
+	console.log("Connection!", socket.id);
+
 	// Use socket to communicate with this particular client only, sending it it's own id
 	socket.emit("welcome", { message: "Welcome!", id: socket.id });
+
 	// Send current time to all connected clients
 	function sendTime() {
 		// io.emit("time", { time: new Date().toJSON(), id: socket.id} );
@@ -106,9 +118,6 @@ io.on("connection", async function (socket) {
 		// console.log(socket)
 	}
 
-	socket.on("data", (e) => {
-		socket.broadcast.emit("data", e);
-	});
 	// function sendData(e) {
 	// 	socket.on("data", (e) => {
 	// 		console.log(e)
