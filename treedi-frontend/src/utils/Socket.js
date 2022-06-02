@@ -7,6 +7,7 @@ function Socket() {
 		// Respond with a message including this clients' id sent from the server
 		socket.broadcast.emit("i am client", { data: "foo!", id: data.id });
 	});
+	console.log('using Socket.js');
 	return socket;
 }
 

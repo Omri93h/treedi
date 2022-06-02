@@ -10,11 +10,14 @@ import getTrdiFileData from "./utils/getTrdiFileData";
 getToken();
 
 const App = ({ handleLogout }) => {
+	console.log("APP IS rendered");
 	const [user, setUser] = useState({
 		name: localStorage.getItem("TreediUserName"),
 		email: localStorage.getItem("TreediUserEmail"),
 		img: localStorage.getItem("TreediUserImage"),
 	});
+
+
 
 	const [projectName, setProjectName] = useState("");
 	const [owner, setOwner] = useState(user.email);
@@ -34,6 +37,7 @@ const App = ({ handleLogout }) => {
 	const [socket, setSocket] = useState(null);
 	const clientId = process.env.REACT_APP_CLIENT_ID;
 	const developerKey = process.env.REACT_APP_DEVELOPER_KEY;
+
 
 	const preload = React.useMemo(
 		() => <Preload projectName={projectName} setProjectName={setProjectName} setIsDialogOpen={setIsDialogOpen} />,
@@ -74,6 +78,7 @@ const App = ({ handleLogout }) => {
 		if (!liveApi) {
 			setSocket(io("http://localhost:4001"));
 			initSocket();
+			console.log("sending socket!");
 		}
 	}, [socket]);
 
@@ -119,7 +124,7 @@ const App = ({ handleLogout }) => {
 			</button>
 
 			<Canvas
-			socket={socket}
+				socket={socket}
 				setDisplayPressure={setDisplayPressure}
 				loadedElement={loadedElement}
 				readPermission={readPermission}

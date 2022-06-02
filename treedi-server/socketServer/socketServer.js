@@ -94,31 +94,29 @@ const io = require("socket.io")(server, { cors: { origin: "*" } });
 
 // Send current time every 10 secs
 
-
 // Emit welcome message on connection
-io.on("connection", function (socket) {
+io.on("connection", async function (socket) {
+	console.log('Connection!', socket.id);
 	// Use socket to communicate with this particular client only, sending it it's own id
 	socket.emit("welcome", { message: "Welcome!", id: socket.id });
 	// Send current time to all connected clients
 	function sendTime() {
 		// io.emit("time", { time: new Date().toJSON(), id: socket.id} );
-		io.emit("time", { time: new Date().toJSON(), id: socket.id} );
+		io.emit("time", { time: new Date().toJSON(), id: socket.id });
 		// console.log(socket)
 	}
+
 	socket.on("data", (e) => {
-		socket.broadcast.emit("data", e );
+		socket.broadcast.emit("data", e);
 	});
 	// function sendData(e) {
 	// 	socket.on("data", (e) => {
 	// 		console.log(e)
 	// 	});
-		
-	
 
 	setInterval(sendTime, 30000);
 	// setInterval(sendData, 8000);
 	socket.on("i am client", console.log);
-
 });
 
 const port = 4001;

@@ -447,10 +447,12 @@ const Canvas = (props) => {
 					undo();
 					console.log("not allowed!!!!!!!!!!!");
 				} else {
-					props.socket.emit("data", currElement);
+					console.log('trying to send socket 1')
+					if (props.socket) props.socket.emit("data", currElement);
 				}
 			} else {
-				props.socket.emit("data", currElement);
+				console.log('trying to send socket 2')
+				if (props.socket) props.socket.emit("data", currElement);
 			}
 		}
 
@@ -466,10 +468,13 @@ const Canvas = (props) => {
 						undo();
 						console.log("not allowed");
 					} else {
-						props.socket.emit("data", currElement);
+						console.log('trying to send socket 3')
+						if (props.socket) props.socket.emit("data", currElement);
 					}
 				} else {
-					props.socket.emit("data", currElement);
+					console.log('trying to send socket 4')
+					console.log('here is socket:', props.socket)
+					if (props.socket) props.socket.emit("data", currElement);
 				}
 			} else if (screenToWriteByPressure > 1) {
 				let new_elem = { id: currElement.id, type: currElement.type, elem_color: currElement.elem_color, points: [] };
