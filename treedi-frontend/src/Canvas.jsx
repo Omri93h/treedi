@@ -257,6 +257,8 @@ const Canvas = (props) => {
 			return;
 		}
 		if (props.user.email !== props.owner) {
+			console.log(props.user.email)
+			console.log(props.owner)
 			if (props.readPermission[props.user.email].indexOf(element.screen) === -1) {
 				console.log(JSON.stringify(element), "\n");
 				return; // Not allowed to read
@@ -447,11 +449,11 @@ const Canvas = (props) => {
 					undo();
 					console.log("not allowed!!!!!!!!!!!");
 				} else {
-					console.log('trying to send socket 1')
+					console.log("trying to send socket 1");
 					if (props.socket) props.socket.emit("data", currElement);
 				}
 			} else {
-				console.log('trying to send socket 2')
+				console.log("trying to send socket 2");
 				if (props.socket) props.socket.emit("data", currElement);
 			}
 		}
@@ -468,12 +470,12 @@ const Canvas = (props) => {
 						undo();
 						console.log("not allowed");
 					} else {
-						console.log('trying to send socket 3')
+						console.log("trying to send socket 3");
 						if (props.socket) props.socket.emit("data", currElement);
 					}
 				} else {
-					console.log('trying to send socket 4')
-					console.log('here is socket:', props.socket)
+					console.log("trying to send socket 4");
+					console.log("here is socket:", props.socket);
 					if (props.socket) props.socket.emit("data", currElement);
 				}
 			} else if (screenToWriteByPressure > 1) {

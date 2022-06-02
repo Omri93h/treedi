@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Controller from "./Controller";
 import Canvas from "./Canvas";
 import Preload from "./components/Preload";
@@ -11,17 +11,28 @@ getToken();
 
 const App = ({ handleLogout }) => {
 	console.log("APP IS rendered");
-	const [user, setUser] = useState({
+	const user = useRef({
 		name: localStorage.getItem("TreediUserName"),
 		email: localStorage.getItem("TreediUserEmail"),
 		img: localStorage.getItem("TreediUserImage"),
 	});
 
+	const projectName = useRef("");
+	function setProjectName(ref) {
+		projectName.current = ref;
+	}
 
+	const owner = useRef(user.current.email);
 
-	const [projectName, setProjectName] = useState("");
-	const [owner, setOwner] = useState(user.email);
-	const [isDialogOpen, setIsDialogOpen] = useState(true);
+	function setOwner(ref) {
+		owner.current = ref;
+	}
+
+	const isDialogOpen = useRef(true);
+	function setIsDialogOpen(ref) {
+		isDialogOpen.current = ref;
+	}
+
 	const [readPermission, setReadPermission] = useState({});
 	const [editPermission, setEditPermission] = useState({});
 	const [screenToWriteTo, setScreenToWriteTo] = useState(0);
@@ -30,17 +41,36 @@ const App = ({ handleLogout }) => {
 	const [tool, setTool] = useState("pencil");
 	const [actions, setActions] = useState({});
 	const [loadedElement, setLoadedElement] = useState(null);
+
 	const [pressureValue, setPressureValue] = useState(0);
-	const [displayPressure, setDisplayPressure] = useState(false);
-	const [currElements, setCurrElements] = useState(null);
-	const [liveApi, setLiveApi] = useState(false);
-	const [socket, setSocket] = useState(null);
+
+	const displayPressure = useRef(false);
+	function setDisplayPressure(ref) {
+		displayPressure.current = ref;
+	}
+
+	const currElements = useRef(null);
+	function setCurrElements(ref) {
+		currElements.current = ref;
+	}
+
+	const liveApi = useRef(false);
+
+	function setLiveApi(ref) {
+		liveApi.current = ref;
+	}
+	const socket = useRef(null);
+	function setSocket(ref) {
+		socket.current = ref;
+	}
+
 	const clientId = process.env.REACT_APP_CLIENT_ID;
 	const developerKey = process.env.REACT_APP_DEVELOPER_KEY;
 
-
 	const preload = React.useMemo(
-		() => <Preload projectName={projectName} setProjectName={setProjectName} setIsDialogOpen={setIsDialogOpen} />,
+		() => (
+			<Preload projectName={projectName.current} setProjectName={setProjectName} setIsDialogOpen={setIsDialogOpen} />
+		),
 		[]
 	);
 
@@ -50,23 +80,23 @@ const App = ({ handleLogout }) => {
 
 	// const { current: canvasDetails } = useRef({ socketUrl: "/" });
 
-	// socket.on("time", function (data) {
+	// socket.current.on("time", function (data) {
 	// 	console.log("here data\n", data, "\n");
 	// 	console.log(currElements);
-	// 	socket.emit({ elem: currElements });
+	// 	socket.current.emit({ elem: currElements });
 	// });
 
 	useEffect(() => {
 		function initSocket() {
-			if (socket) {
-				console.log("inside init socket");
+			if (socket.current) {
+				console.log("inside init socket.current");
 				setLiveApi(true);
-				socket.on("welcome", function (data) {
+				socket.current.on("welcome", function (data) {
 					console.log("DATA::::", data);
 					// Respond with a message including this clients' id sent from the server
-					socket.emit("i am client", { data: "foo!", id: data.id });
+					socket.current.emit("i am client", { data: "foo!", id: data.id });
 				});
-				socket.on("data", (data) => {
+				socket.current.on("data", (data) => {
 					console.log("data recaived:", data);
 					if (data) {
 						setActions({ live: [data] });
@@ -75,22 +105,22 @@ const App = ({ handleLogout }) => {
 			}
 		}
 
-		if (!liveApi) {
+		if (!liveApi.current) {
 			setSocket(io("http://localhost:4001"));
 			initSocket();
-			console.log("sending socket!");
+			console.log("sending socket.current!");
 		}
-	}, [socket]);
+	}, [socket.current]);
 
 	const sendElementToSocket = () => {
-		socket.emit("data", currElements[currElements.length - 1]);
+		socket.current.emit("data", currElements.current[currElements.ref.length - 1]);
 	};
 
 	// useEffect(() => {
 	// 	if (currElements) {
 	// 		if (currElements[0] !== null) {
 	// 			console.log('now should be sent')
-	// 			// socket.emit("data", currElements[currElements.length - 1]);
+	// 			// socket.current.emit("data", currElements[currElements.length - 1]);
 	// 		}
 	// 	}
 	// }, [currElements]);
@@ -101,12 +131,12 @@ const App = ({ handleLogout }) => {
 
 			{displayScreenToWriteTo ? divScreenToWriteTo : null}
 			<Controller
-				user={user}
-				projectName={projectName}
+				user={user.current}
+				projectName={projectName.current}
 				setColor={setColor}
 				color={color}
 				setActions={setActions}
-				displayPressure={displayPressure}
+				displayPressure={displayPressure.current}
 				pressureValue={pressureValue}
 				setTool={setTool}
 				readPermission={readPermission}
@@ -116,7 +146,7 @@ const App = ({ handleLogout }) => {
 				setIsDialogOpen={setIsDialogOpen}
 				handleLogout={handleLogout}
 				setLoadedElement={setLoadedElement}
-				elements={currElements}
+				elements={currElements.ref}
 				setOwner={setOwner}
 			/>
 			<button style={{ position: "absolute", bottom: "50px", left: "200px" }} onClick={() => sendElementToSocket()}>
@@ -124,15 +154,15 @@ const App = ({ handleLogout }) => {
 			</button>
 
 			<Canvas
-				socket={socket}
+				socket={socket.current}
 				setDisplayPressure={setDisplayPressure}
 				loadedElement={loadedElement}
 				readPermission={readPermission}
 				editPermission={editPermission}
-				isDialogOpen={isDialogOpen}
+				isDialogOpen={isDialogOpen.current}
 				tool={tool}
-				owner={owner}
-				user={user}
+				owner={owner.current}
+				user={user.current}
 				setCurrElements={setCurrElements}
 				setDisplayScreenToWriteTo={setDisplayScreenToWriteTo}
 				color={color}
