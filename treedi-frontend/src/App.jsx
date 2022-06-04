@@ -5,19 +5,20 @@ import Preload from "./components/Preload";
 import getToken from "./utils/getToken";
 import ScreenToWriteTo from "./components/ScreenToWriteTo";
 import io from "socket.io-client";
-import getTrdiFileData from "./utils/getTrdiFileData";
-
+import PressureSlider from "./components/PressureSlider";
+import { Fade } from "@mui/material";
 getToken();
 
 const App = ({ handleLogout }) => {
 	const [fileId, setFileId] = useState(null);
 
-	console.log("APP IS rendered");
+	// console.log("APP IS rendered");
 	const user = useRef({
 		name: localStorage.getItem("TreediUserName"),
 		email: localStorage.getItem("TreediUserEmail"),
 		img: localStorage.getItem("TreediUserImage"),
 	});
+	const [action, setAction] = useState("none");
 
 	const projectName = useRef("");
 	function setProjectName(ref) {
@@ -25,15 +26,11 @@ const App = ({ handleLogout }) => {
 	}
 
 	const owner = useRef(user.current.email);
-
 	function setOwner(ref) {
 		owner.current = ref;
 	}
 
-	const isDialogOpen = useRef(true);
-	function setIsDialogOpen(ref) {
-		isDialogOpen.current = ref;
-	}
+	const [isDialogOpen, setIsDialogOpen] = useState(true);
 
 	const [readPermission, setReadPermission] = useState({});
 	const [editPermission, setEditPermission] = useState({});
@@ -41,12 +38,11 @@ const App = ({ handleLogout }) => {
 	const [displayScreenToWriteTo, setDisplayScreenToWriteTo] = useState(false);
 	const [color, setColor] = useState("black");
 	const [tool, setTool] = useState("pencil");
-	const [actions, setActions] = useState({});
+	const [command, setCommand] = useState({});
 	const [loadedElement, setLoadedElement] = useState(null);
 
 	const [pressureValue, setPressureValue] = useState(0);
-
-	const [displayPressure, setDisplayPressure] = useState(false);
+	const [pressureMode, setPressureMode] = useState(true);
 
 	const currElements = useRef(null);
 	function setCurrElements(ref) {
@@ -58,6 +54,7 @@ const App = ({ handleLogout }) => {
 	function setLiveApi(ref) {
 		liveApi.current = ref;
 	}
+
 	const socket = useRef(null);
 	function setSocket(ref) {
 		socket.current = ref;
@@ -83,14 +80,6 @@ const App = ({ handleLogout }) => {
 		/>
 	);
 
-	// const { current: canvasDetails } = useRef({ socketUrl: "/" });
-
-	// socket.current.on("time", function (data) {
-	// 	console.log("here data\n", data, "\n");
-	// 	console.log(currElements);
-	// 	socket.current.emit({ elem: currElements });
-	// });
-
 	useEffect(() => {
 		function initSocket() {
 			if (socket.current) {
@@ -105,7 +94,7 @@ const App = ({ handleLogout }) => {
 				socket.current.on("data", (data) => {
 					console.log("data recaived:", data);
 					if (data) {
-						setActions({ live: [data] });
+						setCommand({ live: [data] });
 					}
 				});
 			}
@@ -114,7 +103,7 @@ const App = ({ handleLogout }) => {
 		if (!liveApi.current) {
 			setSocket(io("http://localhost:4001"));
 			initSocket();
-			console.log("sending socket.current!");
+			console.log("sending socket!");
 		}
 	}, [socket.current]);
 
@@ -131,51 +120,47 @@ const App = ({ handleLogout }) => {
 		socket.current.emit("data", currElements.current[currElements.ref.length - 1]);
 	};
 
-	// useEffect(() => {
-	// 	if (currElements) {
-	// 		if (currElements[0] !== null) {
-	// 			console.log('now should be sent')
-	// 			// socket.current.emit("data", currElements[currElements.length - 1]);
-	// 		}
-	// 	}
-	// }, [currElements]);
-
 	return (
 		<div style={{ backgroundColor: "#f0f0f0" }}>
 			{preload}
 
 			{displayScreenToWriteTo ? divScreenToWriteTo : null}
-			<Controller
-				setFileId={setFileId}
-				user={user.current}
-				projectName={projectName.current}
-				setColor={setColor}
-				color={color}
-				setActions={setActions}
-				displayPressure={displayPressure}
-				pressureValue={pressureValue}
-				setTool={setTool}
-				readPermission={readPermission}
-				setEditPermission={setEditPermission}
-				setReadPermission={setReadPermission}
-				editPermission={editPermission}
-				setIsDialogOpen={setIsDialogOpen}
-				handleLogout={handleLogout}
-				setLoadedElement={setLoadedElement}
-				elements={currElements.ref}
-				setOwner={setOwner}
-			/>
-			<button style={{ position: "absolute", bottom: "50px", left: "200px" }} onClick={() => sendElementToSocket()}>
-				Send Element
-			</button>
+
+			<Fade in={action === "none" ? true : false} timeout={250}>
+				<div>
+					<Controller
+						setFileId={setFileId}
+						user={user.current}
+						projectName={projectName.current}
+						setColor={setColor}
+						color={color}
+						setCommand={setCommand}
+						pressureValue={pressureValue}
+						setTool={setTool}
+						readPermission={readPermission}
+						setEditPermission={setEditPermission}
+						setReadPermission={setReadPermission}
+						editPermission={editPermission}
+						setIsDialogOpen={setIsDialogOpen}
+						handleLogout={handleLogout}
+						setLoadedElement={setLoadedElement}
+						elements={currElements.current}
+						setOwner={setOwner}
+					/>
+				</div>
+			</Fade>
+
+			<PressureSlider pressureValue={pressureValue} screenToWriteTo={screenToWriteTo} pressureMode={pressureMode} />
 
 			<Canvas
+				action={action}
+				setAction={setAction}
+				pressureValue={pressureValue}
 				socket={socket.current}
-				setDisplayPressure={setDisplayPressure}
 				loadedElement={loadedElement}
 				readPermission={readPermission}
 				editPermission={editPermission}
-				isDialogOpen={isDialogOpen.current}
+				isDialogOpen={isDialogOpen}
 				tool={tool}
 				owner={owner.current}
 				user={user.current}
@@ -184,8 +169,10 @@ const App = ({ handleLogout }) => {
 				color={color}
 				screenToWriteTo={screenToWriteTo}
 				setScreenToWriteTo={setScreenToWriteTo}
-				actions={actions}
+				command={command}
 				setPressureValue={setPressureValue}
+				pressureMode={pressureMode}
+				setPressureMode={setPressureMode}
 			/>
 		</div>
 	);

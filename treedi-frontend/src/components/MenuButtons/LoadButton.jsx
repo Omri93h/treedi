@@ -7,7 +7,7 @@ import { toast } from "react-toastify";
 import "../../App.css";
 
 const LoadButton = ({
-	setActions,
+	setCommand,
 	readPermission,
 	editPermission,
 	setEditPermission,
@@ -21,7 +21,7 @@ const LoadButton = ({
 
 	useEffect(() => {
 		if (data) {
-			setActions({ clear: true });
+			setCommand({ clear: true });
 			console.log(data.docs[0].id);
 			localStorage.setItem("fileId", data.docs[0].id);
 			setFileId(data.docs[0].id);
@@ -38,7 +38,7 @@ const LoadButton = ({
 
 		console.log("\n\nelements: ", data.Elements);
 
-		setActions({ load: data.Elements });
+		setCommand({ load: data.Elements });
 	};
 
 	const GetFileData = async function (fileID) {

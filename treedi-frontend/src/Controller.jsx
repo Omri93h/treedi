@@ -13,9 +13,8 @@ const Controller = (props) => {
 				color={props.color}
 				elements={props.elements}
 				setColor={props.setColor}
-				setActions={props.setActions}
+				setCommand={props.setCommand}
 				setElements={props.setElements}
-				displayPressure={props.displayPressure}
 				pressureValue={props.pressureValue}
 				readPermission={props.readPermission}
 				setReadPermission={props.setReadPermission}
@@ -29,12 +28,7 @@ const Controller = (props) => {
 			<div style={{ position: "fixed", bottom: 0 }}>
 				<Logout handleLogout={props.handleLogout} />
 
-				<button
-					onClick={() => {
-						props.setActions({ clear: true });
-					}}>
-					clear elements
-				</button>
+
 			</div>
 		</div>
 	);

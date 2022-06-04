@@ -9,7 +9,6 @@ let Pressure = require("pressure");
 
 const Canvas = (props) => {
 	const adjustmentRequired = (type) => ["line", "rectangle"].includes(type);
-	const [action, setAction] = useState("none");
 	const [selectedElement, setSelectedElement] = useState(null);
 	const textAreaRef = useRef();
 
@@ -47,18 +46,18 @@ const Canvas = (props) => {
 
 	const distance = (a, b) => Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 	useEffect(() => {
-		console.log(props.actions);
-		if (props.actions.clear) {
+		console.log(props.command);
+		if (props.command.clear) {
 			clearElements();
-		} else if (props.actions.undo) {
+		} else if (props.command.undo) {
 			undo();
-		} else if (props.actions.redo) {
+		} else if (props.command.redo) {
 			redo();
-		} else if (props.actions.load) {
-			setElements(props.actions.load);
-		} else if (props.actions.live) {
-			if (props.actions.live.length > 0) {
-				let elementToAdd = props.actions.live[0];
+		} else if (props.command.load) {
+			setElements(props.command.load);
+		} else if (props.command.live) {
+			if (props.command.live.length > 0) {
+				let elementToAdd = props.command.live[0];
 				let elementsCopy = [...elements];
 
 				if (elementsCopy[0] !== null) {
@@ -77,7 +76,7 @@ const Canvas = (props) => {
 				}
 			}
 		}
-	}, [props.actions]);
+	}, [props.command]);
 
 	const getElementAtPosition = (x, y, elements) => {
 		return elements
@@ -115,6 +114,8 @@ const Canvas = (props) => {
 			case "tr":
 			case "bl":
 				return "nesw-resize";
+			case "del":
+				return "not-allowed";
 			default:
 				return "move";
 		}
@@ -195,7 +196,7 @@ const Canvas = (props) => {
 
 	const handleBlur = (event) => {
 		const { id, x1, y1, type } = selectedElement;
-		setAction("none");
+		props.setAction("none");
 
 		setSelectedElement(null);
 		updateElement(id, x1, y1, null, null, type, { text: event.target.value }, -1);
@@ -247,11 +248,11 @@ const Canvas = (props) => {
 
 	useEffect(() => {
 		const textArea = textAreaRef.current;
-		if (action === "writing") {
+		if (props.action === "writing") {
 			textArea.focus();
 			textArea.value = selectedElement.text;
 		}
-	}, [action, selectedElement]);
+	}, [props.action, selectedElement]);
 	const drawElement = (roughCanvas, context, element) => {
 		if (!element) {
 			return;
@@ -302,13 +303,13 @@ const Canvas = (props) => {
 		context.clearRect(0, 0, canvas.width, canvas.height);
 		const roughCanvas = rough.canvas(canvas);
 		elements.forEach((element) => {
-			if (action === "writing" && selectedElement.id === element.id) {
+			if (props.action === "writing" && selectedElement.id === element.id) {
 				return;
 			}
 			drawElement(roughCanvas, context, element);
 		});
 		props.setCurrElements(elements);
-	}, [elements, action, selectedElement]);
+	}, [elements, props.action, selectedElement]);
 
 	useEffect(() => {
 		const undoRedoFunction = (event) => {
@@ -320,9 +321,14 @@ const Canvas = (props) => {
 				}
 			} else {
 				if (!props.isDialogOpen) {
-					if (event.key === "1" || event.key === "2" || event.key === "3" || event.key === "0") {
+					if (event.key === "1" || event.key === "2" || event.key === "3") {
 						console.log("key " + Number(event.key) + " is pressed");
 						props.setScreenToWriteTo(Number(event.key));
+						props.setPressureMode(false);
+						props.setDisplayScreenToWriteTo(true);
+					} else if (event.key === "0") {
+						props.setScreenToWriteTo(0);
+						props.setPressureMode(true);
 						props.setDisplayScreenToWriteTo(true);
 					}
 				}
@@ -336,7 +342,6 @@ const Canvas = (props) => {
 	}, [undo, redo]);
 	const updateElement = (id, x1, y1, x2, y2, type, options, screen) => {
 		const elementsCopy = [...elements];
-
 		switch (type) {
 			case "line":
 			case "rectangle":
@@ -372,18 +377,51 @@ const Canvas = (props) => {
 		},
 	});
 	const handleMouseMove = (event) => {
-		const canvas = document.querySelector("canvas");
-		const ctx = canvas.getContext("2d");
 		const { nativeEvent } = event;
 		let clientY = nativeEvent.offsetY;
 		let clientX = nativeEvent.offsetX;
 
-		if (props.tool === "selection") {
-			let element = getElementAtPosition(clientX, clientY, elements);
-			event.target.style.cursor = element ? cursorForPosition(element.position) : "default";
+		if (props.tool === "selection" || props.tool === "eraser") {
+			let pointedElements = [];
+			for (let i = 0; i <= 2; i++) {
+				pointedElements.push(getElementAtPosition(clientX + i * window.screen.width, clientY, elements));
+			}
+			// console.log(pointedElements);
+			if (!pointedElements[0] && !pointedElements[1] && !pointedElements[2]) {
+				event.target.style.cursor = "default";
+			} else {
+				switch (props.tool) {
+					case "eraser":
+						event.target.style.cursor = "not-allowed";
+						break;
+					case "selection":
+						if (pointedElements[0]) {
+							event.target.style.cursor = cursorForPosition(pointedElements[0].position);
+						} else if (pointedElements[1]) {
+							event.target.style.cursor = cursorForPosition(pointedElements[1].position);
+						} else {
+							event.target.style.cursor = cursorForPosition(pointedElements[2].position);
+						}
+						break;
+					default:
+						event.target.style.cursor = "default";
+				}
+			}
+			// pointedElements.forEach((element) => {
+			// 	if (!element) {
+			// 		event.target.style.cursor = "default";
+			// 		return;
+			// 	} else if (props.tool === "eraser") {
+			// 		event.target.style.cursor = element ? "not-allowed" : "default"; // cursor type for delete
+			// 		return;
+			// 	} else {
+			// 		event.target.style.cursor = element ? cursorForPosition(element.position) : "default";
+			// 		return;
+			// 	}
+			// });
 		}
-		if (action === "drawing") {
-			const index = elements.length - 1;
+		if (props.action === "drawing") {
+			let index = elements.length - 1;
 			let { x1, y1 } = elements[index];
 			let width = window.screen.width;
 			if (event.type == "touchmove") {
@@ -396,17 +434,50 @@ const Canvas = (props) => {
 				}
 				updateElement(index, x1, y1, event.changedTouches[0].clientX, event.changedTouches[0].clientY, props.tool);
 			} else {
-				if (props.screenToWriteTo === 2) {
-					clientX += width;
-					updateElement(index, x1, y1, clientX, clientY, props.tool, "", 2);
-				} else if (props.screenToWriteTo === 3) {
-					clientX += width + width;
-					updateElement(index, x1, y1, clientX, clientY, props.tool, "", 3);
-				} else {
-					updateElement(index, x1, y1, clientX, clientY, props.tool, "", 1);
+				let xPoint = clientX + width;
+				if (props.screenToWriteTo == 0) {
+					if (props.pressureValue > 0.33) {
+						handleMouseUp(event, false);
+						props.setScreenToWriteTo(2);
+						index += 1;
+
+						const element = createElement(index, xPoint, clientY, xPoint, clientY, props.tool, props.color, 2);
+						setElements((prevState) => [...prevState, element]);
+						setSelectedElement(element);
+						props.setAction(props.tool === "text" ? "writing" : "drawing");
+					} else {
+						updateElement(index, x1, y1, clientX, clientY, props.tool, "", 1);
+					}
+				}
+
+				if (props.screenToWriteTo > 0) {
+					if (props.screenToWriteTo === 2) {
+						clientX += width;
+						updateElement(index, x1, y1, clientX, clientY, props.tool, "", 2);
+
+						if (props.pressureValue > 0.66 && props.pressureMode) {
+							props.setScreenToWriteTo(3);
+							index += 1;
+							const element = createElement(index, xPoint, clientY, xPoint, clientY, props.tool, props.color, 3);
+							setElements((prevState) => [...prevState, element]);
+							setSelectedElement(element);
+						}
+						if (props.pressureValue < 0.33 && props.pressureMode) {
+							props.setScreenToWriteTo(1);
+							index += 1;
+							const element = createElement(index, clientX, clientY, clientX, clientY, props.tool, props.color, 1);
+							setElements((prevState) => [...prevState, element]);
+							setSelectedElement(element);
+						}
+					} else if (props.screenToWriteTo === 3) {
+						clientX += width + width;
+						updateElement(index, x1, y1, clientX, clientY, props.tool, "", 3);
+					} else {
+						updateElement(index, x1, y1, clientX, clientY, props.tool, "", 1);
+					}
 				}
 			}
-		} else if (action === "moving") {
+		} else if (props.action === "moving") {
 			if (selectedElement.type === "pencil") {
 				// console.log(event);
 
@@ -430,20 +501,19 @@ const Canvas = (props) => {
 				const options = type === "text" ? { text: selectedElement.text } : {};
 				updateElement(id, newX1, newY1, newX1 + width, newY1 + height, type, options);
 			}
-		} else if (action === "resizing") {
+		} else if (props.action === "resizing") {
 			const { id, type, position, ...coordinates } = selectedElement;
 			const { x1, y1, x2, y2 } = resizedCoordinates(clientX, clientY, position, coordinates);
 			updateElement(id, x1, y1, x2, y2, type);
 		}
 	};
 
-	const handleMouseUp = (event) => {
-		props.setDisplayPressure(false);
+	const handleMouseUp = (event, updatePressureValue = true) => {
 		const { clientX, clientY } = event;
 		const currElement = elements[elements.length - 1];
+
 		// dicard if not allowed
 		if (props.screenToWriteTo > 0) {
-			console.log("screen to write to by key = ", props.screenToWriteTo);
 			if (props.user.email !== props.owner) {
 				if (props.editPermission[props.user.email].indexOf(props.screenToWriteTo) === -1) {
 					undo();
@@ -458,8 +528,6 @@ const Canvas = (props) => {
 
 		// if Pressure mode
 		else if (props.screenToWriteTo == 0) {
-			console.log("screenToWriteByPressure | ", screenToWriteByPressure);
-
 			if (screenToWriteByPressure === 1) {
 				console.log("screen 1");
 				// if not allowed to write to screen 1
@@ -493,8 +561,8 @@ const Canvas = (props) => {
 					}
 				}
 
-				undo();
-				setElementToMove(new_elem);
+				// undo();
+				// setElementToMove(new_elem);
 				setScreenToWriteByPressure(1);
 
 				if (props.user.email !== props.owner) {
@@ -519,27 +587,34 @@ const Canvas = (props) => {
 				clientX - selectedElement.offsetX === selectedElement.x1 &&
 				clientY - selectedElement.offsetY === selectedElement.y1
 			) {
-				setAction("writing");
+				props.setAction("writing");
 				return;
 			}
 
 			const index = selectedElement.id;
 			const { id, type } = elements[index];
-			if ((action === "drawing" || action === "resizing") && adjustmentRequired(type)) {
+			if ((props.action === "drawing" || props.action === "resizing") && adjustmentRequired(type)) {
 				const { x1, y1, x2, y2 } = adjustElementCoordinates(elements[index]);
 				updateElement(id, x1, y1, x2, y2, type);
 			}
 		}
-		if (action === "writing") return;
+		if (props.action === "writing") return;
 
-		setAction("none");
+		props.setAction("none");
 		setSelectedElement(null);
+
+		if (updatePressureValue) {
+			props.setPressureValue(0);
+		}
+		if (props.pressureMode) {
+			props.setScreenToWriteTo(0);
+		}
 	};
 
 	const handleMouseDown = (event) => {
-		
-		if (action === "writing") return;
-
+		if (props.action === "writing") {
+			return;
+		}
 		const { nativeEvent } = event;
 		const clientY = nativeEvent.offsetY;
 		const clientX = nativeEvent.offsetX;
@@ -558,64 +633,45 @@ const Canvas = (props) => {
 				setElements((prevState) => prevState);
 
 				if (element.position === "inside") {
-					setAction("moving");
+					props.setAction("moving");
 				} else {
-					setAction("resizing");
+					props.setAction("resizing");
 				}
 			}
-		} else {
-			if (props.tool == "pencil" || props.tool == "rectangle") {
-				props.setDisplayPressure(true);
+		} else if (props.tool === "eraser") {
+			let element = getElementAtPosition(clientX, clientY, elements);
+			if (element) {
+				console.log("element\n:", element);
+				console.log(elements);
+				// elements[element.id] = null;
+				setSelectedElement(element);
+				const elementsCopy = [...elements];
+				elementsCopy.splice(element.id, 1);
+				let elementsCopy2 = []
+
+				let currId = 0;
+				elementsCopy.forEach((element) => {
+					let eCopy = {}
+					Object.assign(eCopy, element);
+					eCopy.id = currId;
+					elementsCopy2.push(eCopy)
+					currId++
+				});
+
+				setElements([...elementsCopy2]);
 			}
+		} else {
 			const id = elements.length;
 			const screen = props.screenToWriteTo ? props.screenToWriteTo : screenToWriteByPressure;
 			const element = createElement(id, clientX, clientY, clientX, clientY, props.tool, props.color, screen);
 			setElements((prevState) => [...prevState, element]);
 			setSelectedElement(element);
-			setAction(props.tool === "text" ? "writing" : "drawing");
+			props.setAction(props.tool === "text" ? "writing" : "drawing");
 		}
 	};
-	// const sendElementToSocket = (currElements) => {
-	// 	const socket = io("http://localhost:4001");
-	// 	socket.on("welcome", function (data) {
-	// 		console.log("DATA::::", data);
-	// 		console.log();
-	// 		// Respond with a message including this clients' id sent from the server
-	// 		socket.emit("i am client", { data: "foo!", id: data.id });
-	// 	});
-	// 	socket.on("time", function (data) {
-	// 		console.log("here data\n", data, "\n");
-	// 		console.log(currElements);
-	// 		socket.emit({ elem: currElements });
-	// 	});
-
-	// 	socket.emit("data", elements[elements.length - 1]);
-
-	// 	socket.on("data", (data) => {
-	// 		console.log(data);
-	// 	});
-	// };
-
-	// 	socket.on("error", console.error.bind(console));
-	// 	socket.on("message", console.log.bind(console));
-	// };
-	// React.useMemo
-	// useEffect(() => {
-	// 	if (elements.length) {
-	// 		socket.on("time", function (data) {
-	// 			console.log("here data\n", data, "\n");
-	// 			console.log(elements);
-	// 		});
-
-	// 		// socket.on("error", console.error.bind(console));
-	// 		// socket.on("message", console.log.bind(console));
-	// 	}
-	// }, [elements]);
 
 	return (
 		<>
-			{/* <button onClick={() => sendElementToSocket(elements)}>Send Element</button> */}
-
 			<canvas
 				id='canvas'
 				width={window.innerWidth}
@@ -630,7 +686,7 @@ const Canvas = (props) => {
 				Canvas
 			</canvas>
 
-			{action === "writing" ? (
+			{props.action === "writing" ? (
 				<textarea
 					ref={textAreaRef}
 					onBlur={handleBlur}

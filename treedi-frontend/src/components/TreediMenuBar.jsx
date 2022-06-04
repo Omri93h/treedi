@@ -4,14 +4,13 @@ import ToolSelection from "./MenuButtons/ToolSelection";
 import Button from "@mui/material/Button";
 import { default as UndoIcon } from "@mui/icons-material/UndoRounded";
 import { default as RedoIcon } from "@mui/icons-material/RedoRounded";
-
+import { default as DeleteIcon } from "@mui/icons-material/DeleteForeverRounded";
 import UserButton from "./MenuButtons/UserButton";
 import SaveButton from "./MenuButtons/SaveButton";
 import LoadButton from "./MenuButtons/LoadButton";
 import ShareButton from "./MenuButtons/ShareButton";
 
 import "../App.css";
-import { Fade } from "@mui/material";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -30,31 +29,21 @@ const TreediMenuBarStyle = {
 	borderRadius: "25px",
 };
 
-const displayPressureStyle = {
-	textAlign: "center",
-	height: "100%",
-	width: "64px",
-	fontSize: "20px",
-	color: "grey",
-};
-
 const TreediMenuBar = ({
 	user,
 	setTool,
 	color,
 	setColor,
-	setActions,
+	setCommand,
 	elements,
 	projectName,
-	displayPressure,
-	pressureValue,
 	readPermission,
 	setReadPermission,
 	editPermission,
 	setEditPermission,
 	setIsDialogOpen,
 	setOwner,
-	setFileId
+	setFileId,
 }) => {
 	const userButton = React.useMemo(
 		() => (
@@ -88,28 +77,20 @@ const TreediMenuBar = ({
 
 			{userButton}
 			<div style={TreediMenuBarStyle}>
-				{displayPressure ? (
-					<div style={displayPressureStyle}>
-						<Fade in={displayPressure} timeout={300}>
-							<div>{Number(pressureValue).toFixed(2)}</div>
-						</Fade>
-					</div>
-				) : (
-					<ToolSelection setTool={setTool} />
-				)}
+				<ToolSelection setTool={setTool} />
 
 				<ColorSelection color={color} setColor={setColor} />
 
-				<Button className='basic-button' onClick={() => setActions({ undo: true })}>
+				<Button className='basic-button' onClick={() => setCommand({ undo: true })}>
 					<UndoIcon className='menu-item' />
 				</Button>
 
-				<Button className='basic-button' onClick={() => setActions({ redo: true })}>
+				<Button className='basic-button' onClick={() => setCommand({ redo: true })}>
 					<RedoIcon className='menu-item' />
 				</Button>
 
 				<SaveButton
-				setFileId={setFileId}
+					setFileId={setFileId}
 					fileName={projectName}
 					user={user}
 					elements={elements}
@@ -121,7 +102,7 @@ const TreediMenuBar = ({
 					setFileId={setFileId}
 					readPermission={readPermission}
 					editPermission={editPermission}
-					setActions={setActions}
+					setCommand={setCommand}
 					setEditPermission={setEditPermission}
 					setReadPermission={setReadPermission}
 					setOwner={setOwner}
@@ -137,6 +118,10 @@ const TreediMenuBar = ({
 					setEditPermission={setEditPermission}
 					setIsDialogOpen={setIsDialogOpen}
 				/>
+
+				<Button className='basic-button' onClick={() => setCommand({ clear: true })}>
+					<DeleteIcon className='menu-item' />
+				</Button>
 			</div>
 		</div>
 	);
