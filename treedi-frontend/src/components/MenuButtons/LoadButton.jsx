@@ -106,15 +106,12 @@ const LoadButton = ({
 
 	const handleOpenPicker = async function () {
 		let TOKEN;
-		let params = new URL(document.location).searchParams;
-		// let code = params.get("code");
 		let email = localStorage.getItem("TreediUserEmail");
-		
-		console.log("PICKER CODE:", email);
+		console.log("EMAIL IS:" , email);
 		try {
-			const res = await axios.get("http://localhost:5001/api/googleDrive/getToken/?email=" + email);
-			console.log(res);
-			console.log(" Data:", res.data);
+			const res = await axios.get("http://localhost:5001/api/googleDrive/TTC/?email=" + email);
+			console.log(res.data);
+			// console.log(" Data:", res.data);
 			TOKEN = res.data;
 			console.log(TOKEN);
 			if (res.ok) {
