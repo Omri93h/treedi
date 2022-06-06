@@ -4,8 +4,10 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import { default as UserIcon } from "@mui/icons-material/AccountCircleRounded";
 import "../../App.css";
+import "../Logout";
+import Logout from "../Logout";
 
-const UserButton = ({ userImage }) => {
+const UserButton = ({ userImage, handleLogout }) => {
 	const userImageElement = (
 		<img src={userImage} style={{ height: "40px", width: "40px", borderRadius: "100%" }} referrerPolicy='no-referrer' />
 	);
@@ -22,27 +24,30 @@ const UserButton = ({ userImage }) => {
 	};
 
 	return (
-		<div>
+		<>
 			<Button
-				style={{ height: "100%",  }}
+			
 				aria-controls={open ? "basic-menu" : undefined}
-				aria-haspopup='true'
 				aria-expanded={open ? "true" : undefined}
+				disableElevation={true}
+				disableRipple={true}
+				disableFocusRipple={true}
+				style={{ backgroundColor: 'transparent' }} 
+
 				onClick={handleClick}>
 				{userImage ? userImageElement : <UserIcon />}
 			</Button>
-			<Menu
-				className='basic-menu'
-				anchorEl={anchorEl}
-				open={open}
-				onClose={handleClose}
-				MenuListProps={{
-					"aria-labelledby": "basic-button",
-				}}>
-				<MenuItem onClick={() => {handleClose()}}> Load Different</MenuItem>
-				<MenuItem onClick={() => {handleClose()}}> Log Out</MenuItem>
+			<Menu className='basic-menu' anchorEl={anchorEl} open={open} onClose={handleClose}>
+				<Logout handleLogout={handleLogout} />
+
+				{/* <MenuItem 
+					onClick={() => {
+						handleClose();
+					}}> */}
+				{/* ANOTHER OPTIONS THAT MIGHT COME SHOULD BE WRAPPED HERE */}
+				{/* </MenuItem> */}
 			</Menu>
-		</div>
+		</>
 	);
 };
 

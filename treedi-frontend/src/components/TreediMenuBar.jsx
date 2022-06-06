@@ -15,20 +15,6 @@ import "../App.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const TreediMenuBarStyle = {
-	position: "absolute",
-	justifyContent: "space-evenly",
-	display: "flex",
-	width: "600px",
-	height: "50px",
-	lineHeight: "50px",
-	verticalAlign: "middle",
-	marginLeft: "100px",
-	marginTop: "10px",
-	border: "2px solid #f0f0f0",
-	borderRadius: "25px",
-};
-
 const TreediMenuBar = ({
 	user,
 	setTool,
@@ -44,6 +30,7 @@ const TreediMenuBar = ({
 	setIsDialogOpen,
 	setOwner,
 	setFileId,
+	handleLogout,
 }) => {
 	const userButton = React.useMemo(
 		() => (
@@ -56,7 +43,7 @@ const TreediMenuBar = ({
 					verticalAlign: "middle",
 					textAlign: "center",
 				}}>
-				<UserButton userImage={user["img"]} />
+				<UserButton userImage={user["img"]} handleLogout={handleLogout} />
 			</div>
 		),
 		[]
@@ -125,6 +112,20 @@ const TreediMenuBar = ({
 			</div>
 		</div>
 	);
+};
+
+const TreediMenuBarStyle = {
+	position: "absolute",
+	justifyContent: "space-evenly",
+	display: "flex",
+	width: "600px",
+	height: "50px",
+	lineHeight: "50px",
+	verticalAlign: "middle",
+	marginLeft: "100px",
+	marginTop: "10px",
+	border: "2px solid #f0f0f0",
+	borderRadius: "25px",
 };
 
 export default TreediMenuBar;

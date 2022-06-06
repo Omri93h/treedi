@@ -1,23 +1,9 @@
 import React, { useState } from "react";
 import { Modal, Button, Box, TextField } from "@mui/material";
 
-const boxStyle = {
-	position: "absolute",
-	height: "200px",
-	top: "50%",
-	left: window.innerWidth / 6,
-	transform: "translate(-50%, -50%)",
-	width: 400,
-	bgcolor: "background.paper",
-	border: "2px solid #000",
-	boxShadow: 24,
-	textAlign: "center",
-	display: "flex",
-	justifyContent: "space-around",
-	p: 4,
-};
 
-const Preload = ({ projectName, setProjectName, setIsDialogOpen }) => {
+
+const Preload = ({ setProjectName, setIsDialogOpen }) => {
 	const [preload, setPreload] = useState(true);
 	const [isNewProject, setIsNewProject] = useState(false);
 	const [input, setInput] = useState("");
@@ -33,7 +19,7 @@ const Preload = ({ projectName, setProjectName, setIsDialogOpen }) => {
 		}
 		setProjectName(input);
 		setPreload(false);
-		setIsDialogOpen(false)
+		setIsDialogOpen(false);
 	};
 
 	const delteLocalStorage = (event) => {
@@ -68,13 +54,29 @@ const Preload = ({ projectName, setProjectName, setIsDialogOpen }) => {
 								Start Project
 							</Button>
 							<br />
-							{error ? <span style={{color:'red'}}>Please enter project name</span>: null}
+							{error ? <span style={{ color: "red" }}>Please enter project name</span> : null}
 						</Box>
 					)}
 				</Box>
 			</Modal>
 		</div>
 	);
+};
+
+const boxStyle = {
+	position: "absolute",
+	height: "200px",
+	top: "50%",
+	left: window.innerWidth > 3000? window.innerWidth / 6: window.innerWidth/2,
+	transform: "translate(-50%, -50%)",
+	width: 400,
+	bgcolor: "background.paper",
+	border: "2px solid #000",
+	boxShadow: 24,
+	textAlign: "center",
+	display: "flex",
+	justifyContent: "space-around",
+	p: 4,
 };
 
 export default Preload;

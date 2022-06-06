@@ -18,16 +18,14 @@ function Routing() {
 	};
 
 	return (
-		<div>
-			<Routes>
-				<Route exact path='/' element={<WelcomePage handleLogin={handleLogin} />}></Route>
-				{/* <Route path="/homepage" element={<App />}>
+		<Routes>
+			<Route exact path='/' element={<WelcomePage handleLogin={handleLogin} />}></Route>
+			{/* <Route path="/homepage" element={<App />}>
         </Route> */}
-				{/* <Route path="/treedi" element={<TreediDraw handleLogout={handleLogout}/>}>
+			{/* <Route path="/treedi" element={<TreediDraw handleLogout={handleLogout}/>}>
         </Route> */}
-				<Route path='/treedi' element={<App handleLogout={handleLogout} />}></Route>
-			</Routes>
-		</div>
+			<Route path='/treedi' element={<App handleLogout={handleLogout} />}></Route>
+		</Routes>
 	);
 }
 export default Routing;

@@ -23,13 +23,14 @@ const Controller = (props) => {
 				setIsDialogOpen={props.setIsDialogOpen}
 				setLoadedElement={props.setLoadedElement}
 				setOwner={props.setOwner}
+				handleLogout={props.handleLogout}
 			/>
-
+			{/* 
 			<div style={{ position: "fixed", bottom: 0 }}>
 				<Logout handleLogout={props.handleLogout} />
 
 
-			</div>
+			</div> */}
 		</div>
 	);
 };

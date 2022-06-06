@@ -10,7 +10,6 @@ html {
 
 .MuiSlider-thumb {
 	box-shadow: none !important;
-	/* display: none !important; */
 	pointer-events: all !important;
 }
 
@@ -41,23 +40,6 @@ html {
 	left: 0 !important;
 }
 
-/* .App {
-	width: 100%;
-	height: 100vh;
-	display: flex;
-	flex-direction: column;
-	justify-content: flex-start;
-	align-items: center;
-	z-index:0;
-	/* background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%); 
-}
-	*/
-
-@keyframes fadeOut {
-	to {
-		opacity: 0;
-	}
-}
 h1 {
 	font-family: "Lobster", cursive;
 	font-size: 50px;
@@ -94,14 +76,6 @@ h1 {
 	-o-animation: fadeIn 5s;
 	-ms-animation: fadeIn 5s;
 }
-@keyframes fadeIn {
-	0% {
-		opacity: 0;
-	}
-	100% {
-		opacity: 1;
-	}
-}
 
 .menu-item {
 	font-size: 30px;
@@ -110,7 +84,6 @@ h1 {
 	vertical-align: middle;
 }
 
-/* ColorSelection: Custom layout */
 .custom-layout .react-colorful {
 	padding: 16px;
 	position: absolute;
@@ -139,4 +112,19 @@ h1 {
 .custom-layout .react-colorful__alpha-pointer {
 	width: 20px;
 	height: 20px;
+}
+
+@keyframes fadeIn {
+	0% {
+		opacity: 0;
+	}
+	100% {
+		opacity: 1;
+	}
+}
+
+@keyframes fadeOut {
+	to {
+		opacity: 0;
+	}
 }

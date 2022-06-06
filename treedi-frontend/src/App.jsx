@@ -121,13 +121,13 @@ const App = ({ handleLogout }) => {
 	};
 
 	return (
-		<div style={{ backgroundColor: "#f0f0f0" }}>
+		<div id='app' style={{ overflow: "hidden" }}>
 			{preload}
 
 			{displayScreenToWriteTo ? divScreenToWriteTo : null}
 
 			<Fade in={action === "none" ? true : false} timeout={250}>
-				<div>
+				<span>
 					<Controller
 						setFileId={setFileId}
 						user={user.current}
@@ -147,7 +147,7 @@ const App = ({ handleLogout }) => {
 						elements={currElements.current}
 						setOwner={setOwner}
 					/>
-				</div>
+				</span>
 			</Fade>
 
 			<PressureSlider pressureValue={pressureValue} screenToWriteTo={screenToWriteTo} pressureMode={pressureMode} />
