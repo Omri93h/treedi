@@ -4,12 +4,39 @@ require("dotenv").config();
 const key = process.env.ALGORITHM_KEY;
 const encryptor = require('simple-encryptor')(key);
 const async = require('async');
-const TOKEN_PATH = "token.json";
 const User = require('../../config/user-model');
 const mongoose = require('mongoose');
-const logger = require('../../lib/logger');
 
 
+async function getTokenWithRefresh (client_secret ,client_id , redirect_uris, refreshToken ,email) {
+	// console.log("THE SCERET IS:",client_secret);
+	// const {client_secret, client_id, redirect_uris} = secret.web;
+	// console.log("CLIENT ID:",client_secret);
+	// console.log("REFRESH TOKEN:", refreshToken);
+
+    let oauth2Client = new google.auth.OAuth2(
+           client_id,
+           client_secret,
+           redirect_uris[0]
+    )
+
+    oauth2Client.credentials.refresh_token = refreshToken
+
+    oauth2Client.refreshAccessToken( async (error, tokens) => {
+		// console.log("INSIDE THE NEW FUNCTION TOKENS" , tokens);
+		// console.log("INSIDE THE NEW FUNCTION AUTH" , oauth2Client);
+
+           if( !error ){
+			   console.log("EMAIL IS:", email);
+			let user = await User.findOne({email: email});
+			user.token = tokens;
+			await user.save();
+			console.log("USER IS:",user);
+                // return tokens;
+           }
+    })
+
+}
 
 //default authentication callback that will called every api call
 async function authAndRunCallback(req, res, callback) {
@@ -22,6 +49,7 @@ async function authAndRunCallback(req, res, callback) {
 
 		console.log(err);
 		const code = req.query.code;
+		console.log("code is:" ,code);
 		if (code) {
 			oAuth2Client
 			.getToken(req.query.code)
@@ -39,8 +67,12 @@ async function authAndRunCallback(req, res, callback) {
 				console.log(error);
 			});
 		} else {
+			let email = req.query.email;
 			let user = await User.findOne({email: req.query.email});
+			// console.log("BEFORE SET:",oAuth2Client);
 			oAuth2Client.setCredentials(user.token);
+			// oAuth2Client.setCredentials= user.token;
+			getTokenWithRefresh(client_secret ,client_id , redirect_uris ,user.token.refresh_token ,email);
 			callback(oAuth2Client, res);
 		}
 		
@@ -48,16 +80,34 @@ async function authAndRunCallback(req, res, callback) {
 	});
 }
 
+async function TTC(req, res) {
+
+	authAndRunCallback(req, res, (oAuth2Client, res) => {
+		const email = req.query.email;
+		getTokenFromDB(oAuth2Client, res,email);
+	});
+}
+
+//Send the token to the frontend
+async function getTokenFromDB(oAuth2Client, res,email) {
+	console.log("INSIDE GET TOKEN:",email);
+	let user = await User.findOne({email: email});
+	console.log("TOKEN FOR PICKER:",user.token.access_token);
+//	oAuth2Client.setCredentials(user.token);
+	res.send(user.token.access_token);
+}
+
+
 async function getToken(req, res) {
 	authAndRunCallback(req, res, (oAuth2Client, res) => {
 		sendTokenToClient(oAuth2Client, res);
 	});
 }
+
 //Send the token to the frontend
 function sendTokenToClient(oAuth2Client, res) {
 	res.send(oAuth2Client.credentials.access_token);
 }
-
 async function getFileData(req, res) {
 	authAndRunCallback(req, res, (oAuth2Client, res) => {
 		getData(oAuth2Client, res, req);
@@ -224,21 +274,4 @@ function shareFileWith(oAuth2Client, res, req) {
 	);
 }
 
-async function HandleLogout(req, res) {
-	authAndRunCallback(req, res, (oAuth2Client, res) => {
-		logout(oAuth2Client, res);
-	});
-}
-
-function logout(oAuth2Client, res) {
-	console.log("inside the sever");
-	// delete file named 'sample.txt'
-	fs.unlink(TOKEN_PATH, function (err) {
-		if (err) throw err;
-		// if no error, file has been deleted successfully
-		console.log('File deleted!');
-	});
-	res.send("Deleted");
-}
-
-module.exports = {createFile, getToken, getFileData, updateFile, shareFile, HandleLogout };
+module.exports = {createFile, getToken, getFileData, updateFile, shareFile, TTC};

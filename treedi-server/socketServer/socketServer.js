@@ -1,6 +1,6 @@
 const express = require("express");
 const app = express();
-const server = require("http").createServer(app);
+const server_2 = require("http").createServer(app);
 // Socket.io server listens to our app
 const io = require("socket.io")(server, { cors: { origin: "*" } });
 
@@ -21,4 +21,4 @@ io.on("connection", async function (socket) {
 });
 
 const port = process.env.Socket_Port || 4001;
-server.listen(port, () => console.log(`Socket Server Lisining to port : ${port}`));
+server_2.listen(port, () => console.log(`Socket Server Lisining to port : ${port}`));

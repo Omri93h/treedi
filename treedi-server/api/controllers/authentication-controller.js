@@ -19,8 +19,8 @@ const jwt_decode = require('jwt-decode');
     console.log(decode);
     const email = decode.email;
     let user = await User.findOne({email: email});
-    console.log("USER")
-    console.log(user);
+    // console.log("USER")
+    // console.log(user);
     if (user) {
       res.send({authUrl: "http://localhost:3000/treedi"});
     } else {
