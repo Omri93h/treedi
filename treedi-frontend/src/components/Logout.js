@@ -7,9 +7,10 @@ const Logout = (props) => {
   const navigate = useNavigate();
   const HandleLogOut = async (response) => {
     let params = new URL(document.location).searchParams;
-    let code = params.get("code");
+    // let code = params.get("code");
+    let email = localStorage.getItem("TreediUserEmail");
     console.log("Starting Logout");
-    const res = await axios.get("http://localhost:5001/api/googleDrive/logOut/?code=" + code);
+    const res = await axios.get("http://localhost:5001/api/googleDrive/logOut/?email=" + email);
       console.log('google responseee:', res);
       navigate('/');
   };

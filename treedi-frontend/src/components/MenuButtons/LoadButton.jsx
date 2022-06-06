@@ -52,10 +52,13 @@ const LoadButton = ({
 			progress: undefined,
 		});
 		let params = new URL(document.location).searchParams;
-		let code = params.get("code");
+		// let code = params.get("code");
+		// let code = params.get("code");
+		let email = localStorage.getItem("TreediUserEmail");
+
 		try {
 			const res = await axios
-				.post("http://localhost:5001/api/googleDrive/getFileData/?code=" + code, {
+				.post("http://localhost:5001/api/googleDrive/getFileData/?email=" + email, {
 					data: {
 						fileid: fileID,
 					},
@@ -104,10 +107,12 @@ const LoadButton = ({
 	const handleOpenPicker = async function () {
 		let TOKEN;
 		let params = new URL(document.location).searchParams;
-		let code = params.get("code");
-		console.log("PICKER CODE:", code);
+		// let code = params.get("code");
+		let email = localStorage.getItem("TreediUserEmail");
+		
+		console.log("PICKER CODE:", email);
 		try {
-			const res = await axios.get("http://localhost:5001/api/googleDrive/getToken/?code=" + code);
+			const res = await axios.get("http://localhost:5001/api/googleDrive/getToken/?email=" + email);
 			console.log(res);
 			console.log(" Data:", res.data);
 			TOKEN = res.data;

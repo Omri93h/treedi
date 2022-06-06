@@ -140,9 +140,11 @@ const ShareButton = ({
 		try {
 			let params = new URL(document.location).searchParams;
 			let fileid = localStorage.getItem("fileId");
-			let code = params.get("code");
+			// let code = params.get("code");
+			let email1 = localStorage.getItem("TreediUserEmail");
 
-			const res = await axios.post("http://localhost:5001/api/googleDrive/shareFile/?code=" + code, {
+
+			const res = await axios.post("http://localhost:5001/api/googleDrive/shareFile/?email=" + email1, {
 				data: {
 					email: email,
 					fileId: fileid,
