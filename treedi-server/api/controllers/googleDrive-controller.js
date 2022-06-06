@@ -5,37 +5,46 @@ const key = process.env.ALGORITHM_KEY;
 const encryptor = require('simple-encryptor')(key);
 const async = require('async');
 const TOKEN_PATH = "token.json";
+const User = require('../../config/user-model');
+const mongoose = require('mongoose');
+const logger = require('../../lib/logger');
 
 
+
+//default authentication callback that will called every api call
 async function authAndRunCallback(req, res, callback) {
-	fs.readFile("credentials_drive.json", (err, content) => {
+	fs.readFile("credentials_drive.json", async (err, content) => {
 		if (err) return console.log("Error loading client secret file:", err);
 		// Authorize a client with credentials, then call the Google Drive API.
 		const credentials = JSON.parse(content);
 		const { client_secret, client_id, redirect_uris } = credentials.web;
 		const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
-		fs.readFile(TOKEN_PATH, (err, token) => {
-			if (err) {
-				console.log(err);
-				oAuth2Client
-					.getToken(req.query.code)
-					.then((response) => {
-						oAuth2Client.setCredentials(response.tokens);
-						fs.writeFile(TOKEN_PATH, JSON.stringify(response.tokens), (err) => {
-							if (err) return console.error(err);
-							console.log("Token stored to", TOKEN_PATH);
-							callback(oAuth2Client, res);
-							console.log("AFTER READ FROM DRIVE");
-						});
-					})
-					.catch((error) => {
-						console.log(error);
-					});
-			} else {
-				oAuth2Client.setCredentials(JSON.parse(token));
+
+		console.log(err);
+		const code = req.query.code;
+		if (code) {
+			oAuth2Client
+			.getToken(req.query.code)
+			.then((response) => {
+				oAuth2Client.setCredentials(response.tokens);
+				console.log("AUTH:" ,oAuth2Client);
+				console.log(req.query)
+				let newUser = new User({ _id: mongoose.Types.ObjectId(), email: req.query.email, token: response.tokens });
+				newUser.save();
+				console.log(newUser);
 				callback(oAuth2Client, res);
-			}
-		});
+				
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+		} else {
+			let user = await User.findOne({email: req.query.email});
+			oAuth2Client.setCredentials(user.token);
+			callback(oAuth2Client, res);
+		}
+		
+			
 	});
 }
 
@@ -44,7 +53,7 @@ async function getToken(req, res) {
 		sendTokenToClient(oAuth2Client, res);
 	});
 }
-
+//Send the token to the frontend
 function sendTokenToClient(oAuth2Client, res) {
 	res.send(oAuth2Client.credentials.access_token);
 }
@@ -54,69 +63,49 @@ async function getFileData(req, res) {
 		getData(oAuth2Client, res, req);
 	});
 }
-
+//Send the decrypted rawdata from .trdi file
 function getData(oAuth2Client, res, req) {
+	//get the fileId from the body
 	const fileId = req.body.data.fileid;
+	//create drive variable with the auth and version 
 	const drive = google.drive({ version: "v3", auth: oAuth2Client });
+	//call the API files.get and send the fileID
 	drive.files.get({ fileId: fileId, alt: "media" }, { responseType: "stream" }, (err, { data }) => {
+		//check if the API returned an error , and if it is , exit the function and print the error
 		if (err) {
 			console.log(err);
 			return;
 		}
 		let buf = [];
+		//get all the encrypted buffer data and push it to an array
 		data.on("data", (e) => buf.push(e));
 		data.on("end", () => {
+			//when finish read the encrypted buffer, joins all buffer objects
 			const buffer = Buffer.concat(buf);
+			//convert the encrypted buffer varliable to string
 			let dataToSend = new Buffer.from(buffer).toString();
-			console.log("DataToSend:" + dataToSend);
+			//decrypt the data from the buffer
 			const decrypted = encryptor.decrypt(dataToSend);
-			// Should print 'testing'
+			//print it just to be sure ;)
 			console.log('decrypted: %s', decrypted);
+			//send the decrypted data to the frontend 
 			res.send(decrypted);
 		});
 	});
 }
 
-async function getListFiles(req, res) {
-	authAndRunCallback(req, res, (oAuth2Client, res) => {
-		readListFromDrive(oAuth2Client, res);
-	});
-}
-
-function readListFromDrive(oAuth2Client, res) {
-	console.log("oAuth2Client", oAuth2Client);
-	const drive = google.drive({ version: "v3", auth: oAuth2Client });
-
-	drive.files.list(
-		{
-			pageSize: 100,
-			fields: "nextPageToken, files(id, name)",
-		},
-		(err, response) => {
-			if (err) return console.log("The API returned an error: " + err);
-			console.log("response", response);
-			const files = response.data.files;
-			if (files.length) {
-				console.log("Files:");
-				files.map((file) => {
-					console.log(`${file.name} (${file.id})`);
-				});
-				res.send(files);
-			} else {
-				console.log("No files found.");
-			}
-		}
-	);
-}
-
 async function createFile(req, res) {
 	authAndRunCallback(req, res, (oAuth2Client, res) => {
 		const fileID = req.body.data["fileId"];
-		//console.log(req.body.data);
+		//trying to get the fileId from the body
 		console.log("Line 117", fileID);
-		if (fileID !== "undefined" && fileID !== null) {
+		if (fileID !== "undefined" && fileID !== null) 
+		{
+			//if there is a fileId we need to update an exsiting file and send it to an update function
 			updateFile(oAuth2Client, res, req);
-		} else {
+		} 
+		else 
+		{
 			createNewFile(oAuth2Client, res, req);
 		}
 	});
@@ -252,4 +241,4 @@ function logout(oAuth2Client, res) {
 	res.send("Deleted");
 }
 
-module.exports = { getListFiles, createFile, getToken, getFileData, updateFile, shareFile, HandleLogout };
+module.exports = {createFile, getToken, getFileData, updateFile, shareFile, HandleLogout };

@@ -23,12 +23,13 @@
     "google-auth-library": "^8.0.2",
     "googleapis": "^100.0.0",
     "helmet": "^5.0.2",
+    "jwt-decode": "^3.1.2",
     "log-to-file": "^3.0.0",
     "moment": "^2.29.3",
+    "mongoose": "^6.3.5",
     "node-localstorage": "^2.2.1",
     "nodemon": "^2.0.16",
     "simple-encryptor": "^4.0.0",
-    "socket.io": "^4.5.1",
-    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.4.0"
+    "socket.io": "^4.5.1"
   }
 }

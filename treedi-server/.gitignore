@@ -7,9 +7,6 @@ node_modules/
 # dotenv environment variables file
 .env
 
-# KEY_FILE
-treediWevService.json
-
 credentials.json
 
 scratch/
@@ -19,3 +16,6 @@ default.log
 credentials_drive.json
 
 token.json
+
+icon.png
+

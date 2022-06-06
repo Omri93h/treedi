@@ -4,7 +4,7 @@ const app = express();
 const glob = require('glob');
 const path = require('path');
 const cors = require('cors');
-const compression = require('compression');
+// const compression = require('compression');
 const bodyParser = require('body-parser')
 const defaultRoutes = require('../api/routes/default-route');
 const logger = require('./logger');
@@ -18,16 +18,17 @@ app.use(express.urlencoded());
 
 function initGlobRouter(){
     const getGlobbedpaths = globPattern => glob.sync(globPattern);
+    //Get all the Valid routes with the extantion -route.js from the folder routes
     const serverRoutes = getGlobbedpaths('api/routes/*-route.js');
     serverRoutes.forEach(tempPath => {
-        logger.debug(tempPath);
         const route = require(path.resolve(tempPath));
         if(tempPath != 'api/routes/default-route.js') 
+            //use all the routes
             app.use(route);
     });
+    //add the defualt ratue
     app.use(defaultRoutes);
 }
-
 initGlobRouter();
 
 module.exports = app;

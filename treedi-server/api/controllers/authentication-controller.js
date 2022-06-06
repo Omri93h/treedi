@@ -1,7 +1,8 @@
 const logger = require('../../lib/logger');
-// const client_id=process.env.GOOGLE_LOGIN_CLIENT_ID;
-// const client_secret=process.env.CLIENT_SECRET;
 const fs = require('fs');
+const User = require('../../config/user-model');
+
+const jwt_decode = require('jwt-decode');
 
   async function googleAuth(req, res) {
 
@@ -13,13 +14,24 @@ const fs = require('fs');
     // created automatically when the authorization flow completes for the first
     // time.
     const TOKEN_PATH = 'token.json';
-    
-    // Load client secrets from a local file.
-    fs.readFile('credentials_drive.json', (err, content) => {
-      if (err) return console.log('Error loading client secret file:', err);
-      // Authorize a client with credentials, then call the Google Drive API.
-      authorize(JSON.parse(content), (authUrl) => { res.send({authUrl: authUrl});});
-    });
+    // console.log(req);
+    let decode = jwt_decode( req.body.token);
+    console.log(decode);
+    const email = decode.email;
+    let user = await User.findOne({email: email});
+    console.log("USER")
+    console.log(user);
+    if (user) {
+      res.send({authUrl: "http://localhost:3000/treedi"});
+    } else {
+      // Load client secrets from a local file.
+      fs.readFile('credentials_drive.json', (err, content) => {
+        if (err) return console.log('Error loading client secret file:', err);
+        // Authorize a client with credentials, then call the Google Drive API.
+        authorize(JSON.parse(content), (authUrl) => { res.send({authUrl: authUrl});});
+      });
+
+    }
     
     /**
      * Create an OAuth2 client with the given credentials, and then execute the
@@ -33,16 +45,15 @@ const fs = require('fs');
       client_id, client_secret, redirect_uris[0]);
         
       // Check if we have previously stored a token.
-      fs.readFile(TOKEN_PATH, (err, token) => {
-        // if (err) 
-        // {
-          // console.log(err)
+      
           return getAccessToken(oAuth2Client, callback);
+          
         // }
         // console.log("token: " + token)
         // oAuth2Client.setCredentials(JSON.parse(token));
         // callback(oAuth2Client.generateAuthUrl());
-      });
+
+      
     }
     
     /**

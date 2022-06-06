@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const {createFile, getListFiles, getToken, getFileData, shareFile, HandleLogout} = require('../controllers/googleDrive-controller');
+const {createFile, getToken, getFileData, shareFile, HandleLogout} = require('../controllers/googleDrive-controller');
 
-router.get('/api/googleDrive/listFiles/' , getListFiles);
 router.get('/api/googleDrive/getToken/' , getToken);
 router.get('/api/googleDrive/logOut/' , HandleLogout)
 router.post('/api/googleDrive/save' , createFile);
