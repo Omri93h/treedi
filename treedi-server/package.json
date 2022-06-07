@@ -4,11 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "node server.js & node socketServer/socketServer.js ",
+    "dev": "nodemon server.js & nodemon socketServer/socketServer.js",
     "socket": "nodemon socketServer/socketServer.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "Omri Haham and Jonatan Kobany",
   "license": "ISC",
   "dependencies": {
     "async": "^3.2.3",

@@ -9,30 +9,19 @@ const mongoose = require('mongoose');
 
 
 async function getTokenWithRefresh (client_secret ,client_id , redirect_uris, refreshToken ,email) {
-	// console.log("THE SCERET IS:",client_secret);
-	// const {client_secret, client_id, redirect_uris} = secret.web;
-	// console.log("CLIENT ID:",client_secret);
-	// console.log("REFRESH TOKEN:", refreshToken);
-
     let oauth2Client = new google.auth.OAuth2(
            client_id,
            client_secret,
            redirect_uris[0]
     )
-
     oauth2Client.credentials.refresh_token = refreshToken
-
     oauth2Client.refreshAccessToken( async (error, tokens) => {
-		// console.log("INSIDE THE NEW FUNCTION TOKENS" , tokens);
-		// console.log("INSIDE THE NEW FUNCTION AUTH" , oauth2Client);
-
            if( !error ){
 			   console.log("EMAIL IS:", email);
 			let user = await User.findOne({email: email});
 			user.token = tokens;
 			await user.save();
 			console.log("USER IS:",user);
-                // return tokens;
            }
     })
 
@@ -46,7 +35,6 @@ async function authAndRunCallback(req, res, callback) {
 		const credentials = JSON.parse(content);
 		const { client_secret, client_id, redirect_uris } = credentials.web;
 		const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
-
 		console.log(err);
 		const code = req.query.code;
 		console.log("code is:" ,code);
@@ -69,10 +57,16 @@ async function authAndRunCallback(req, res, callback) {
 		} else {
 			let email = req.query.email;
 			let user = await User.findOne({email: req.query.email});
-			// console.log("BEFORE SET:",oAuth2Client);
+			let token_expiry_date = user.token.expiry_date;
+			const secondsSinceEpoch = Math.round(Date.now())
+			console.log("EXPIRY:" ,token_expiry_date);
+			console.log("EPOCH:" ,secondsSinceEpoch);
+			if(token_expiry_date < secondsSinceEpoch)
+			{
+				console.log("EXPIRY:" ,token_expiry_date , "IS SMALLER THE EPOCHE!" ,secondsSinceEpoch );
+				getTokenWithRefresh(client_secret ,client_id , redirect_uris ,user.token.refresh_token ,email);
+			}
 			oAuth2Client.setCredentials(user.token);
-			// oAuth2Client.setCredentials= user.token;
-			getTokenWithRefresh(client_secret ,client_id , redirect_uris ,user.token.refresh_token ,email);
 			callback(oAuth2Client, res);
 		}
 		

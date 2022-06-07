@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { index, routeInvalid, errorHandler, method } = require('../controllers/default-controller');
+const { index, routeInvalid, errorHandler, method} = require('../controllers/default-controller');
 
 router.use(method);
 router.get('/', index);

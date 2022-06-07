@@ -16,13 +16,14 @@ const jwt_decode = require('jwt-decode');
     const TOKEN_PATH = 'token.json';
     // console.log(req);
     let decode = jwt_decode( req.body.token);
-    console.log(decode);
     const email = decode.email;
     let user = await User.findOne({email: email});
     // console.log("USER")
     // console.log(user);
     if (user) {
-      res.send({authUrl: "http://localhost:3000/treedi"});
+      // res.send({authUrl: "http://localhost:3000/treedi"});
+      res.send({authUrl: "https://treedi-deploy.uc.r.appspot.com/treedi"});
+
     } else {
       // Load client secrets from a local file.
       fs.readFile('credentials_drive.json', (err, content) => {

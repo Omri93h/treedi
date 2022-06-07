@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const server_2 = require("http").createServer(app);
 // Socket.io server listens to our app
-const io = require("socket.io")(server, { cors: { origin: "*" } });
+const io = require("socket.io")(server2, { cors: { origin: "*" } });
 
 
 //initialize connection
