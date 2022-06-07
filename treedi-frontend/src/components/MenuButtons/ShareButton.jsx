@@ -144,7 +144,8 @@ const ShareButton = ({
 			let email1 = localStorage.getItem("TreediUserEmail");
 
 
-			const res = await axios.post("http://localhost:5001/api/googleDrive/shareFile/?email=" + email1, {
+			// const res = await axios.post("http://localhost:5001/api/googleDrive/shareFile/?email=" + email1, {
+				const res = await axios.post("https://treedi-deploy.uc.r.appspot.com/api/googleDrive/shareFile/?email=" + email1, {
 				data: {
 					email: email,
 					fileId: fileid,

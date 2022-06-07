@@ -10,7 +10,8 @@ const saveTrdiFile = async function (data, fileName,setFileId) {
 		let fileid = localStorage.getItem("fileId");
 		console.log("email:", email);
 		const response = await axios
-			.post("http://localhost:5001/api/googleDrive/save/?email=" + email, {
+			// .post("http://localhost:5001/api/googleDrive/save/?email=" + email, {
+				.post("https://treedi-deploy.uc.r.appspot.com/api/googleDrive/save/?email=" + email, {
 				data: {
 					fileData: data,
 					fileId: fileid,

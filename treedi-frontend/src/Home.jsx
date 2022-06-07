@@ -2,7 +2,6 @@ import React, { useState, useRef } from "react";
 import "./Home.css";
 import Login from "./components/Login";
 // import video from "./video.mp4";
-import MetaTags from "react-meta-tags";
 
 const Home = () => {
 	const [loginData, setLoginData] = useState(
