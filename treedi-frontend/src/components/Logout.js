@@ -5,11 +5,11 @@ import axios from "axios";
 
 const Logout = (props) => {
 	const navigate = useNavigate();
+
 	const handleLogOut = async (response) => {
-		let email = localStorage.getItem("TreediUserEmail");
-		console.log("Starting Logout");
-		const res = await axios.get("http://localhost:5001/api/googleDrive/logOut/?email=" + email);
-		console.log("google responseee:", res);
+		localStorage.clear()
+
+
 		navigate("/");
 	};
 
@@ -18,8 +18,7 @@ const Logout = (props) => {
 			<GoogleLogout
 				clientId={process.env.REACT_APP_CLIENT_ID}
 				buttonText='Logout'
-				onLogoutSuccess={handleLogOut}>
-			</GoogleLogout>
+				onLogoutSuccess={handleLogOut}></GoogleLogout>
 		</>
 	);
 };

@@ -31,8 +31,8 @@ const Login = () => {
 			const googleResponse = await axios.post("http://localhost:5001/api/user-authentication", {
 				token: response.tokenId,
 			});
-			console.log('google responseee:', googleResponse);
-			window.location.href = googleResponse.data.authUrl
+			console.log("google responseee:", googleResponse);
+			window.location.href = googleResponse.data.authUrl;
 			// window.open(googleResponse.data.authUrl, "MyWindow", "_blank").focus();
 			// // Check if we have some result:
 			// if (Object.keys(googleResponse.data.payload).length !== 0) {
@@ -42,18 +42,18 @@ const Login = () => {
 			//     User Email
 			//     User Profile Picture for Google
 			//   */
-			  const { name, email } = response.profileObj;
-			  const picture = response.profileObj.imageUrl
+			const { name, email } = response.profileObj;
+			const picture = response.profileObj.imageUrl;
 			//   console.log(googleResponse);
 			//   console.log("loading profile, ", name);
-			  setUser({
-			    ...user,
-			    name,
-			    email,
-			    picture,
-			    profile_loaded: true,
-			  });
-        console.log('user Loaded', user);
+			setUser({
+				...user,
+				name,
+				email,
+				picture,
+				profile_loaded: true,
+			});
+			console.log("user Loaded", user);
 			// }
 		}
 	};
@@ -61,22 +61,21 @@ const Login = () => {
 	// when profile is loaded -> Save data locally
 	useEffect(() => {
 		if (user.profile_loaded) {
-      console.log('user Loaded', user);
+			console.log("user Loaded", user);
 			localStorage.setItem("TreediUserName", user.name);
 			localStorage.setItem("TreediUserEmail", user.email);
 			localStorage.setItem("TreediUserImage", user.picture);
 			setIsDataSavedLocally(true);
 			console.log("now setting to local storage");
+		} else {
+			console.log("user not loaded");
 		}
-    else {
-      console.log('user not loaded')
-    }
 	}, [user.profile_loaded]);
 
 	// when data is saved locally - and params are communicating -> open the app
 	useEffect(() => {
 		if (isDataSavedLocally) {
-      console.log("saving data to local storage");
+			console.log("saving data to local storage");
 			const savedData = { name: "", email: "", img: "" };
 			savedData.name = localStorage.getItem("TreediUserName");
 			savedData.email = localStorage.getItem("TreediUserEmail");
@@ -87,25 +86,26 @@ const Login = () => {
 				if (savedData.name && savedData.email && savedData.img) {
 					console.log("should open!\nData: ", savedData.name, savedData.email, savedData.img);
 					// window.open(window.location.origin + "/treedi", "MyWindow", "_blank");
-					window.location.href = googleResponse.data.authUrl
+					window.location.href = googleResponse.data.authUrl;
 					break;
 				}
 			}
+		} else {
+			console.log("cant save data to local storage yet..");
 		}
-    else {
-      console.log('cant save data to local storage yet..')
-    }
 	}, [isDataSavedLocally]);
 
 	return (
-		<div className='Login' >
-			{!user.profile_loaded ? (
-				<div>
-					<GoogleLogin clientId={clientId} buttonText='Login' onSuccess={googleResponse} onFailure={onFailure} />
-				</div>
-			) : (
-				<div></div>
-			)}
+		<div style={{ position: "fixed", top:'0' }}>
+			<div className='Login'>
+				{!user.profile_loaded ? (
+					<div>
+						<GoogleLogin clientId={clientId} buttonText='Login' onSuccess={googleResponse} onFailure={onFailure} />
+					</div>
+				) : (
+					<div></div>
+				)}
+			</div>
 		</div>
 	);
 

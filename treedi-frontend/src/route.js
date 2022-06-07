@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import React, { useState } from "react";
-import WelcomePage from "./WelcomePage";
+import Home from "./Home";
 import App from "./App";
 // import TreediDraw from './TreediDraw';
 
@@ -19,7 +19,7 @@ function Routing() {
 
 	return (
 		<Routes>
-			<Route exact path='/' element={<WelcomePage handleLogin={handleLogin} />}></Route>
+			<Route exact path='/' element={<Home handleLogin={handleLogin} />}></Route>
 			{/* <Route path="/homepage" element={<App />}>
         </Route> */}
 			{/* <Route path="/treedi" element={<TreediDraw handleLogout={handleLogout}/>}>

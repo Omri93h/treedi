@@ -101,6 +101,7 @@ const App = ({ handleLogout }) => {
 		}
 
 		if (!liveApi.current) {
+			console.log('error here')
 			setSocket(io("http://localhost:4001"));
 			initSocket();
 			console.log("sending socket!");
