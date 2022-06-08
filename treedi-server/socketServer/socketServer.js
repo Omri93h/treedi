@@ -1,4 +1,5 @@
 const express = require("express");
+require('dotenv').config();
 const app = express();
 const server_2 = require("http").createServer(app);
 // Socket.io server listens to our app
@@ -8,7 +9,7 @@ const io = require("socket.io")(server_2, { cors: { origin: "*" } });
 //initialize connection
 io.on("connection", async function (socket) {
 	//creating a room with the file id
-	socket.on("create", function (fileID) {
+	socket.on("create", function (room) {
 		console.log("Tryng to create a room");
 		socket.join(fileID);
 		console.log(fileID);
