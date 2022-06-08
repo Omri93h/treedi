@@ -12,7 +12,9 @@ async function getTokenWithRefresh (client_secret ,client_id , redirect_uris, re
     let oauth2Client = new google.auth.OAuth2(
            client_id,
            client_secret,
-           redirect_uris[0]
+        //    redirect_uris[0]
+		redirect_uris[1]
+
     )
     oauth2Client.credentials.refresh_token = refreshToken
     oauth2Client.refreshAccessToken( async (error, tokens) => {
@@ -34,7 +36,9 @@ async function authAndRunCallback(req, res, callback) {
 		// Authorize a client with credentials, then call the Google Drive API.
 		const credentials = JSON.parse(content);
 		const { client_secret, client_id, redirect_uris } = credentials.web;
-		const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+		// const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+		const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[1]);
+
 		console.log(err);
 		const code = req.query.code;
 		console.log("code is:" ,code);

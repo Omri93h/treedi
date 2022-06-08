@@ -17,7 +17,7 @@ const jwt_decode = require('jwt-decode');
     const email = decode.email;
     let user = await User.findOne({email: email});
     if (user) {
-      res.send({authUrl: "http://localhost:3000/treedi"});
+      res.send({authUrl: "https://treedi-front.oa.r.appspot.com/treedi"});
       //res.send({authUrl: "https://treedi-346309.oa.r.appspot.com/treedi"});
 
     } else {
@@ -38,8 +38,10 @@ const jwt_decode = require('jwt-decode');
      */
     function authorize(credentials, callback) {
       const {client_secret, client_id, redirect_uris} = credentials.web;
+      // const oAuth2Client = new google.auth.OAuth2(
+      // client_id, client_secret, redirect_uris[0]);
       const oAuth2Client = new google.auth.OAuth2(
-      client_id, client_secret, redirect_uris[0]);
+        client_id, client_secret, redirect_uris[1]);
         
         return getAccessToken(oAuth2Client, callback);
     }
