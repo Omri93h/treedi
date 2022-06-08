@@ -59,7 +59,7 @@ const LoadButton = ({
 		try {
 			const res = await axios
 				// .post("http://localhost:5001/api/googleDrive/getFileData/?email=" + email, {
-					.post("https://treedi-deploy.uc.r.appspot.com/api/googleDrive/getFileData/?email=" + email, {
+					.post("https://treedi-346309.oa.r.appspot.com/api/googleDrive/getFileData/?email=" + email, {
 				data: {
 						fileid: fileID,
 					},
@@ -111,7 +111,7 @@ const LoadButton = ({
 		console.log("EMAIL IS:" , email);
 		try {
 			// const res = await axios.get("http://localhost:5001/api/googleDrive/TTC/?email=" + email);
-			const res = await axios.get("https://treedi-deploy.uc.r.appspot.com/api/googleDrive/TTC/?email=" + email);
+			const res = await axios.get("https://treedi-346309.oa.r.appspot.com/api/googleDrive/TTC/?email=" + email);
 			console.log(res.data);
 			// console.log(" Data:", res.data);
 			TOKEN = res.data;

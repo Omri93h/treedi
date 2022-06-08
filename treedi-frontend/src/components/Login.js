@@ -20,7 +20,7 @@ const Login = () => {
 
 	// On Failur of google login we get the reason for failur in an alert:
 	const onFailure = (error) => {
-		alert(error);
+		alert(JSON.stringify(error));
 	};
 
 	// If successfull return of data from google we run this function:
@@ -29,7 +29,7 @@ const Login = () => {
 		// Check if a token was recieved and send it to our API:
 		if (response.tokenId) {
 			// const googleResponse = await axios.post("http://localhost:5001/api/user-authentication", {
-			const googleResponse = await axios.post("https://treedi-deploy.uc.r.appspot.com/api/user-authentication", {
+			const googleResponse = await axios.post("https://treedi-346309.oa.r.appspot.com/api/user-authentication", {
 				token: response.tokenId,
 			});
 			console.log("google responseee:", googleResponse);

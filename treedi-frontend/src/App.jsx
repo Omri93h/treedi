@@ -102,7 +102,8 @@ const App = ({ handleLogout }) => {
 
 		if (!liveApi.current) {
 			console.log('error here')
-			setSocket(io("http://localhost:4001"));
+			// setSocket(io("http://localhost:4001"));
+			setSocket(io("https://treedi-socket.oa.r.appspot.com"));
 			initSocket();
 			console.log("sending socket!");
 		}

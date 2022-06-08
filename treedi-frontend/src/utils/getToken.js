@@ -7,7 +7,7 @@ const getToken = async function () {
 	if (code) {
 		try {
 			// const res = await axios.get("http://localhost:5001/api/googleDrive/getToken/?code=" + code + "&email="+ email);
-			const res = await axios.get("https://treedi-deploy.uc.r.appspot.com/api/googleDrive/getToken/?code=" + code + "&email="+ email);
+			const res = await axios.get("https://treedi-346309.oa.r.appspot.com/api/googleDrive/getToken/?code=" + code + "&email="+ email);
 			console.log('ACCESS TOKEN RESPONSE\n',res.data);
 			localStorage.setItem("TOKEN", res.data);
 			if (res.ok) {
