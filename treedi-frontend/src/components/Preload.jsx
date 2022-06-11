@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Modal, Button, Box, TextField } from "@mui/material";
-
+import LoadButton from "./MenuButtons/LoadButton";
 
 
 const Preload = ({ setProjectName, setIsDialogOpen }) => {
@@ -12,7 +12,7 @@ const Preload = ({ setProjectName, setIsDialogOpen }) => {
 		setInput(event.target.value);
 	};
 
-	const handleClick = () => {
+	const handleClickNewDocument = () => {
 		if (input === "") {
 			setError(true);
 			return;
@@ -22,7 +22,14 @@ const Preload = ({ setProjectName, setIsDialogOpen }) => {
 		setIsDialogOpen(false);
 	};
 
-	const delteLocalStorage = (event) => {
+	const handleClickLoadDocument = () => {
+		delteLocalStorage();
+		LoadButton.handleOpenPicker();
+		setPreload(false);
+		setIsDialogOpen(false);
+	};
+
+	const delteLocalStorage = () => {
 		localStorage.removeItem("fileId");
 		setIsNewProject(true);
 	};
@@ -34,10 +41,10 @@ const Preload = ({ setProjectName, setIsDialogOpen }) => {
 					{!isNewProject ? (
 						<Box sx={boxStyle}>
 							<Button onClick={() => delteLocalStorage()} size='large' variant='outlined'>
-								New Project
+								New Document
 							</Button>
-							<Button onClick={() => setPreload(false)} size='large' variant='contained'>
-								Open Existing
+							<Button onClick={handleClickLoadDocument} size='large' variant='contained'>
+								Load Document
 							</Button>
 						</Box>
 					) : (
@@ -45,13 +52,12 @@ const Preload = ({ setProjectName, setIsDialogOpen }) => {
 							<TextField
 								fullWidth
 								onChange={handleChange}
-								id='outlined-basic'
-								label='Project Name'
+								label='Document Name'
 								variant='outlined'
 							/>
 							<br />
-							<Button style={{ margin: "50px" }} onClick={handleClick} size='large' variant='contained'>
-								Start Project
+							<Button style={{ margin: "50px" }} onClick={handleClickNewDocument} size='large' variant='contained'>
+								Start
 							</Button>
 							<br />
 							{error ? <span style={{ color: "red" }}>Please enter project name</span> : null}

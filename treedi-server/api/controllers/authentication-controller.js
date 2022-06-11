@@ -18,6 +18,8 @@ const jwt_decode = require('jwt-decode');
     let user = await User.findOne({email: email});
     if (user) {
       res.send({authUrl: "https://treedi-front.oa.r.appspot.com/treedi"});
+      // res.send({authUrl: "localhost:3000/treedi"});
+
       //res.send({authUrl: "https://treedi-346309.oa.r.appspot.com/treedi"});
 
     } else {

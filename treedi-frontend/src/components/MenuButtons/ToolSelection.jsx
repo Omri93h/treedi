@@ -95,14 +95,7 @@ const ToolSelection = ({ setTool }) => {
 				onClick={handleClick}>
 				{displayCurrentTool()}
 			</Button>
-			<Menu
-				className='basic-menu'
-				anchorEl={anchorEl}
-				open={open}
-				onClose={handleClose}
-				MenuListProps={{
-					"aria-labelledby": "basic-button",
-				}}>
+			<Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
 				<MenuItem onClick={() => handleSelected("pencil")}>{displayPencilTool}</MenuItem>
 				<MenuItem onClick={() => handleSelected("text")}>{displayTextTool}</MenuItem>
 				<MenuItem onClick={() => handleSelected("rectangle")}>{displayRectangleTool}</MenuItem>

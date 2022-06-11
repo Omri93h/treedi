@@ -44,7 +44,132 @@ const Canvas = (props) => {
 
 	const [elements, setElements, undo, redo, clearElements] = useHistory([]);
 
+	const [elementsIdOnViewMode, setElementsIdOnViewMode] = useState([]);
+
 	const distance = (a, b) => Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
+
+	useEffect(() => {
+		// Decide which elements to display, if user does not has "Treedi" screen
+
+		async function handleOneScreenToMulti() {
+			// Handle 1 screen display to Treedi multi-display (return elements to original position)
+			const elementsCopy = [...elements];
+			let finalElements = [];
+			let ids = [...elementsIdOnViewMode];
+			elementsCopy.forEach((element) => {
+				let elementCopy = {};
+				Object.assign(elementCopy, element);
+				elementCopy.display = true;
+				if (ids.indexOf(elementCopy.id) !== -1 && elementCopy.screen !== 1) {
+					if (elementCopy.screen === 2) {
+						elementCopy.points.forEach((point) => {
+							point.x += window.screen.width;
+						});
+					} else {
+						elementCopy.points.forEach((point) => {
+							point.x += window.screen.width * 2;
+						});
+					}
+					ids.splice(ids.indexOf(element.id), 1);
+				}
+				console.log("setting display true");
+				finalElements.push(elementCopy);
+			});
+			setElementsIdOnViewMode([]);
+			setElements(finalElements, true);
+			console.log("FINAL ELEMENTS", finalElements);
+		}
+
+		if (props.screenView == "all") {
+			if (elementsIdOnViewMode.length == 0) {
+				return; // rendered but state did not changed, stayed on multi screen view
+			} else {
+				handleOneScreenToMulti(); // init view
+			}
+		} else {
+			const handleMultiScreensToOne = () => {
+				// Decide which element to display (when user does not has "Treedi" screen)
+				console.log("from multi to one !! ");
+
+				let elementsCopy = [...elements];
+				let finalElements = [];
+				let newViewMode = [];
+				elementsCopy.forEach((element) => {
+					let elementCopy = {};
+					Object.assign(elementCopy, element);
+					// console.log('props.screenView: ',props.screenView ,'\nelementCopy.screen: ', elementCopy.screen )
+					if (Number(props.screenView) === elementCopy.screen) {
+						// console.log("we want to display element", elementCopy)
+						switch (elementCopy.screen) {
+							case 1:
+								elementCopy.display = true;
+								if (elementsIdOnViewMode.indexOf(elementCopy.id) === -1) {
+									// elementCopy.points.forEach((point) => {
+									// 	point.x -= window.screen.width;
+									// });
+									console.log("ADDING ", elementCopy.id);
+									newViewMode.push(elementCopy.id);
+								}
+								break;
+							case 2:
+								if (elementsIdOnViewMode.indexOf(elementCopy.id) === -1) {
+									elementCopy.display = true;
+
+									elementCopy.points.forEach((point) => {
+										point.x -= window.screen.width;
+									});
+									console.log("SETTING ELEMENT 2 !!!!!!!");
+									newViewMode.push(elementCopy.id);
+								}
+								break;
+							case 3:
+								if (elementsIdOnViewMode.indexOf(elementCopy.id) === -1) {
+									elementCopy.display = true;
+									elementCopy.points.forEach((point) => {
+										point.x -= window.screen.width * 2;
+									});
+									newViewMode.push(elementCopy.id);
+								}
+								break;
+							default:
+								break;
+						}
+					} else {
+						elementCopy.display = false;
+						if (elementsIdOnViewMode.indexOf(elementCopy.id) > -1) {
+							console.log("element id ", elementCopy.id, " in list!! need to be deleted");
+							elementCopy.points.forEach((point) => {
+								point.x += window.screen.width * (elementCopy.screen - 1);
+							});
+							// let filteredList = [...elementsIdOnViewMode]
+							// console.log('filteredList:', filteredList)
+							// setElementsIdOnViewMode(prevState => [filteredList]);
+						}
+						console.log(elementCopy.id, " ", elementCopy.display);
+					}
+					finalElements.push(elementCopy);
+				});
+				setElementsIdOnViewMode(newViewMode);
+				console.log("FINAL ELEMENTS", finalElements);
+				setElements(finalElements, true);
+			};
+
+			async function startOneScreenViewProcedure() {
+				console.log("Procedure started");
+				console.log("ASYNC started");
+
+				// await handleOneScreenToMulti(); //Init
+				console.log("ASYNC Ended");
+
+				handleMultiScreensToOne();
+			}
+			startOneScreenViewProcedure();
+		}
+		props.setScreenToWriteTo(Number(props.screenView));
+		props.setPressureMode(false);
+		props.setDisplayScreenToWriteTo(true);
+	}, [props.screenView]);
+
 	useEffect(() => {
 		console.log(props.command);
 		if (props.command.clear) {
@@ -170,11 +295,18 @@ const Canvas = (props) => {
 		}
 	}, [elementToMove]);
 
-	const createElement = (id, x1, y1, x2, y2, type, elem_color, screen = 1) => {
-		if (props.screenToWriteTo > 1) {
+	const createElement = (id, x1, y1, x2, y2, type, elem_color, screen = 1, display = true) => {
+		// Change the 'x' value if need to write to another screen and we are NOT on one screen view mode
+		if (props.screenToWriteTo > 1 && elementsIdOnViewMode.length === 0) {
 			x1 += window.screen.width * (props.screenToWriteTo - 1);
 			x2 += window.screen.width * (props.screenToWriteTo - 1);
 		}
+
+		//if one screen view mode, then add the element id to the ids on current view
+		if (Number(props.screenView) === screen) {
+			setElementsIdOnViewMode([...elementsIdOnViewMode, id]);
+		}
+
 		switch (type) {
 			case "line":
 			case "rectangle":
@@ -182,13 +314,11 @@ const Canvas = (props) => {
 					type === "line"
 						? generator.line(x1, y1, x2, y2, { stroke: props.color })
 						: generator.rectangle(x1, y1, x2 - x1, y2 - y1, { stroke: props.color });
-				return { id, x1, y1, x2, y2, type, roughElement, elem_color, screen };
+				return { id, x1, y1, x2, y2, type, roughElement, elem_color, screen, display };
 			case "pencil":
-				return { id, type, points: [{ x: x1, y: y1 }], elem_color, screen };
+				return { id, type, points: [{ x: x1, y: y1 }], elem_color, screen, display };
 			case "text":
-				return { id, type, x1, y1, x2, y2, text: "", elem_color, screen };
-			case "prohibited":
-				return { id, type };
+				return { id, type, x1, y1, x2, y2, text: "", elem_color, screen, display };
 			default:
 				throw new Error(`Type not recognised: ${type}`);
 		}
@@ -255,8 +385,10 @@ const Canvas = (props) => {
 	}, [props.action, selectedElement]);
 	const drawElement = (roughCanvas, context, element) => {
 		if (!element) {
+			console.log("ERROR WITH ELEMENT!!!!");
 			return;
 		}
+
 		if (props.user.email !== props.owner) {
 			if (props.readPermission[props.user.email].indexOf(element.screen) === -1) {
 				console.log(JSON.stringify(element), "\n");
@@ -264,6 +396,11 @@ const Canvas = (props) => {
 			} else {
 				console.log(JSON.stringify(element), "\n");
 			}
+		}
+		// console.log('Drawing Element\n', element)
+
+		if (!element.display) {
+			return;
 		}
 
 		switch (element.type) {
@@ -284,14 +421,14 @@ const Canvas = (props) => {
 				context.font = "24px sans-serif";
 				context.fillText(element.text, element.x1, element.y1);
 				break;
-			case "base64":
-				let image = new Image();
-				image.onload = function () {
-					context.drawImage(image, 0, 0);
-				};
-				const last_saved_idx = element.image.Screens.length;
-				image.src = element.image.Screens[last_saved_idx - 1].Image;
-				break;
+			// case "base64":
+			// 	let image = new Image();
+			// 	image.onload = function () {
+			// 		context.drawImage(image, 0, 0);
+			// 	};
+			// 	const last_saved_idx = element.image.Screens.length;
+			// 	image.src = element.image.Screens[last_saved_idx - 1].Image;
+			// 	break;
 			default:
 				throw new Error(`Type not recognised: ${element.type}`);
 		}
@@ -345,7 +482,7 @@ const Canvas = (props) => {
 		switch (type) {
 			case "line":
 			case "rectangle":
-				elementsCopy[id] = createElement(id, x1, y1, x2, y2, type, screen);
+				elementsCopy[id] = createElement(id, x1, y1, x2, y2, type, screen, true);
 				break;
 			case "pencil":
 				elementsCopy[id].points = [...elementsCopy[id].points, { x: x2, y: y2 }];
@@ -354,7 +491,7 @@ const Canvas = (props) => {
 				const textWidth = document.getElementById("canvas").getContext("2d").measureText(options.text).width;
 				const textHeight = 24;
 				elementsCopy[id] = {
-					...createElement(id, x1, y1, x1 + textWidth, y1 + textHeight, type, screen),
+					...createElement(id, x1, y1, x1 + textWidth, y1 + textHeight, type, screen, true),
 					text: options.text,
 				};
 				break;
@@ -441,7 +578,7 @@ const Canvas = (props) => {
 						props.setScreenToWriteTo(2);
 						index += 1;
 
-						const element = createElement(index, xPoint, clientY, xPoint, clientY, props.tool, props.color, 2);
+						const element = createElement(index, xPoint, clientY, xPoint, clientY, props.tool, props.color, 2, true);
 						setElements((prevState) => [...prevState, element]);
 						setSelectedElement(element);
 						props.setAction(props.tool === "text" ? "writing" : "drawing");
@@ -451,29 +588,39 @@ const Canvas = (props) => {
 				}
 
 				if (props.screenToWriteTo > 0) {
-					if (props.screenToWriteTo === 2) {
+					if (props.screenToWriteTo === 2 && !elementsIdOnViewMode.length) {
 						clientX += width;
 						updateElement(index, x1, y1, clientX, clientY, props.tool, "", 2);
 
 						if (props.pressureValue > 0.66 && props.pressureMode) {
 							props.setScreenToWriteTo(3);
 							index += 1;
-							const element = createElement(index, xPoint, clientY, xPoint, clientY, props.tool, props.color, 3);
+							const element = createElement(index, xPoint, clientY, xPoint, clientY, props.tool, props.color, 3, true);
 							setElements((prevState) => [...prevState, element]);
 							setSelectedElement(element);
 						}
 						if (props.pressureValue < 0.33 && props.pressureMode) {
 							props.setScreenToWriteTo(1);
 							index += 1;
-							const element = createElement(index, clientX, clientY, clientX, clientY, props.tool, props.color, 1);
+							const element = createElement(
+								index,
+								clientX,
+								clientY,
+								clientX,
+								clientY,
+								props.tool,
+								props.color,
+								1,
+								true
+							);
 							setElements((prevState) => [...prevState, element]);
 							setSelectedElement(element);
 						}
-					} else if (props.screenToWriteTo === 3) {
+					} else if (props.screenToWriteTo === 3 && !elementsIdOnViewMode.length) {
 						clientX += width + width;
 						updateElement(index, x1, y1, clientX, clientY, props.tool, "", 3);
 					} else {
-						updateElement(index, x1, y1, clientX, clientY, props.tool, "", 1);
+						updateElement(index, x1, y1, clientX, clientY, props.tool, "", props.screenToWriteTo);
 					}
 				}
 			}
@@ -561,8 +708,6 @@ const Canvas = (props) => {
 					}
 				}
 
-				// undo();
-				// setElementToMove(new_elem);
 				setScreenToWriteByPressure(1);
 
 				if (props.user.email !== props.owner) {
@@ -647,15 +792,15 @@ const Canvas = (props) => {
 				setSelectedElement(element);
 				const elementsCopy = [...elements];
 				elementsCopy.splice(element.id, 1);
-				let elementsCopy2 = []
+				let elementsCopy2 = [];
 
 				let currId = 0;
 				elementsCopy.forEach((element) => {
-					let eCopy = {}
+					let eCopy = {};
 					Object.assign(eCopy, element);
 					eCopy.id = currId;
-					elementsCopy2.push(eCopy)
-					currId++
+					elementsCopy2.push(eCopy);
+					currId++;
 				});
 
 				setElements([...elementsCopy2]);
@@ -663,8 +808,9 @@ const Canvas = (props) => {
 		} else {
 			const id = elements.length;
 			const screen = props.screenToWriteTo ? props.screenToWriteTo : screenToWriteByPressure;
-			const element = createElement(id, clientX, clientY, clientX, clientY, props.tool, props.color, screen);
+			const element = createElement(id, clientX, clientY, clientX, clientY, props.tool, props.color, screen, true);
 			setElements((prevState) => [...prevState, element]);
+			console.log("rendered at mousedown");
 			setSelectedElement(element);
 			props.setAction(props.tool === "text" ? "writing" : "drawing");
 		}

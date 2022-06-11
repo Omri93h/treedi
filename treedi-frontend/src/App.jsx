@@ -10,9 +10,28 @@ import { Fade } from "@mui/material";
 getToken();
 
 const App = ({ handleLogout }) => {
+	// console.log("APP IS rendered");
+
 	const [fileId, setFileId] = useState(null);
 
-	// console.log("APP IS rendered");
+	// const [width, setWidth] = useState(Number(window.innerWidth));
+	// // Page size handling
+	// function handleWindowSizeChange() {
+	// 	setWidth(window.innerWidth);
+	// }
+
+	// let isMobile = useRef(false);
+
+	// useEffect(() => {
+	// 	window.addEventListener("resize", handleWindowSizeChange);
+	// 	isMobile.current = width <= 768 || window.screen.height < 800;
+	// 	console.log(isMobile.current ? "MOBILE MODE" : "DESKTOP MODE");
+
+	// 	return () => {
+	// 		window.removeEventListener("resize", handleWindowSizeChange);
+	// 	};
+	// }, [window.screen.width]);
+
 	const user = useRef({
 		name: localStorage.getItem("TreediUserName"),
 		email: localStorage.getItem("TreediUserEmail"),
@@ -20,7 +39,10 @@ const App = ({ handleLogout }) => {
 	});
 	const [action, setAction] = useState("none");
 
+	const [screenView, setScreenView] = useState("all");
+
 	const projectName = useRef("");
+
 	function setProjectName(ref) {
 		projectName.current = ref;
 	}
@@ -64,9 +86,7 @@ const App = ({ handleLogout }) => {
 	const developerKey = process.env.REACT_APP_DEVELOPER_KEY;
 
 	const preload = React.useMemo(
-		() => (
-			<Preload projectName={projectName.current} setProjectName={setProjectName} setIsDialogOpen={setIsDialogOpen} />
-		),
+		() => <Preload setProjectName={setProjectName} setIsDialogOpen={setIsDialogOpen} />,
 		[]
 	);
 
@@ -101,7 +121,7 @@ const App = ({ handleLogout }) => {
 		}
 
 		if (!liveApi.current) {
-			console.log('error here')
+			console.log("error here");
 			// setSocket(io("http://localhost:4001"));
 			setSocket(io("https://treedi-socket.oa.r.appspot.com"));
 			initSocket();
@@ -148,13 +168,20 @@ const App = ({ handleLogout }) => {
 						setLoadedElement={setLoadedElement}
 						elements={currElements.current}
 						setOwner={setOwner}
+						setScreenView={setScreenView}
 					/>
 				</span>
 			</Fade>
 
-			<PressureSlider pressureValue={pressureValue} screenToWriteTo={screenToWriteTo} pressureMode={pressureMode} />
+			<PressureSlider
+				// isMobile={isMobile.current}
+				pressureValue={pressureValue}
+				screenToWriteTo={screenToWriteTo}
+				pressureMode={pressureMode}
+			/>
 
 			<Canvas
+				screenView={screenView}
 				action={action}
 				setAction={setAction}
 				pressureValue={pressureValue}

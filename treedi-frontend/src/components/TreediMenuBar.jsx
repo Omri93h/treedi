@@ -9,6 +9,7 @@ import UserButton from "./MenuButtons/UserButton";
 import SaveButton from "./MenuButtons/SaveButton";
 import LoadButton from "./MenuButtons/LoadButton";
 import ShareButton from "./MenuButtons/ShareButton";
+import ScreenViewButton from './MenuButtons/ScreenViewButton'
 
 import "../App.css";
 
@@ -31,6 +32,7 @@ const TreediMenuBar = ({
 	setOwner,
 	setFileId,
 	handleLogout,
+	setScreenView,
 }) => {
 	const userButton = React.useMemo(
 		() => (
@@ -68,12 +70,12 @@ const TreediMenuBar = ({
 
 				<ColorSelection color={color} setColor={setColor} />
 
-				<Button className='basic-button' onClick={() => setCommand({ undo: true })}>
-					<UndoIcon className='menu-item' />
+				<Button onClick={() => setCommand({ undo: true })}>
+					<UndoIcon />
 				</Button>
 
-				<Button className='basic-button' onClick={() => setCommand({ redo: true })}>
-					<RedoIcon className='menu-item' />
+				<Button onClick={() => setCommand({ redo: true })}>
+					<RedoIcon  />
 				</Button>
 
 				<SaveButton
@@ -106,9 +108,12 @@ const TreediMenuBar = ({
 					setIsDialogOpen={setIsDialogOpen}
 				/>
 
-				<Button className='basic-button' onClick={() => setCommand({ clear: true })}>
+				<Button onClick={() => setCommand({ clear: true })}>
 					<DeleteIcon className='menu-item' />
 				</Button>
+
+				<ScreenViewButton setScreenView={setScreenView} />
+
 			</div>
 		</div>
 	);

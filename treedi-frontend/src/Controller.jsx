@@ -1,5 +1,4 @@
 import React from "react";
-import Logout from "./components/Logout";
 import TreediMenuBar from "./components/TreediMenuBar";
 
 const Controller = (props) => {
@@ -24,13 +23,8 @@ const Controller = (props) => {
 				setLoadedElement={props.setLoadedElement}
 				setOwner={props.setOwner}
 				handleLogout={props.handleLogout}
+				setScreenView={props.setScreenView}
 			/>
-			{/* 
-			<div style={{ position: "fixed", bottom: 0 }}>
-				<Logout handleLogout={props.handleLogout} />
-
-
-			</div> */}
 		</div>
 	);
 };
