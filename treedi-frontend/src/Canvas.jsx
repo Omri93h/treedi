@@ -48,37 +48,37 @@ const Canvas = (props) => {
 
 	const distance = (a, b) => Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 
+	const handleOneScreenToMulti = () => {
+		// Handle 1 screen display to Treedi multi-display (return elements to original position)
+		const elementsCopy = [...elements];
+		let finalElements = [];
+		let ids = [...elementsIdOnViewMode];
+		elementsCopy.forEach((element) => {
+			let elementCopy = {};
+			Object.assign(elementCopy, element);
+			elementCopy.display = true;
+			if (ids.indexOf(elementCopy.id) !== -1 && elementCopy.screen !== 1) {
+				if (elementCopy.screen === 2) {
+					elementCopy.points.forEach((point) => {
+						point.x += window.screen.width;
+					});
+				} else {
+					elementCopy.points.forEach((point) => {
+						point.x += window.screen.width * 2;
+					});
+				}
+				ids.splice(ids.indexOf(element.id), 1);
+			}
+			console.log("setting display true");
+			finalElements.push(elementCopy);
+		});
+		setElementsIdOnViewMode([]);
+		setElements(finalElements, true);
+		console.log("FINAL ELEMENTS", finalElements);
+	}
+
 	useEffect(() => {
 		// Decide which elements to display, if user does not has "Treedi" screen
-
-		async function handleOneScreenToMulti() {
-			// Handle 1 screen display to Treedi multi-display (return elements to original position)
-			const elementsCopy = [...elements];
-			let finalElements = [];
-			let ids = [...elementsIdOnViewMode];
-			elementsCopy.forEach((element) => {
-				let elementCopy = {};
-				Object.assign(elementCopy, element);
-				elementCopy.display = true;
-				if (ids.indexOf(elementCopy.id) !== -1 && elementCopy.screen !== 1) {
-					if (elementCopy.screen === 2) {
-						elementCopy.points.forEach((point) => {
-							point.x += window.screen.width;
-						});
-					} else {
-						elementCopy.points.forEach((point) => {
-							point.x += window.screen.width * 2;
-						});
-					}
-					ids.splice(ids.indexOf(element.id), 1);
-				}
-				console.log("setting display true");
-				finalElements.push(elementCopy);
-			});
-			setElementsIdOnViewMode([]);
-			setElements(finalElements, true);
-			console.log("FINAL ELEMENTS", finalElements);
-		}
 
 		if (props.screenView == "all") {
 			if (elementsIdOnViewMode.length == 0) {
@@ -180,15 +180,14 @@ const Canvas = (props) => {
 			redo();
 		} else if (props.command.load) {
 			setElements(props.command.load);
+		} else if (props.command.fullView) {
+			handleOneScreenToMulti()
 		} else if (props.command.live) {
 			if (props.command.live.length > 0) {
 				let elementToAdd = props.command.live[0];
 				let elementsCopy = [...elements];
-
 				if (elementsCopy[0] !== null) {
-					console.log("elementsCopy[0] is not null");
 					const idx = elementsCopy.length - 1;
-					console.log("idxxxx", idx, "\n");
 					if (elementsCopy[idx + 1] !== elementToAdd) {
 						console.log("they are not the same");
 						console.log("element to add:", elementToAdd);
@@ -297,7 +296,7 @@ const Canvas = (props) => {
 
 	const createElement = (id, x1, y1, x2, y2, type, elem_color, screen = 1, display = true) => {
 		// Change the 'x' value if need to write to another screen and we are NOT on one screen view mode
-		if (props.screenToWriteTo > 1 && elementsIdOnViewMode.length === 0) {
+		if (props.screenToWriteTo > 1 && Number(props.screenView === "all")) {
 			x1 += window.screen.width * (props.screenToWriteTo - 1);
 			x2 += window.screen.width * (props.screenToWriteTo - 1);
 		}
