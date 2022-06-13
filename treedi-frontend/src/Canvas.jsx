@@ -44,7 +44,6 @@ const Canvas = (props) => {
 
 	const [elements, setElements, undo, redo, clearElements] = useHistory([]);
 
-
 	const distance = (a, b) => Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 
 	const handleOneScreenToMulti = () => {
@@ -178,6 +177,13 @@ const Canvas = (props) => {
 		} else if (props.command.live) {
 			if (props.command.live.length > 0) {
 				let elementToAdd = props.command.live[0];
+				if (elementToAdd.moveOnLoad) {
+					if (elementToAdd.type == 'pencil'){
+						elementToAdd.points.forEach((point) => {
+							point.x += window.screen.width * (elementToAdd.screen - 1);
+						});
+					}
+				}
 				let elementsCopy = [...elements];
 				if (elementsCopy[0] !== null) {
 					const idx = elementsCopy.length - 1;
@@ -656,6 +662,7 @@ const Canvas = (props) => {
 	const handleMouseUp = (event, updatePressureValue = true) => {
 		const { clientX, clientY } = event;
 		const currElement = elements[elements.length - 1];
+		currElement["moveOnLoad"] = props.elementsIdOnViewMode.indexOf(currElement.id) !== -1;
 
 		// dicard if not allowed
 		if (props.screenToWriteTo > 0) {
