@@ -7,14 +7,33 @@ const async = require('async');
 const User = require('../../config/user-model');
 const mongoose = require('mongoose');
 
+async function grantRefreshToken(client_id ,client_secret,code ,redirect_uri  ){
+	var options = {
+		method: 'POST',
+		url: 'https://oauth2.googleapis.com/token',
+		headers: {'content-type': 'application/x-www-form-urlencoded'},
+		data: {
+		  grant_type: 'authorization_code',
+		  client_id: client_id,
+		  client_secret: client_secret,
+		  code: code,
+		  redirect_uri: redirect_uri[1]
+		}
+	  };
+	  
+	  axios.request(options).then(function (response) {
+		console.log(response.data);
+	  }).catch(function (error) {
+		console.error(error);
+	  });
+}
+
 
 async function getTokenWithRefresh (client_secret ,client_id , redirect_uris, refreshToken ,email) {
     let oauth2Client = new google.auth.OAuth2(
-           client_id,
-           client_secret,
-        //    redirect_uris[0]
-		redirect_uris[2]
-
+        client_id,
+        client_secret,
+		redirect_uris[1]
     )
     oauth2Client.credentials.refresh_token = refreshToken
     oauth2Client.refreshAccessToken( async (error, tokens) => {
@@ -25,6 +44,9 @@ async function getTokenWithRefresh (client_secret ,client_id , redirect_uris, re
 			await user.save();
 			console.log("USER IS:",user);
            }
+		   else(
+			   console.log(error)
+		   )
     })
 
 }
@@ -49,6 +71,9 @@ async function authAndRunCallback(req, res, callback) {
 				oAuth2Client.setCredentials(response.tokens);
 				console.log("AUTH:" ,oAuth2Client);
 				console.log("The query is:",req.query);
+				const ans = grantRefreshToken(client_id ,client_secret , code , redirect_uris );
+				console.log(ans);
+
 				let newUser = new User({ _id: mongoose.Types.ObjectId(), email: req.query.email, token: response.tokens });
 				newUser.save();
 				console.log(newUser);
@@ -61,14 +86,19 @@ async function authAndRunCallback(req, res, callback) {
 		} else {
 			let email = req.query.email;
 			let user = await User.findOne({email: req.query.email});
+			console.log("USER:" ,user);
 			let token_expiry_date = user.token.expiry_date;
 			const secondsSinceEpoch = Math.round(Date.now())
 			console.log("EXPIRY:" ,token_expiry_date);
 			console.log("EPOCH:" ,secondsSinceEpoch);
+			console.log("REFRESHT TOKEN BEFORE:" ,user.token);
+
 			if(token_expiry_date < secondsSinceEpoch)
 			{
 				console.log("EXPIRY:" ,token_expiry_date , "IS SMALLER THE EPOCHE!" ,secondsSinceEpoch );
 				getTokenWithRefresh(client_secret ,client_id , redirect_uris ,user.token.refresh_token ,email);
+				console.log("REFRESHT TOKEN AFTER:" ,user.token);
+
 			}
 			oAuth2Client.setCredentials(user.token);
 			callback(oAuth2Client, res);
@@ -91,7 +121,6 @@ async function getTokenFromDB(oAuth2Client, res,email) {
 	console.log("INSIDE GET TOKEN:",email);
 	let user = await User.findOne({email: email});
 	console.log("TOKEN FOR PICKER:",user.token.access_token);
-//	oAuth2Client.setCredentials(user.token);
 	res.send(user.token.access_token);
 }
 

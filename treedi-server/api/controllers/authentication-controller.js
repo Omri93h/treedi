@@ -59,7 +59,7 @@ const jwt_decode = require('jwt-decode');
       const authUrl = oAuth2Client.generateAuthUrl({
         access_type: 'offline',
         scope: SCOPES,
-        // prompt:'consent'
+        prompt:'consent'
       });
       
       console.log('Authorize this app by visiting this url:', authUrl);
