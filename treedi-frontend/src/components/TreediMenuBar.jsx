@@ -32,8 +32,10 @@ const TreediMenuBar = ({
 	setOwner,
 	setFileId,
 	handleLogout,
+	elementsIdOnViewMode,
 	setScreenView,
 	setProjectName,
+	owner
 }) => {
 	const userButton = React.useMemo(
 		() => (
@@ -80,13 +82,14 @@ const TreediMenuBar = ({
 				</Button>
 
 				<SaveButton
+					elementsIdOnViewMode={elementsIdOnViewMode}
 					setFileId={setFileId}
 					fileName={projectName}
 					user={user}
 					elements={elements}
 					readPermission={readPermission}
 					editPermission={editPermission}
-					setScreenView={setScreenView}
+					owner={owner}
 				/>
 
 				<LoadButton

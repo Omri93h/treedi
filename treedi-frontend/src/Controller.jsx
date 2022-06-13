@@ -24,7 +24,9 @@ const Controller = (props) => {
 				setLoadedElement={props.setLoadedElement}
 				setOwner={props.setOwner}
 				handleLogout={props.handleLogout}
+				elementsIdOnViewMode={props.elementsIdOnViewMode}
 				setScreenView={props.setScreenView}
+				owner={props.owner}
 			/>
 		</div>
 	);

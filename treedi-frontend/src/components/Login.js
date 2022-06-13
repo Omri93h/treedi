@@ -26,15 +26,15 @@ const Login = () => {
 	};
 
 	function openWindow(treediAppPage) {
-		var width = 1800;
-		var left = 200;
-
+		let width = 1800;
+		let left = 800;
+		let height = window.screen.height
 		left += window.screenX;
-
+		
 		window.open(
 			treediAppPage,
 			"windowName",
-			"resizable=1,scrollbars=1,fullscreen=0,height=200,width=" +
+			"resizable=1,scrollbars=1,fullscreen=0,+height=" + height + ",width=" +
 				width +
 				"  , left=" +
 				left +
@@ -118,7 +118,7 @@ const Login = () => {
 
 	console.log('\n\nClientID\n', clientId)
 
-	
+
 	return (
 		<div style={{ position: "fixed", top: "0" }}>
 			{!user.profile_loaded ? (

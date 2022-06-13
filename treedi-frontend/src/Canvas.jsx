@@ -44,7 +44,6 @@ const Canvas = (props) => {
 
 	const [elements, setElements, undo, redo, clearElements] = useHistory([]);
 
-	const [elementsIdOnViewMode, setElementsIdOnViewMode] = useState([]);
 
 	const distance = (a, b) => Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 
@@ -52,7 +51,7 @@ const Canvas = (props) => {
 		// Handle 1 screen display to Treedi multi-display (return elements to original position)
 		const elementsCopy = [...elements];
 		let finalElements = [];
-		let ids = [...elementsIdOnViewMode];
+		let ids = [...props.elementsIdOnViewMode];
 		elementsCopy.forEach((element) => {
 			let elementCopy = {};
 			Object.assign(elementCopy, element);
@@ -72,7 +71,7 @@ const Canvas = (props) => {
 			console.log("setting display true");
 			finalElements.push(elementCopy);
 		});
-		setElementsIdOnViewMode([]);
+		props.setElementsIdOnViewMode([]);
 		setElements(finalElements, true);
 		console.log("FINAL ELEMENTS", finalElements);
 	};
@@ -80,7 +79,7 @@ const Canvas = (props) => {
 	useEffect(() => {
 		// Decide which elements to display, if user does not has "Treedi" screen
 		if (props.screenView === "all") {
-			if (elementsIdOnViewMode.length == 0) {
+			if (props.elementsIdOnViewMode.length == 0) {
 				return; // rendered but state did not changed, stayed on multi screen view
 			} else {
 				handleOneScreenToMulti(); // init view
@@ -99,13 +98,13 @@ const Canvas = (props) => {
 						switch (elementCopy.screen) {
 							case 1:
 								elementCopy.display = true;
-								if (elementsIdOnViewMode.indexOf(elementCopy.id) === -1) {
+								if (props.elementsIdOnViewMode.indexOf(elementCopy.id) === -1) {
 									console.log("ADDING ", elementCopy.id);
 									newViewMode.push(elementCopy.id);
 								}
 								break;
 							case 2:
-								if (elementsIdOnViewMode.indexOf(elementCopy.id) === -1) {
+								if (props.elementsIdOnViewMode.indexOf(elementCopy.id) === -1) {
 									elementCopy.display = true;
 
 									elementCopy.points.forEach((point) => {
@@ -116,7 +115,7 @@ const Canvas = (props) => {
 								}
 								break;
 							case 3:
-								if (elementsIdOnViewMode.indexOf(elementCopy.id) === -1) {
+								if (props.elementsIdOnViewMode.indexOf(elementCopy.id) === -1) {
 									elementCopy.display = true;
 									elementCopy.points.forEach((point) => {
 										point.x -= window.screen.width * 2;
@@ -129,20 +128,20 @@ const Canvas = (props) => {
 						}
 					} else {
 						elementCopy.display = false;
-						if (elementsIdOnViewMode.indexOf(elementCopy.id) > -1) {
+						if (props.elementsIdOnViewMode.indexOf(elementCopy.id) > -1) {
 							console.log("element id ", elementCopy.id, " in list!! need to be deleted");
 							elementCopy.points.forEach((point) => {
 								point.x += window.screen.width * (elementCopy.screen - 1);
 							});
-							// let filteredList = [...elementsIdOnViewMode]
+							// let filteredList = [...props.elementsIdOnViewMode]
 							// console.log('filteredList:', filteredList)
-							// setElementsIdOnViewMode(prevState => [filteredList]);
+							// props.setElementsIdOnViewMode(prevState => [filteredList]);
 						}
 						console.log(elementCopy.id, " ", elementCopy.display);
 					}
 					finalElements.push(elementCopy);
 				});
-				setElementsIdOnViewMode(newViewMode);
+				props.setElementsIdOnViewMode(newViewMode);
 				console.log("FINAL ELEMENTS", finalElements);
 				setElements(finalElements, true);
 			};
@@ -292,7 +291,7 @@ const Canvas = (props) => {
 
 		//if one screen view mode, then add the element id to the ids on current view
 		if (Number(props.screenView) === screen) {
-			setElementsIdOnViewMode([...elementsIdOnViewMode, id]);
+			props.setElementsIdOnViewMode([...props.elementsIdOnViewMode, id]);
 		}
 
 		switch (type) {
@@ -446,18 +445,25 @@ const Canvas = (props) => {
 				}
 			} else {
 				if (!props.isDialogOpen) {
-					if (props.screenView !== "all") {
-						// ADD NOTIFICATION
-						console.log("Can't use screen switch buttons on Single Screen Mode!");
-					} else if (event.key === "1" || event.key === "2" || event.key === "3") {
-						console.log("key " + Number(event.key) + " is pressed");
-						props.setScreenToWriteTo(Number(event.key));
-						props.setPressureMode(false);
-						props.setDisplayScreenToWriteTo(true);
+					if (event.key === "1" || event.key === "2" || event.key === "3") {
+						if (props.screenView !== "all") {
+							// ADD NOTIFICATION
+							console.log("Can't use screen switch buttons on Single Screen Mode!");
+						} else {
+							console.log("key " + Number(event.key) + " is pressed");
+							props.setScreenToWriteTo(Number(event.key));
+							props.setPressureMode(false);
+							props.setDisplayScreenToWriteTo(true);
+						}
 					} else if (event.key === "0") {
-						props.setScreenToWriteTo(0);
-						props.setPressureMode(true);
-						props.setDisplayScreenToWriteTo(true);
+						if (props.screenView !== "all") {
+							// ADD NOTIFICATION
+							console.log("Can't use screen switch buttons on Single Screen Mode!");
+						} else {
+							props.setScreenToWriteTo(0);
+							props.setPressureMode(true);
+							props.setDisplayScreenToWriteTo(true);
+						}
 					}
 				}
 			}
@@ -580,7 +586,7 @@ const Canvas = (props) => {
 				}
 
 				if (props.screenToWriteTo > 0) {
-					if (props.screenToWriteTo === 2 && !elementsIdOnViewMode.length) {
+					if (props.screenToWriteTo === 2 && !props.elementsIdOnViewMode.length) {
 						clientX += width;
 						updateElement(index, x1, y1, clientX, clientY, props.tool, "", 2);
 
@@ -608,7 +614,7 @@ const Canvas = (props) => {
 							setElements((prevState) => [...prevState, element]);
 							setSelectedElement(element);
 						}
-					} else if (props.screenToWriteTo === 3 && !elementsIdOnViewMode.length) {
+					} else if (props.screenToWriteTo === 3 && !props.elementsIdOnViewMode.length) {
 						clientX += width + width;
 						updateElement(index, x1, y1, clientX, clientY, props.tool, "", 3);
 					} else {

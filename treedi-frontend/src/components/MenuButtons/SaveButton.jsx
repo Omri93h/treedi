@@ -11,7 +11,16 @@ import { toast } from "react-toastify";
 
 import "../../App.css";
 
-const SaveButton = ({ fileName, user, elements, readPermission, editPermission, setFileId, setScreenView }) => {
+const SaveButton = ({
+	fileName,
+	user,
+	elements,
+	owner,
+	readPermission,
+	editPermission,
+	setFileId,
+	elementsIdOnViewMode,
+}) => {
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
 
@@ -22,8 +31,24 @@ const SaveButton = ({ fileName, user, elements, readPermission, editPermission, 
 		setAnchorEl(null);
 	};
 
-	const handleSave = async () => {
-		await setScreenView("full");
+	const getBaseElements = () => {
+		let baseElements = [];
+		elements.forEach((element) => {
+			let baseElement = {};
+			Object.assign(baseElement, element);
+			if (elementsIdOnViewMode.indexOf(element.id) !== -1) {
+				baseElement.points.forEach((point) => {
+					point.x += window.screen.width * (element.screen - 1);
+				});
+			}
+			baseElement.display = true;
+			baseElements.push(baseElement);
+		});
+		return baseElements;
+	};
+
+	const handleSave = () => {
+		// setScreenView("all");
 		toast.info("Saving File ...", {
 			position: "bottom-left",
 			autoClose: 800,
@@ -33,7 +58,10 @@ const SaveButton = ({ fileName, user, elements, readPermission, editPermission, 
 			draggable: true,
 			progress: undefined,
 		});
-		let trdiFileData = getTrdiFileData(user, fileName, elements, readPermission, editPermission);
+		// console.log(elements);
+		const baseElements = getBaseElements();
+		console.log(baseElements);
+		const trdiFileData = getTrdiFileData(user, fileName, baseElements, readPermission, editPermission);
 		saveTrdiFile(trdiFileData, fileName, setFileId);
 		handleClose();
 	};

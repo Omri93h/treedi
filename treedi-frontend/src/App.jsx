@@ -11,6 +11,7 @@ getToken();
 
 const App = ({ handleLogout }) => {
 	const [fileId, setFileId] = useState(null);
+	const [elementsIdOnViewMode, setElementsIdOnViewMode] = useState([]);
 
 	const user = useRef({
 		name: localStorage.getItem("TreediUserName"),
@@ -23,10 +24,7 @@ const App = ({ handleLogout }) => {
 
 	const [projectName, setProjectName] = useState(null);
 
-	const owner = useRef(user.current.email);
-	function setOwner(ref) {
-		owner.current = ref;
-	}
+	const [owner, setOwner] = useState(user.current.email);
 
 	const [isDialogOpen, setIsDialogOpen] = useState(true);
 
@@ -66,7 +64,7 @@ const App = ({ handleLogout }) => {
 	const divScreenToWriteTo = (
 		<ScreenToWriteTo
 			user={user.current}
-			owner={owner.current}
+			owner={owner}
 			screenToWriteTo={screenToWriteTo}
 			setDisplayScreenToWriteTo={setDisplayScreenToWriteTo}
 			editPermission={editPermission}
@@ -123,6 +121,7 @@ const App = ({ handleLogout }) => {
 			<Fade in={action === "none" ? true : false} timeout={250}>
 				<span>
 					<Controller
+						owner={owner}
 						user={user.current}
 						setFileId={setFileId}
 						setProjectName={setProjectName}
@@ -141,6 +140,7 @@ const App = ({ handleLogout }) => {
 						setLoadedElement={setLoadedElement}
 						elements={currElements.current}
 						setOwner={setOwner}
+						elementsIdOnViewMode={elementsIdOnViewMode}
 						setScreenView={setScreenView}
 					/>
 				</span>
@@ -164,7 +164,7 @@ const App = ({ handleLogout }) => {
 				editPermission={editPermission}
 				isDialogOpen={isDialogOpen}
 				tool={tool}
-				owner={owner.current}
+				owner={owner}
 				user={user.current}
 				setCurrElements={setCurrElements}
 				setDisplayScreenToWriteTo={setDisplayScreenToWriteTo}
@@ -175,6 +175,8 @@ const App = ({ handleLogout }) => {
 				setPressureValue={setPressureValue}
 				pressureMode={pressureMode}
 				setPressureMode={setPressureMode}
+				setElementsIdOnViewMode={setElementsIdOnViewMode}
+				elementsIdOnViewMode={elementsIdOnViewMode}
 			/>
 		</div>
 	);
