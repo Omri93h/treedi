@@ -10,27 +10,7 @@ import { Fade } from "@mui/material";
 getToken();
 
 const App = ({ handleLogout }) => {
-	// console.log("APP IS rendered");
-
 	const [fileId, setFileId] = useState(null);
-
-	// const [width, setWidth] = useState(Number(window.innerWidth));
-	// // Page size handling
-	// function handleWindowSizeChange() {
-	// 	setWidth(window.innerWidth);
-	// }
-
-	// let isMobile = useRef(false);
-
-	// useEffect(() => {
-	// 	window.addEventListener("resize", handleWindowSizeChange);
-	// 	isMobile.current = width <= 768 || window.screen.height < 800;
-	// 	console.log(isMobile.current ? "MOBILE MODE" : "DESKTOP MODE");
-
-	// 	return () => {
-	// 		window.removeEventListener("resize", handleWindowSizeChange);
-	// 	};
-	// }, [window.screen.width]);
 
 	const user = useRef({
 		name: localStorage.getItem("TreediUserName"),
@@ -82,9 +62,6 @@ const App = ({ handleLogout }) => {
 		socket.current = ref;
 	}
 
-	const clientId = process.env.REACT_APP_CLIENT_ID;
-	const developerKey = process.env.REACT_APP_DEVELOPER_KEY;
-
 	const preload = React.useMemo(
 		() => <Preload setProjectName={setProjectName} setIsDialogOpen={setIsDialogOpen} />,
 		[]
@@ -122,7 +99,6 @@ const App = ({ handleLogout }) => {
 
 		if (!liveApi.current) {
 			console.log("error here");
-			// setSocket(io("http://localhost:4001"));
 			setSocket(io("https://treedi-socket.oa.r.appspot.com"));
 			initSocket();
 			console.log("sending socket!");

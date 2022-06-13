@@ -29,7 +29,7 @@ const Login = () => {
 		// Check if a token was recieved and send it to our API:
 		if (response.tokenId) {
 			// const googleResponse = await axios.post("http://localhost:5001/api/user-authentication", {
-			const googleResponse = await axios.post("https://treedi-346309.oa.r.appspot.com/api/user-authentication", {
+			const googleResponse = await axios.post("https://www.treedi.app/api/user-authentication", {
 				token: response.tokenId,
 			});
 			console.log("google responseee:", googleResponse);
