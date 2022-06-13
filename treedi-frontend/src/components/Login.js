@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from "react";
 import GoogleLogin from "react-google-login";
 import axios from "axios";
+import Button from "@mui/material/Button";
+import { Fade } from "@mui/material";
+import { textAlign } from "@mui/system";
+
 // import SimpleReactLightbox from "simple-react-lightbox";
 // import { refreshTokenSetup } from "../utils/refreshToken";
 
@@ -29,7 +33,7 @@ const Login = () => {
 		// Check if a token was recieved and send it to our API:
 		if (response.tokenId) {
 			// const googleResponse = await axios.post("http://localhost:5001/api/user-authentication", {
-			const googleResponse = await axios.post("https://treedi-346309.oa.r.appspot.com/api/user-authentication", {
+				const googleResponse = await axios.post("https://treedi-346309.oa.r.appspot.com/api/user-authentication", {
 				token: response.tokenId,
 			});
 			console.log("google responseee:", googleResponse);
@@ -97,12 +101,74 @@ const Login = () => {
 	}, [isDataSavedLocally]);
 
 	return (
-		<div style={{ position: "fixed", top:'0' }}>
+		<div style={{ position: "fixed", top: "0" }}>
 			<div className='Login'>
-				{!user.profile_loaded ? (
-					<div>
-						<GoogleLogin clientId={clientId} buttonText='Login' onSuccess={googleResponse} onFailure={onFailure} />
+				{" "}
+				<Fade in={true} timeout={2000}>
+					<div id='treedi-welcome' style={{ width: "600px" }}>
+						<span
+							style={{
+								fontSize: "100px",
+								position: "absolute",
+								left: "50px",
+								top: "50px",
+								height: "200px",
+								fontFamily: "ubuntu",
+								color: "#f0f0f0",
+								opacity: "0.7",
+								textAlign: "left",
+							}}>
+							Welcome To
+							<br />
+							<b>Treedi</b>
+						</span>
 					</div>
+				</Fade>
+				<Fade in={true} timeout={3000}>
+					<div
+						id='treedi-description'
+						style={{
+							position: "absolute",
+							width: "600px",
+							top: "300px",
+							height: "150px",
+							background: "",
+							left: "50px",
+							padding:'10px'
+
+						}}>
+						<span
+							style={{
+								opacity: "0.7",
+								fontSize: "25px",
+								fontFamily: "ubuntu",
+								color: "#f0f0f0",
+								textAlign: "left",
+							}}>
+							<p>
+								<b>Treedi</b> is a platform that offers innovative, first of a kind, multi-layer document creation and editing,
+								featuring layers sharing between users - while working in parallel and governed by a layers permissions
+								system
+							</p>
+						</span>
+					</div>
+				</Fade>
+				{!user.profile_loaded ? (
+					<Fade in={true} timeout={4000}>
+						<div style={{ position: "absolute", top: "500px", left: "50px" }}>
+							<GoogleLogin
+								clientId={clientId}
+								buttonText='Login'
+								onSuccess={googleResponse}
+								onFailure={onFailure}
+								render={(renderProps) => (
+									<Button onClick={renderProps.onClick} variant='contained' size='large' color='success'>
+										Login
+									</Button>
+								)}
+							/>
+						</div>
+					</Fade>
 				) : (
 					<div></div>
 				)}

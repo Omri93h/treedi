@@ -33,6 +33,7 @@ async function getTokenWithRefresh (client_secret ,client_id , redirect_uris, re
     let oauth2Client = new google.auth.OAuth2(
         client_id,
         client_secret,
+		// redirect_uris[0]
 		redirect_uris[1]
     )
     oauth2Client.credentials.refresh_token = refreshToken

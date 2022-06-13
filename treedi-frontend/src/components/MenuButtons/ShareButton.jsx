@@ -70,8 +70,8 @@ const ShareButton = ({
 	};
 
 	const handleClose = () => {
-		setCurrEditPermission([]);
-		setCurrReadPermission([]);
+		// setCurrEditPermission([]);
+		// setCurrReadPermission([]);
 		setIsDialogOpen(false);
 		setOpen(false);
 	};
@@ -130,7 +130,11 @@ const ShareButton = ({
 		setEditPermission(newEditPermissions);
 		console.log("newReadPerm : ", newReadPermissions);
 		console.log("newEditPerm : ", newEditPermissions);
+
 		const trdiFileData = getTrdiFileData(user, fileName, elements, newReadPermissions, newEditPermissions);
+
+		handleClose();
+
 		await saveTrdiFile(trdiFileData, fileName);
 		ShareFile();
 	};
@@ -140,18 +144,19 @@ const ShareButton = ({
 		try {
 			let params = new URL(document.location).searchParams;
 			let fileid = localStorage.getItem("fileId");
-			// let code = params.get("code");
 			let email1 = localStorage.getItem("TreediUserEmail");
 
-
 			// const res = await axios.post("http://localhost:5001/api/googleDrive/shareFile/?email=" + email1, {
-				const res = await axios.post("https://treedi-346309.oa.r.appspot.com/api/googleDrive/shareFile/?email=" + email1, {
-				data: {
-					email: email,
-					fileId: fileid,
-					edit: currEditPermission.length > 0 ? true : false,
-				},
-			});
+			const res = await axios.post(
+				"https://treedi-346309.oa.r.appspot.com/api/googleDrive/shareFile/?email=" + email1,
+				{
+					data: {
+						email: email,
+						fileId: fileid,
+						edit: currEditPermission.length > 0 ? true : false,
+					},
+				}
+			);
 
 			if (res.ok) {
 				console.log("OK");
