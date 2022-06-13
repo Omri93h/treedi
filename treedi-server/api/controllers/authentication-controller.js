@@ -13,7 +13,7 @@ const jwt_decode = require('jwt-decode');
     // created automatically when the authorization flow completes for the first
     // time.
     // console.log(req);
-    let decode = jwt_decode( req.body.token);
+    let decode = jwt_decode(req.body.token);
     const email = decode.email;
     let user = await User.findOne({email: email});
     if (user) {
@@ -44,7 +44,7 @@ const jwt_decode = require('jwt-decode');
       // const oAuth2Client = new google.auth.OAuth2(
       // client_id, client_secret, redirect_uris[0]);
       const oAuth2Client = new google.auth.OAuth2(
-        client_id, client_secret, redirect_uris[1]);
+        client_id, client_secret, redirect_uris[2]);
         
         return getAccessToken(oAuth2Client, callback);
     }

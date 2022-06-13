@@ -13,7 +13,7 @@ async function getTokenWithRefresh (client_secret ,client_id , redirect_uris, re
            client_id,
            client_secret,
         //    redirect_uris[0]
-		redirect_uris[1]
+		redirect_uris[2]
 
     )
     oauth2Client.credentials.refresh_token = refreshToken
@@ -37,7 +37,7 @@ async function authAndRunCallback(req, res, callback) {
 		const credentials = JSON.parse(content);
 		const { client_secret, client_id, redirect_uris } = credentials.web;
 		// const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
-		const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[1]);
+		const oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[2]);
 
 		console.log(err);
 		const code = req.query.code;
@@ -48,7 +48,7 @@ async function authAndRunCallback(req, res, callback) {
 			.then((response) => {
 				oAuth2Client.setCredentials(response.tokens);
 				console.log("AUTH:" ,oAuth2Client);
-				console.log(req.query)
+				console.log("The query is:",req.query);
 				let newUser = new User({ _id: mongoose.Types.ObjectId(), email: req.query.email, token: response.tokens });
 				newUser.save();
 				console.log(newUser);
