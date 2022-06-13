@@ -95,16 +95,11 @@ const Canvas = (props) => {
 				elementsCopy.forEach((element) => {
 					let elementCopy = {};
 					Object.assign(elementCopy, element);
-					// console.log('props.screenView: ',props.screenView ,'\nelementCopy.screen: ', elementCopy.screen )
 					if (Number(props.screenView) === elementCopy.screen) {
-						// console.log("we want to display element", elementCopy)
 						switch (elementCopy.screen) {
 							case 1:
 								elementCopy.display = true;
 								if (elementsIdOnViewMode.indexOf(elementCopy.id) === -1) {
-									// elementCopy.points.forEach((point) => {
-									// 	point.x -= window.screen.width;
-									// });
 									console.log("ADDING ", elementCopy.id);
 									newViewMode.push(elementCopy.id);
 								}
@@ -181,8 +176,6 @@ const Canvas = (props) => {
 			redo();
 		} else if (props.command.load) {
 			setElements(props.command.load);
-		} else if (props.command.fullView) {
-			handleOneScreenToMulti();
 		} else if (props.command.live) {
 			if (props.command.live.length > 0) {
 				let elementToAdd = props.command.live[0];
@@ -190,12 +183,7 @@ const Canvas = (props) => {
 				if (elementsCopy[0] !== null) {
 					const idx = elementsCopy.length - 1;
 					if (elementsCopy[idx + 1] !== elementToAdd) {
-						console.log("they are not the same");
-						console.log("element to add:", elementToAdd);
-						console.log("elementsCopy1", elementsCopy);
-
 						elementsCopy[elementToAdd.id] = elementToAdd;
-						// console.log("curr elem ", last_element);
 						setElements(elementsCopy);
 					}
 				}
@@ -457,13 +445,11 @@ const Canvas = (props) => {
 					undo();
 				}
 			} else {
-
 				if (!props.isDialogOpen) {
-					if (props.screenView !== 'all'){
+					if (props.screenView !== "all") {
 						// ADD NOTIFICATION
-						console.log("Can't use screen switch buttons on Single Screen Mode!")
-					}
-					else if (event.key === "1" || event.key === "2" || event.key === "3") {
+						console.log("Can't use screen switch buttons on Single Screen Mode!");
+					} else if (event.key === "1" || event.key === "2" || event.key === "3") {
 						console.log("key " + Number(event.key) + " is pressed");
 						props.setScreenToWriteTo(Number(event.key));
 						props.setPressureMode(false);

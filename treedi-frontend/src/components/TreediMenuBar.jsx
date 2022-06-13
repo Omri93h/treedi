@@ -86,6 +86,7 @@ const TreediMenuBar = ({
 					elements={elements}
 					readPermission={readPermission}
 					editPermission={editPermission}
+					setScreenView={setScreenView}
 				/>
 
 				<LoadButton

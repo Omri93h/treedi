@@ -26,7 +26,7 @@ const Login = () => {
 	};
 
 	function openWindow(treediAppPage) {
-		var width = 650;
+		var width = 1800;
 		var left = 200;
 
 		left += window.screenX;
@@ -116,6 +116,9 @@ const Login = () => {
 		}
 	}, [isDataSavedLocally]);
 
+	console.log('\n\nClientID\n', clientId)
+
+	
 	return (
 		<div style={{ position: "fixed", top: "0" }}>
 			{!user.profile_loaded ? (

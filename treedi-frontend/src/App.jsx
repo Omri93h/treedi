@@ -21,7 +21,7 @@ const App = ({ handleLogout }) => {
 
 	const [screenView, setScreenView] = useState("all");
 
-	const [projectName, setProjectName]  = useState(null);
+	const [projectName, setProjectName] = useState(null);
 
 	const owner = useRef(user.current.email);
 	function setOwner(ref) {
