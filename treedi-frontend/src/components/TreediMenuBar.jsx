@@ -104,7 +104,7 @@ const TreediMenuBar = ({
 				/>
 
 				<ShareButton
-					user={user}
+					owner={owner}
 					elements={elements}
 					fileName={projectName}
 					readPermission={readPermission}
@@ -112,6 +112,7 @@ const TreediMenuBar = ({
 					editPermission={editPermission}
 					setEditPermission={setEditPermission}
 					setIsDialogOpen={setIsDialogOpen}
+					setFileId={setFileId}
 				/>
 
 				<Button onClick={() => setCommand({ clear: true })}>

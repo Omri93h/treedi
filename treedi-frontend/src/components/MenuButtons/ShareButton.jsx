@@ -27,7 +27,7 @@ import OutlinedInput from "@mui/material/OutlinedInput";
 const modalStyle = {
 	position: "absolute",
 	top: "50%",
-	left: window.innerWidth / 6,
+	left: window.screen.width / 6,
 	transform: "translate(-50%, -50%)",
 	width: 400,
 	bgcolor: "background.paper",
@@ -50,13 +50,14 @@ const MenuProps = {
 
 const ShareButton = ({
 	elements,
-	user,
+	owner,
 	fileName,
 	readPermission,
 	setReadPermission,
 	editPermission,
 	setEditPermission,
 	setIsDialogOpen,
+	setFileId,
 }) => {
 	const [open, setOpen] = useState(false);
 	const [editToggle, setEditToggle] = useState(false);
@@ -131,11 +132,11 @@ const ShareButton = ({
 		console.log("newReadPerm : ", newReadPermissions);
 		console.log("newEditPerm : ", newEditPermissions);
 
-		const trdiFileData = getTrdiFileData(user, fileName, elements, newReadPermissions, newEditPermissions);
+		const trdiFileData = getTrdiFileData(owner, fileName, elements, newReadPermissions, newEditPermissions);
 
 		handleClose();
 
-		await saveTrdiFile(trdiFileData, fileName);
+		await saveTrdiFile(trdiFileData, fileName, setFileId);
 		ShareFile();
 	};
 
