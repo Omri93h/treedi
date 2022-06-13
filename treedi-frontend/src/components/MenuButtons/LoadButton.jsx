@@ -14,6 +14,7 @@ const LoadButton = ({
 	setReadPermission,
 	setOwner,
 	setFileId,
+	setProjectName
 }) => {
 	const [openPicker, data] = useDrivePicker();
 	const clientId = process.env.REACT_APP_CLIENT_ID;
@@ -53,7 +54,7 @@ const LoadButton = ({
 		});
 		let params = new URL(document.location).searchParams;
 		// let code = params.get("code");
-		// let code = params.get("code");
+
 		let email = localStorage.getItem("TreediUserEmail");
 
 		try {
@@ -71,6 +72,8 @@ const LoadButton = ({
 						setOwner(res.data.Owner);
 						setReadPermission(res.data.ReadPermission);
 						setEditPermission(res.data.EditPermission);
+						console.log('DATGATGEDBAS', res.data)
+						setProjectName(res.data.FileName)
 						toast.success("Loaded successfully", {
 							position: "bottom-left",
 							autoClose: 5000,

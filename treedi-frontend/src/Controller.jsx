@@ -5,6 +5,7 @@ const Controller = (props) => {
 	return (
 		<div style={{ position: "absolute" }}>
 			<TreediMenuBar
+				setProjectName={props.setProjectName}
 				setFileId={props.setFileId}
 				user={props.user}
 				projectName={props.projectName}

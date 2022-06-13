@@ -21,11 +21,7 @@ const App = ({ handleLogout }) => {
 
 	const [screenView, setScreenView] = useState("all");
 
-	const projectName = useRef("");
-
-	function setProjectName(ref) {
-		projectName.current = ref;
-	}
+	const [projectName, setProjectName]  = useState(null);
 
 	const owner = useRef(user.current.email);
 	function setOwner(ref) {
@@ -127,9 +123,10 @@ const App = ({ handleLogout }) => {
 			<Fade in={action === "none" ? true : false} timeout={250}>
 				<span>
 					<Controller
-						setFileId={setFileId}
 						user={user.current}
-						projectName={projectName.current}
+						setFileId={setFileId}
+						setProjectName={setProjectName}
+						projectName={projectName}
 						setColor={setColor}
 						color={color}
 						setCommand={setCommand}

@@ -9,7 +9,7 @@ import UserButton from "./MenuButtons/UserButton";
 import SaveButton from "./MenuButtons/SaveButton";
 import LoadButton from "./MenuButtons/LoadButton";
 import ShareButton from "./MenuButtons/ShareButton";
-import ScreenViewButton from './MenuButtons/ScreenViewButton'
+import ScreenViewButton from "./MenuButtons/ScreenViewButton";
 
 import "../App.css";
 
@@ -33,6 +33,7 @@ const TreediMenuBar = ({
 	setFileId,
 	handleLogout,
 	setScreenView,
+	setProjectName,
 }) => {
 	const userButton = React.useMemo(
 		() => (
@@ -75,7 +76,7 @@ const TreediMenuBar = ({
 				</Button>
 
 				<Button onClick={() => setCommand({ redo: true })}>
-					<RedoIcon  />
+					<RedoIcon />
 				</Button>
 
 				<SaveButton
@@ -88,6 +89,7 @@ const TreediMenuBar = ({
 				/>
 
 				<LoadButton
+					setProjectName={setProjectName}
 					setFileId={setFileId}
 					readPermission={readPermission}
 					editPermission={editPermission}
@@ -113,7 +115,6 @@ const TreediMenuBar = ({
 				</Button>
 
 				<ScreenViewButton setScreenView={setScreenView} />
-
 			</div>
 		</div>
 	);

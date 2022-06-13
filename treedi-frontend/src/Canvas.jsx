@@ -457,8 +457,13 @@ const Canvas = (props) => {
 					undo();
 				}
 			} else {
+
 				if (!props.isDialogOpen) {
-					if (event.key === "1" || event.key === "2" || event.key === "3") {
+					if (props.screenView !== 'all'){
+						// ADD NOTIFICATION
+						console.log("Can't use screen switch buttons on Single Screen Mode!")
+					}
+					else if (event.key === "1" || event.key === "2" || event.key === "3") {
 						console.log("key " + Number(event.key) + " is pressed");
 						props.setScreenToWriteTo(Number(event.key));
 						props.setPressureMode(false);
