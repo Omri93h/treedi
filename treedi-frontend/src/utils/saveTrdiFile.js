@@ -5,7 +5,6 @@ const saveTrdiFile = async function (data, fileName,setFileId) {
 	try {
 		console.log(data)
 		let params = new URL(document.location).searchParams;
-		// let code = params.get("code");
 		let email = localStorage.getItem("TreediUserEmail");
 		let fileid = localStorage.getItem("fileId");
 		console.log("email:", email);

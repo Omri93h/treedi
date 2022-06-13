@@ -52,8 +52,10 @@ const Login = () => {
 				token: response.tokenId,
 			});
 			console.log("google responseee:", googleResponse);
-			// window.location.href = googleResponse.data.authUrl;
-			openWindow(googleResponse.data.authUrl);
+			window.location.href = googleResponse.data.authUrl;
+			
+			// openWindow(googleResponse.data.authUrl);
+
 			// window.open(googleResponse.data.authUrl, "MyWindow", "_blank").focus();
 			// // Check if we have some result:
 			// if (Object.keys(googleResponse.data.payload).length !== 0) {
