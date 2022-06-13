@@ -27,6 +27,17 @@ const Login = () => {
 		alert(JSON.stringify(error));
 	};
 
+	function openWindow(treediAppPage) {
+
+		var width = 650;
+		var left = 200;
+	
+		left += window.screenX;
+	
+		window.open(treediAppPage,'windowName','resizable=1,scrollbars=1,fullscreen=0,height=200,width=' + width + '  , left=' + left + ', toolbar=0, menubar=0,status=1');    
+		return 0;
+	
+	}
 	// If successfull return of data from google we run this function:
 	const googleResponse = async (response) => {
 		console.log("going to API");
@@ -37,7 +48,8 @@ const Login = () => {
 				token: response.tokenId,
 			});
 			console.log("google responseee:", googleResponse);
-			window.location.href = googleResponse.data.authUrl;
+			// window.location.href = googleResponse.data.authUrl;
+			openWindow(googleResponse.data.authUrl)
 			// window.open(googleResponse.data.authUrl, "MyWindow", "_blank").focus();
 			// // Check if we have some result:
 			// if (Object.keys(googleResponse.data.payload).length !== 0) {

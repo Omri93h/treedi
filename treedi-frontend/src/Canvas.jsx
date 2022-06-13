@@ -75,12 +75,11 @@ const Canvas = (props) => {
 		setElementsIdOnViewMode([]);
 		setElements(finalElements, true);
 		console.log("FINAL ELEMENTS", finalElements);
-	}
+	};
 
 	useEffect(() => {
 		// Decide which elements to display, if user does not has "Treedi" screen
-
-		if (props.screenView == "all") {
+		if (props.screenView === "all") {
 			if (elementsIdOnViewMode.length == 0) {
 				return; // rendered but state did not changed, stayed on multi screen view
 			} else {
@@ -89,7 +88,6 @@ const Canvas = (props) => {
 		} else {
 			const handleMultiScreensToOne = () => {
 				// Decide which element to display (when user does not has "Treedi" screen)
-				console.log("from multi to one !! ");
 
 				let elementsCopy = [...elements];
 				let finalElements = [];
@@ -165,7 +163,10 @@ const Canvas = (props) => {
 			}
 			startOneScreenViewProcedure();
 		}
-		props.setScreenToWriteTo(Number(props.screenView));
+		if (props.screenView !== "all") props.setScreenToWriteTo(Number(props.screenView));
+		else {
+			props.setScreenToWriteTo(0);
+		}
 		props.setPressureMode(false);
 		props.setDisplayScreenToWriteTo(true);
 	}, [props.screenView]);
@@ -181,7 +182,7 @@ const Canvas = (props) => {
 		} else if (props.command.load) {
 			setElements(props.command.load);
 		} else if (props.command.fullView) {
-			handleOneScreenToMulti()
+			handleOneScreenToMulti();
 		} else if (props.command.live) {
 			if (props.command.live.length > 0) {
 				let elementToAdd = props.command.live[0];
@@ -571,6 +572,7 @@ const Canvas = (props) => {
 				updateElement(index, x1, y1, event.changedTouches[0].clientX, event.changedTouches[0].clientY, props.tool);
 			} else {
 				let xPoint = clientX + width;
+				console.log("props.screenToWriteTo", props.screenToWriteTo);
 				if (props.screenToWriteTo == 0) {
 					if (props.pressureValue > 0.33) {
 						handleMouseUp(event, false);
