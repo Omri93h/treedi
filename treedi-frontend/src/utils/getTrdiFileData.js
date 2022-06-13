@@ -1,7 +1,7 @@
-function getTrdiFileData(user, fileName, elements, readPermission, editPermission) {
+function getTrdiFileData(owner, fileName, elements, readPermission, editPermission) {
 	let data_format = {
 		FileName: fileName,
-		Owner: user["email"],
+		Owner: owner,
 		Elements: elements,
 		LastModified: new Date().toLocaleString(),
 		ReadPermission: readPermission,

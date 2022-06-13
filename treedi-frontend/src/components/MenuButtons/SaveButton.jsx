@@ -61,7 +61,7 @@ const SaveButton = ({
 		// console.log(elements);
 		const baseElements = getBaseElements();
 		console.log(baseElements);
-		const trdiFileData = getTrdiFileData(user, fileName, baseElements, readPermission, editPermission);
+		const trdiFileData = getTrdiFileData(owner, fileName, baseElements, readPermission, editPermission);
 		saveTrdiFile(trdiFileData, fileName, setFileId);
 		handleClose();
 	};
