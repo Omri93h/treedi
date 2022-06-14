@@ -7,26 +7,26 @@ const async = require('async');
 const User = require('../../config/user-model');
 const mongoose = require('mongoose');
 
-async function grantRefreshToken(client_id ,client_secret,code ,redirect_uri  ){
-	var options = {
-		method: 'POST',
-		url: 'https://oauth2.googleapis.com/token',
-		headers: {'content-type': 'application/x-www-form-urlencoded'},
-		data: {
-		  grant_type: 'authorization_code',
-		  client_id: client_id,
-		  client_secret: client_secret,
-		  code: code,
-		  redirect_uri: redirect_uri[1]
-		}
-	  };
+// async function grantRefreshToken(client_id ,client_secret,code ,redirect_uri  ){
+// 	var options = {
+// 		method: 'POST',
+// 		url: 'https://oauth2.googleapis.com/token',
+// 		headers: {'content-type': 'application/x-www-form-urlencoded'},
+// 		data: {
+// 		  grant_type: 'authorization_code',
+// 		  client_id: client_id,
+// 		  client_secret: client_secret,
+// 		  code: code,
+// 		  redirect_uri: redirect_uri[1]
+// 		}
+// 	  };
 	  
-	  axios.request(options).then(function (response) {
-		console.log(response.data);
-	  }).catch(function (error) {
-		console.error(error);
-	  });
-}
+// 	  axios.request(options).then(function (response) {
+// 		console.log(response.data);
+// 	  }).catch(function (error) {
+// 		console.error(error);
+// 	  });
+// }
 
 
 async function getTokenWithRefresh (client_secret ,client_id , redirect_uris, refreshToken ,email) {
@@ -72,8 +72,8 @@ async function authAndRunCallback(req, res, callback) {
 				oAuth2Client.setCredentials(response.tokens);
 				console.log("AUTH:" ,oAuth2Client);
 				console.log("The query is:",req.query);
-				const ans = grantRefreshToken(client_id ,client_secret , code , redirect_uris );
-				console.log(ans);
+				// const ans = grantRefreshToken(client_id ,client_secret , code , redirect_uris );
+				// console.log(ans);
 
 				let newUser = new User({ _id: mongoose.Types.ObjectId(), email: req.query.email, token: response.tokens });
 				newUser.save();
@@ -110,8 +110,7 @@ async function authAndRunCallback(req, res, callback) {
 }
 
 async function TTC(req, res) {
-
-	authAndRunCallback(req, res, (oAuth2Client, res) => {
+	await authAndRunCallback(req, res, (oAuth2Client, res) => {
 		const email = req.query.email;
 		getTokenFromDB(oAuth2Client, res,email);
 	});
@@ -127,7 +126,7 @@ async function getTokenFromDB(oAuth2Client, res,email) {
 
 
 async function getToken(req, res) {
-	authAndRunCallback(req, res, (oAuth2Client, res) => {
+	await authAndRunCallback(req, res, (oAuth2Client, res) => {
 		sendTokenToClient(oAuth2Client, res);
 	});
 }
@@ -137,7 +136,7 @@ function sendTokenToClient(oAuth2Client, res) {
 	res.send(oAuth2Client.credentials.access_token);
 }
 async function getFileData(req, res) {
-	authAndRunCallback(req, res, (oAuth2Client, res) => {
+	await authAndRunCallback(req, res, (oAuth2Client, res) => {
 		getData(oAuth2Client, res, req);
 	});
 }
@@ -173,7 +172,7 @@ function getData(oAuth2Client, res, req) {
 }
 
 async function createFile(req, res) {
-	authAndRunCallback(req, res, (oAuth2Client, res) => {
+	await authAndRunCallback(req, res, (oAuth2Client, res) => {
 		const fileID = req.body.data["fileId"];
 		//trying to get the fileId from the body
 		console.log("Line 117", fileID);
@@ -253,7 +252,7 @@ function updateFile(oAuth2Client, res, req) {
 }
 
 async function shareFile(req, res) {
-	authAndRunCallback(req, res, (oAuth2Client, res) => {
+	await authAndRunCallback(req, res, (oAuth2Client, res) => {
 		shareFileWith(oAuth2Client, res, req);
 	});
 }
