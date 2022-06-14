@@ -53,7 +53,7 @@ const Login = () => {
 			});
 			console.log("google responseee:", googleResponse);
 			window.location.href = googleResponse.data.authUrl;
-			
+
 			// openWindow(googleResponse.data.authUrl);
 
 			// window.open(googleResponse.data.authUrl, "MyWindow", "_blank").focus();
@@ -122,9 +122,9 @@ const Login = () => {
 
 
 	return (
-		<div style={{ position: "fixed", top: "0" }}>
+		<div>
 			{!user.profile_loaded ? (
-				<div style={{ position: "absolute", top: "500px", left: "50px" }}>
+				<div>
 					<GoogleLogin
 						clientId={clientId}
 						buttonText='Login'

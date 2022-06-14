@@ -46,36 +46,36 @@ const Canvas = (props) => {
 
 	const distance = (a, b) => Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 
-	const handleOneScreenToMulti = () => {
-		// Handle 1 screen display to Treedi multi-display (return elements to original position)
-		const elementsCopy = [...elements];
-		let finalElements = [];
-		let ids = [...props.elementsIdOnViewMode];
-		elementsCopy.forEach((element) => {
-			let elementCopy = {};
-			Object.assign(elementCopy, element);
-			elementCopy.display = true;
-			if (ids.indexOf(elementCopy.id) !== -1 && elementCopy.screen !== 1) {
-				if (elementCopy.screen === 2) {
-					elementCopy.points.forEach((point) => {
-						point.x += window.screen.width;
-					});
-				} else {
-					elementCopy.points.forEach((point) => {
-						point.x += window.screen.width * 2;
-					});
-				}
-				ids.splice(ids.indexOf(element.id), 1);
-			}
-			console.log("setting display true");
-			finalElements.push(elementCopy);
-		});
-		props.setElementsIdOnViewMode([]);
-		setElements(finalElements, true);
-		console.log("FINAL ELEMENTS", finalElements);
-	};
-
+	//////////////// ScreenView Mode ////////////////
 	useEffect(() => {
+		const handleOneScreenToMulti = () => {
+			// Handle 1 screen display to Treedi multi-display (return elements to original position)
+			const elementsCopy = [...elements];
+			let finalElements = [];
+			let ids = [...props.elementsIdOnViewMode];
+			elementsCopy.forEach((element) => {
+				let elementCopy = {};
+				Object.assign(elementCopy, element);
+				elementCopy.display = true;
+				if (ids.indexOf(elementCopy.id) !== -1 && elementCopy.screen !== 1) {
+					if (elementCopy.screen === 2) {
+						elementCopy.points.forEach((point) => {
+							point.x += window.screen.width;
+						});
+					} else {
+						elementCopy.points.forEach((point) => {
+							point.x += window.screen.width * 2;
+						});
+					}
+					ids.splice(ids.indexOf(element.id), 1);
+				}
+				console.log("setting display true");
+				finalElements.push(elementCopy);
+			});
+			props.setElementsIdOnViewMode([]);
+			setElements(finalElements, true);
+			console.log("FINAL ELEMENTS", finalElements);
+		};
 		// Decide which elements to display, if user does not has "Treedi" screen
 		if (props.screenView === "all") {
 			if (props.elementsIdOnViewMode.length == 0) {
@@ -105,6 +105,7 @@ const Canvas = (props) => {
 							case 2:
 								if (props.elementsIdOnViewMode.indexOf(elementCopy.id) === -1) {
 									elementCopy.display = true;
+
 									if (elementCopy.type == "pencil") {
 										elementCopy.points.forEach((point) => {
 											point.x -= window.screen.width;
@@ -185,16 +186,17 @@ const Canvas = (props) => {
 			if (props.command.live.length > 0) {
 				let elementToAdd = props.command.live[0];
 
-				// user on screenViewMode added element 
+				// user on screenViewMode added element
 				if (elementToAdd.moveOnLoad) {
 					if (elementToAdd.type == "pencil") {
 						elementToAdd.points.forEach((point) => {
 							point.x += window.screen.width * (elementToAdd.screen - 1);
 						});
 					}
-					props.setElementsIdOnViewMode([...props.elementsIdOnViewMode, elementToAdd.id])
+
+					props.setElementsIdOnViewMode([...props.elementsIdOnViewMode, elementToAdd.id]);
 				}
-				
+
 				// set display=false to element added to screen which is not on user's current view
 				if (props.screenView !== "all" && props.screenView !== elementToAdd.screen) {
 					elementToAdd.display = false;

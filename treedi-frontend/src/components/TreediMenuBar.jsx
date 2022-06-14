@@ -35,19 +35,11 @@ const TreediMenuBar = ({
 	elementsIdOnViewMode,
 	setScreenView,
 	setProjectName,
-	owner
+	owner,
 }) => {
 	const userButton = React.useMemo(
 		() => (
-			<div
-				style={{
-					marginTop: "10px",
-					marginLeft: "10px",
-					height: "50px",
-					lineHeight: "50px",
-					verticalAlign: "middle",
-					textAlign: "center",
-				}}>
+			<div style={userIconStyle}>
 				<UserButton userImage={user["img"]} handleLogout={handleLogout} />
 			</div>
 		),
@@ -67,76 +59,105 @@ const TreediMenuBar = ({
 				pauseOnHover
 			/>
 
+			<img src='./icon_app.jpg' style={iconStyle} />
+
 			{userButton}
-			<div style={TreediMenuBarStyle}>
-				<ToolSelection setTool={setTool} />
 
-				<ColorSelection color={color} setColor={setColor} />
+			<div id='menu-bar-wrapper' style={menuBarWrapper}>
+				<div style={TreediMenuBarStyle}>
+					<ToolSelection setTool={setTool} />
 
-				<Button onClick={() => setCommand({ undo: true })}>
-					<UndoIcon />
-				</Button>
+					<ColorSelection color={color} setColor={setColor} />
 
-				<Button onClick={() => setCommand({ redo: true })}>
-					<RedoIcon />
-				</Button>
+					<Button onClick={() => setCommand({ undo: true })}>
+						<UndoIcon />
+					</Button>
 
-				<SaveButton
-					elementsIdOnViewMode={elementsIdOnViewMode}
-					setFileId={setFileId}
-					fileName={projectName}
-					user={user}
-					elements={elements}
-					readPermission={readPermission}
-					editPermission={editPermission}
-					owner={owner}
-				/>
+					<Button onClick={() => setCommand({ redo: true })}>
+						<RedoIcon />
+					</Button>
 
-				<LoadButton
-					setProjectName={setProjectName}
-					setFileId={setFileId}
-					readPermission={readPermission}
-					editPermission={editPermission}
-					setCommand={setCommand}
-					setEditPermission={setEditPermission}
-					setReadPermission={setReadPermission}
-					setOwner={setOwner}
-				/>
+					<SaveButton
+						elementsIdOnViewMode={elementsIdOnViewMode}
+						setFileId={setFileId}
+						fileName={projectName}
+						user={user}
+						elements={elements}
+						readPermission={readPermission}
+						editPermission={editPermission}
+						owner={owner}
+					/>
 
-				<ShareButton
-					owner={owner}
-					elements={elements}
-					fileName={projectName}
-					readPermission={readPermission}
-					setReadPermission={setReadPermission}
-					editPermission={editPermission}
-					setEditPermission={setEditPermission}
-					setIsDialogOpen={setIsDialogOpen}
-					setFileId={setFileId}
-				/>
+					<LoadButton
+						setProjectName={setProjectName}
+						setFileId={setFileId}
+						readPermission={readPermission}
+						editPermission={editPermission}
+						setCommand={setCommand}
+						setEditPermission={setEditPermission}
+						setReadPermission={setReadPermission}
+						setOwner={setOwner}
+					/>
 
-				<Button onClick={() => setCommand({ clear: true })}>
-					<DeleteIcon className='menu-item' />
-				</Button>
+					<ShareButton
+						owner={owner}
+						elements={elements}
+						fileName={projectName}
+						readPermission={readPermission}
+						setReadPermission={setReadPermission}
+						editPermission={editPermission}
+						setEditPermission={setEditPermission}
+						setIsDialogOpen={setIsDialogOpen}
+						setFileId={setFileId}
+					/>
 
-				<ScreenViewButton setScreenView={setScreenView} />
+					<Button onClick={() => setCommand({ clear: true })}>
+						<DeleteIcon className='menu-item' />
+					</Button>
+
+					<ScreenViewButton setScreenView={setScreenView} />
+				</div>
 			</div>
 		</div>
 	);
 };
 
-const TreediMenuBarStyle = {
+const menuBarWrapper = {
 	position: "absolute",
+	top: "10px",
+	width: String(window.screen.width) + "px",
+	height: "50px",
+	textAlign: "center",
+};
+
+const TreediMenuBarStyle = {
 	justifyContent: "space-evenly",
 	display: "flex",
 	width: "600px",
 	height: "50px",
 	lineHeight: "50px",
 	verticalAlign: "middle",
-	marginLeft: "100px",
-	marginTop: "10px",
 	border: "2px solid #f0f0f0",
-	borderRadius: "25px",
+	borderRadius: "10px",
+	marginLeft: "auto",
+	marginRight: "auto",
+};
+
+const iconStyle = {
+	marginTop: "10px",
+	marginLeft: "20px",
+	height: "50px",
+	width: "220px",
+};
+
+const userIconStyle = {
+	top: "10px",
+	position: "absolute",
+	left: String(window.screen.width - 100) + "px",
+	height: "50px",
+	lineHeight: "50px",
+	verticalAlign: "middle",
+	textAlign: "center",
 };
 
 export default TreediMenuBar;
