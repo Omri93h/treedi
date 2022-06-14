@@ -105,10 +105,11 @@ const Canvas = (props) => {
 							case 2:
 								if (props.elementsIdOnViewMode.indexOf(elementCopy.id) === -1) {
 									elementCopy.display = true;
-
-									elementCopy.points.forEach((point) => {
-										point.x -= window.screen.width;
-									});
+									if (elementCopy.type == "pencil") {
+										elementCopy.points.forEach((point) => {
+											point.x -= window.screen.width;
+										});
+									}
 									console.log("SETTING ELEMENT 2 !!!!!!!");
 									newViewMode.push(elementCopy.id);
 								}
@@ -116,9 +117,12 @@ const Canvas = (props) => {
 							case 3:
 								if (props.elementsIdOnViewMode.indexOf(elementCopy.id) === -1) {
 									elementCopy.display = true;
-									elementCopy.points.forEach((point) => {
-										point.x -= window.screen.width * 2;
-									});
+									if (elementCopy.type == "pencil") {
+										elementCopy.points.forEach((point) => {
+											point.x -= window.screen.width * 2;
+										});
+									}
+
 									newViewMode.push(elementCopy.id);
 								}
 								break;
@@ -129,9 +133,12 @@ const Canvas = (props) => {
 						elementCopy.display = false;
 						if (props.elementsIdOnViewMode.indexOf(elementCopy.id) > -1) {
 							console.log("element id ", elementCopy.id, " in list!! need to be deleted");
-							elementCopy.points.forEach((point) => {
-								point.x += window.screen.width * (elementCopy.screen - 1);
-							});
+							if (elementCopy.type == "pencil") {
+								elementCopy.points.forEach((point) => {
+									point.x += window.screen.width * (elementCopy.screen - 1);
+								});
+							}
+
 							// let filteredList = [...props.elementsIdOnViewMode]
 							// console.log('filteredList:', filteredList)
 							// props.setElementsIdOnViewMode(prevState => [filteredList]);
@@ -177,13 +184,22 @@ const Canvas = (props) => {
 		} else if (props.command.live) {
 			if (props.command.live.length > 0) {
 				let elementToAdd = props.command.live[0];
+
+				// user on screenViewMode added element 
 				if (elementToAdd.moveOnLoad) {
-					if (elementToAdd.type == 'pencil'){
+					if (elementToAdd.type == "pencil") {
 						elementToAdd.points.forEach((point) => {
 							point.x += window.screen.width * (elementToAdd.screen - 1);
 						});
 					}
+					props.setElementsIdOnViewMode([...props.elementsIdOnViewMode, elementToAdd.id])
 				}
+				
+				// set display=false to element added to screen which is not on user's current view
+				if (props.screenView !== "all" && props.screenView !== elementToAdd.screen) {
+					elementToAdd.display = false;
+				}
+
 				let elementsCopy = [...elements];
 				if (elementsCopy[0] !== null) {
 					const idx = elementsCopy.length - 1;

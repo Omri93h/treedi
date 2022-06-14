@@ -83,7 +83,7 @@ const App = ({ handleLogout }) => {
 				});
 
 				socket.current.on("data", (data) => {
-					console.log("data recaived:", data);
+					console.log("data received:", data);
 					if (data) {
 						setCommand({ live: [data] });
 					}
