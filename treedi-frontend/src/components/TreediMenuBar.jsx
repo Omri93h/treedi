@@ -101,6 +101,7 @@ const TreediMenuBar = ({
 
 					<ShareButton
 						owner={owner}
+						elementsIdOnViewMode={elementsIdOnViewMode}
 						elements={elements}
 						fileName={projectName}
 						readPermission={readPermission}

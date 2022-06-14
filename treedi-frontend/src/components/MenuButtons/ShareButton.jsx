@@ -58,6 +58,7 @@ const ShareButton = ({
 	setEditPermission,
 	setIsDialogOpen,
 	setFileId,
+	elementsIdOnViewMode
 }) => {
 	const [open, setOpen] = useState(false);
 	const [editToggle, setEditToggle] = useState(false);
@@ -132,7 +133,23 @@ const ShareButton = ({
 		console.log("newReadPerm : ", newReadPermissions);
 		console.log("newEditPerm : ", newEditPermissions);
 
-		const trdiFileData = getTrdiFileData(owner, fileName, elements, newReadPermissions, newEditPermissions);
+		const getBaseElements = () => {
+			let baseElements = [];
+			elements.forEach((element) => {
+				let baseElement = {};
+				Object.assign(baseElement, element);
+				if (elementsIdOnViewMode.indexOf(element.id) !== -1) {
+					baseElement.points.forEach((point) => {
+						point.x += window.screen.width * (element.screen - 1);
+					});
+				}
+				baseElement.display = true;
+				baseElements.push(baseElement);
+			});
+			return baseElements;
+		};
+		const baseElements = getBaseElements();
+		const trdiFileData = getTrdiFileData(owner, fileName, baseElements, newReadPermissions, newEditPermissions);
 
 		handleClose();
 

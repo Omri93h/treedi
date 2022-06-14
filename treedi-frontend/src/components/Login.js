@@ -28,13 +28,15 @@ const Login = () => {
 	function openWindow(treediAppPage) {
 		let width = 1800;
 		let left = 800;
-		let height = window.screen.height
+		let height = window.screen.height;
 		left += window.screenX;
-		
+
 		window.open(
 			treediAppPage,
 			"windowName",
-			"resizable=1,scrollbars=1,fullscreen=0,+height=" + height + ",width=" +
+			"resizable=1,scrollbars=1,fullscreen=0,+height=" +
+				height +
+				",width=" +
 				width +
 				"  , left=" +
 				left +
@@ -69,6 +71,9 @@ const Login = () => {
 			const picture = response.profileObj.imageUrl;
 			//   console.log(googleResponse);
 			//   console.log("loading profile, ", name);
+
+			// 	initUser(user, name, email, picture);
+
 			setUser({
 				...user,
 				name,
@@ -80,6 +85,28 @@ const Login = () => {
 			// }
 		}
 	};
+
+	// 	// }
+	// }
+	// };
+
+	// async function initUser(user, name, email, picture) {
+	//  setUser({
+	// 	...user,
+	// 	name,
+	// 	email,
+	// 	picture,
+	// 	profile_loaded: true,
+	// });
+	// await setLocalStorage(user)
+	// }
+
+	// async function setLocalStorage(user) {
+	// localStorage.setItem("TreediUserName", user.name);
+	// localStorage.setItem("TreediUserEmail", user.email);
+	// localStorage.setItem("TreediUserImage", user.picture);
+	// setIsDataSavedLocally(true);
+	// }
 
 	// when profile is loaded -> Save data locally
 	useEffect(() => {
@@ -118,8 +145,7 @@ const Login = () => {
 		}
 	}, [isDataSavedLocally]);
 
-	console.log('\n\nClientID\n', clientId)
-
+	console.log("\n\nClientID\n", clientId);
 
 	return (
 		<div>

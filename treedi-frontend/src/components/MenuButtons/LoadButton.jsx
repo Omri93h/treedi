@@ -14,7 +14,7 @@ const LoadButton = ({
 	setReadPermission,
 	setOwner,
 	setFileId,
-	setProjectName
+	setProjectName,
 }) => {
 	const [openPicker, data] = useDrivePicker();
 	const clientId = process.env.REACT_APP_CLIENT_ID;
@@ -60,8 +60,8 @@ const LoadButton = ({
 		try {
 			const res = await axios
 				// .post("http://localhost:5001/api/googleDrive/getFileData/?email=" + email, {
-					.post("https://treedi-346309.oa.r.appspot.com/api/googleDrive/getFileData/?email=" + email, {
-				data: {
+				.post("https://treedi-346309.oa.r.appspot.com/api/googleDrive/getFileData/?email=" + email, {
+					data: {
 						fileid: fileID,
 					},
 				})
@@ -72,8 +72,8 @@ const LoadButton = ({
 						setOwner(res.data.Owner);
 						setReadPermission(res.data.ReadPermission);
 						setEditPermission(res.data.EditPermission);
-						console.log('DATGATGEDBAS', res.data)
-						setProjectName(res.data.FileName)
+						console.log("DATGATGEDBAS", res.data);
+						setProjectName(res.data.FileName);
 						toast.success("Loaded successfully", {
 							position: "bottom-left",
 							autoClose: 5000,
@@ -111,7 +111,7 @@ const LoadButton = ({
 	const handleOpenPicker = async function () {
 		let TOKEN;
 		let email = localStorage.getItem("TreediUserEmail");
-		console.log("EMAIL IS:" , email);
+		console.log("EMAIL IS:", email);
 		try {
 			// const res = await axios.get("http://localhost:5001/api/googleDrive/TTC/?email=" + email);
 			const res = await axios.get("https://treedi-346309.oa.r.appspot.com/api/googleDrive/TTC/?email=" + email);
@@ -125,18 +125,18 @@ const LoadButton = ({
 		} catch (error) {
 			console.log(`error - GetToken - ${error}`);
 		}
-
-		console.log(
-			"PARAMS FOR PICKER:\n\n",
-			"clientId:",
-			clientId,
-			"\n\n",
-			"developerKey:",
-			developerKey,
-			"\n\n",
-			"token:",
-			TOKEN
-		);
+		setCommand({ resetView: true });
+		 // console.log(
+		// 	"PARAMS FOR PICKER:\n\n",
+		// 	"clientId:",
+		// 	clientId,
+		// 	"\n\n",
+		// 	"developerKey:",
+		// 	developerKey,
+		// 	"\n\n",
+		// 	"token:",
+		// 	TOKEN
+		// );
 
 		openPicker({
 			clientId: clientId,
