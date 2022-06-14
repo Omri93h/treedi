@@ -123,7 +123,6 @@ const Canvas = (props) => {
 											point.x -= window.screen.width * 2;
 										});
 									}
-
 									newViewMode.push(elementCopy.id);
 								}
 								break;
@@ -164,10 +163,13 @@ const Canvas = (props) => {
 			}
 			startOneScreenViewProcedure();
 		}
-		if (props.screenView !== "all") props.setScreenToWriteTo(Number(props.screenView));
-		else {
+
+		if (props.screenView !== "all") {
+			props.setScreenToWriteTo(Number(props.screenView));
+		} else {
 			props.setScreenToWriteTo(0);
 		}
+
 		props.setPressureMode(false);
 		props.setDisplayScreenToWriteTo(true);
 	}, [props.screenView]);
@@ -198,7 +200,7 @@ const Canvas = (props) => {
 				}
 
 				// set display=false to element added to screen which is not on user's current view
-				if (props.screenView !== "all" && props.screenView !== elementToAdd.screen) {
+				if (props.screenView !== "all" && Number(props.screenView) !== elementToAdd.screen) {
 					elementToAdd.display = false;
 				}
 

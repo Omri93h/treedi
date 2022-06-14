@@ -24,16 +24,14 @@ const UserButton = ({ userImage, handleLogout }) => {
 	};
 
 	return (
-		<>
+		<div>
+			{/* <button>checl</button> */}
 			<Button
-			
-				aria-controls={open ? "basic-menu" : undefined}
 				aria-expanded={open ? "true" : undefined}
 				disableElevation={true}
 				disableRipple={true}
 				disableFocusRipple={true}
-				style={{ backgroundColor: 'transparent' }} 
-
+				style={{ backgroundColor: "transparent" }}
 				onClick={handleClick}>
 				{userImage ? userImageElement : <UserIcon />}
 			</Button>
@@ -47,7 +45,7 @@ const UserButton = ({ userImage, handleLogout }) => {
 				{/* ANOTHER OPTIONS THAT MIGHT COME SHOULD BE WRAPPED HERE */}
 				{/* </MenuItem> */}
 			</Menu>
-		</>
+		</div>
 	);
 };
 

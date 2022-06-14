@@ -6,8 +6,7 @@
 	padding: 0;
 }
 html {
-	width: 100%;
-	position: absolute;
+	overflow: hidden;
 }
 
 .MuiSlider-thumb {

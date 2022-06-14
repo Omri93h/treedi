@@ -37,14 +37,12 @@ const TreediMenuBar = ({
 	setProjectName,
 	owner,
 }) => {
-	const userButton = React.useMemo(
-		() => (
-			<div style={userIconStyle}>
-				<UserButton userImage={user["img"]} handleLogout={handleLogout} />
-			</div>
-		),
-		[]
-	);
+	// const userButton = React.useMemo(
+	// 	() => (
+
+	// 	),
+	// 	[]
+	// );
 	return (
 		<div style={{ display: "flex", position: "absolute" }}>
 			<ToastContainer
@@ -61,7 +59,9 @@ const TreediMenuBar = ({
 
 			<img src='./icon_app.jpg' style={iconStyle} />
 
-			{userButton}
+			<div style={userIconStyle}>
+				<UserButton userImage={user["img"]} handleLogout={handleLogout} />
+			</div>
 
 			<div id='menu-bar-wrapper' style={menuBarWrapper}>
 				<div style={TreediMenuBarStyle}>
@@ -151,6 +151,7 @@ const iconStyle = {
 };
 
 const userIconStyle = {
+	zIndex:'1',
 	top: "10px",
 	position: "absolute",
 	left: String(window.screen.width - 100) + "px",
