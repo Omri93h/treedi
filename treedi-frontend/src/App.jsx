@@ -7,7 +7,6 @@ import ScreenToWriteTo from "./components/ScreenToWriteTo";
 import io from "socket.io-client";
 import PressureSlider from "./components/PressureSlider";
 import { Fade } from "@mui/material";
-getToken();
 
 const App = ({ handleLogout }) => {
 	const [fileId, setFileId] = useState(null);
@@ -18,6 +17,8 @@ const App = ({ handleLogout }) => {
 		email: localStorage.getItem("TreediUserEmail"),
 		img: localStorage.getItem("TreediUserImage"),
 	});
+	getToken();
+
 	const [action, setAction] = useState("none");
 
 	const [screenView, setScreenView] = useState("all");
