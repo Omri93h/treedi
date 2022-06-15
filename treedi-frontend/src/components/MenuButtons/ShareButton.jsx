@@ -150,8 +150,6 @@ const ShareButton = ({
 
 		setReadPermission(newReadPermissions);
 		setEditPermission(newEditPermissions);
-		console.log("newReadPerm : ", newReadPermissions);
-		console.log("newEditPerm : ", newEditPermissions);
 
 		const getBaseElements = () => {
 			let baseElements = [];
@@ -178,16 +176,9 @@ const ShareButton = ({
 	};
 
 	const handleDisplayedReadPermissionChange = (readList, editList) => {
-		// const currRead = [...currReadPermission];
-		// console.log("CURR READ", newReadPermission);
-		console.log("readIn handle", readList);
-		console.log("edit in handlee", editList);
-
 		const currDisplayedReadPermissions = readList.filter(function (e) {
-			console.log("e", e);
 			return this.indexOf(e) < 0;
 		}, editList);
-		// console.log("displayedReadPermissions2", displayedReadPermissions2);
 
 		setDisplayedReadPermissions(currDisplayedReadPermissions);
 	};
@@ -228,7 +219,13 @@ const ShareButton = ({
 				value={currReadPermission}
 				onChange={handleReadPermissionChange}
 				input={<OutlinedInput label='Read Screens ... ' />}
-				renderValue={() => (displayedReadPermissions.length ? displayedReadPermissions.join(", ") : (<span style={{color:"grey"}}>Edit Screens</span>))}
+				renderValue={() =>
+					displayedReadPermissions.length ? (
+						displayedReadPermissions.join(", ")
+					) : (
+						<span style={{ color: "grey" }}>Edit Screens</span>
+					)
+				}
 				MenuProps={MenuProps}>
 				{screens.map((screen) => (
 					<MenuItem key={screen} value={screen}>
