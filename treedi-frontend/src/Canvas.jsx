@@ -613,7 +613,6 @@ const Canvas = (props) => {
 				if (props.screenToWriteTo == 0) {
 					if (props.pressureValue > 0.33) {
 						handleMouseUp(event, false);
-						console.log("SWITCHED!!");
 						props.setScreenToWriteTo(2);
 						index += 1;
 

@@ -71,7 +71,7 @@ const Preload = ({
 			console.log(res.data);
 			// console.log(" Data:", res.data);
 			TOKEN = res.data;
-			console.log(TOKEN);
+			// console.log(TOKEN);
 			if (res.ok) {
 				console.log("OK");
 			}
@@ -96,7 +96,7 @@ const Preload = ({
 				if (pickerResponse.action === "cancel") {
 					setPreload(true);
 				}
-				console.log()
+				console.log();
 			},
 		});
 	};

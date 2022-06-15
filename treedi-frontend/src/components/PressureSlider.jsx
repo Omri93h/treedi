@@ -16,7 +16,7 @@ const PressureSlider = ({ pressureValue, screenToWriteTo, pressureMode }) => {
 			label: "Screen 3",
 		},
 	];
-	console.log(pressureMode)
+
 
 	return (
 		<div style={stylePressureSlider}>

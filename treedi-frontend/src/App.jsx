@@ -12,11 +12,21 @@ const App = ({ handleLogout }) => {
 	const [fileId, setFileId] = useState(null);
 	const [elementsIdOnViewMode, setElementsIdOnViewMode] = useState([]);
 
-	let user = useRef({
+	const [user, setUser] = useState({
 		name: localStorage.getItem("TreediUserName"),
 		email: localStorage.getItem("TreediUserEmail"),
 		img: localStorage.getItem("TreediUserImage"),
 	});
+
+	useEffect(() => {
+		console.log("setting user NEW data");
+		setUser({
+			name: localStorage.getItem("TreediUserName"),
+			email: localStorage.getItem("TreediUserEmail"),
+			img: localStorage.getItem("TreediUserImage"),
+		});
+	}, [localStorage.getItem("TreediUserImage")]);
+
 	getToken();
 
 	const [action, setAction] = useState("none");
@@ -25,7 +35,7 @@ const App = ({ handleLogout }) => {
 
 	const [projectName, setProjectName] = useState(null);
 
-	const [owner, setOwner] = useState(user.current.email);
+	const [owner, setOwner] = useState(user.email);
 
 	const [isDialogOpen, setIsDialogOpen] = useState(true);
 
@@ -64,7 +74,7 @@ const App = ({ handleLogout }) => {
 
 	const divScreenToWriteTo = (
 		<ScreenToWriteTo
-			user={user.current}
+			user={user}
 			owner={owner}
 			screenToWriteTo={screenToWriteTo}
 			setDisplayScreenToWriteTo={setDisplayScreenToWriteTo}
@@ -131,7 +141,7 @@ const App = ({ handleLogout }) => {
 				<span>
 					<Controller
 						owner={owner}
-						user={user.current}
+						user={user}
 						setFileId={setFileId}
 						setProjectName={setProjectName}
 						projectName={projectName}
@@ -155,12 +165,7 @@ const App = ({ handleLogout }) => {
 				</span>
 			</Fade>
 
-			<PressureSlider
-
-				pressureValue={pressureValue}
-				screenToWriteTo={screenToWriteTo}
-				pressureMode={pressureMode}
-			/>
+			<PressureSlider pressureValue={pressureValue} screenToWriteTo={screenToWriteTo} pressureMode={pressureMode} />
 
 			<Canvas
 				screenView={screenView}
@@ -174,7 +179,7 @@ const App = ({ handleLogout }) => {
 				isDialogOpen={isDialogOpen}
 				tool={tool}
 				owner={owner}
-				user={user.current}
+				user={user}
 				setCurrElements={setCurrElements}
 				setDisplayScreenToWriteTo={setDisplayScreenToWriteTo}
 				color={color}
