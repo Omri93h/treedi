@@ -18,6 +18,8 @@ const Login = () => {
 	const [isDataSavedLocally, setIsDataSavedLocally] = useState(false);
 	const [isDataLoadedLocally, setIsDataLoadedLocally] = useState(false);
 
+	let isUserDataAlreadyInLocal = false;
+
 	// On Failur of google login we get the reason for failur in an alert:
 	const onFailure = (error) => {
 		console.log("ERORRRR");
@@ -48,6 +50,8 @@ const Login = () => {
 	}
 	// If successfull return of data from google we run this function:
 	const googleResponse = async (response) => {
+		try{isUserDataAlreadyInLocalStorage()}
+		catch{{}}
 		console.log("going to API");
 		console.log("FIRST RESPONSE IS:", response);
 		console.log("EMAIL SHOULD BE:", response.profileObj.email);
@@ -128,7 +132,13 @@ const Login = () => {
 		}
 	}, [user.profile_loaded]);
 
-	async function isUserDataInLocalStorage() {
+	function isUserDataAlreadyInLocalStorage() {
+		if (isUserDataSavedToLocalStorage()){
+			window.location.href = googleResponse.data.authUrl;
+		}
+	}
+
+	async function isUserDataSavedToLocalStorage() {
 		const name = localStorage.getItem("TreediUserName");
 		const email = localStorage.getItem("TreediUserEmail");
 		const img = localStorage.getItem("TreediUserImage");
@@ -139,7 +149,7 @@ const Login = () => {
 	}
 
 	async function checkIfLoadedFromLocalStorage() {
-		const isLoaded = await isUserDataInLocalStorage();
+		const isLoaded = await isUserDataSavedToLocalStorage();
 		setIsDataLoadedLocally(isLoaded);
 		await new Promise((r) => setTimeout(r, 100));
 	}
@@ -147,14 +157,19 @@ const Login = () => {
 	// when data is saved locally - and params are communicating -> open the app
 	useEffect(() => {
 		if (isDataSavedLocally) {
+			console.log('saving locally is DONE ')
 			while (true) {
 				checkIfLoadedFromLocalStorage();
 				if (isDataLoadedLocally) {
+					console.log('Data is LOADED LOCALLY')
 					console.log("should open!\nData: ");
 					// window.open(window.location.origin + "/treedi", "MyWindow", "_blank");
 					// console.log(googleResponse.data.authUrl);
 					window.location.href = googleResponse.data.authUrl;
 					break;
+				}
+				else {
+					console.log('data is NOT loaded from locally yet ...')
 				}
 			}
 		} else {
