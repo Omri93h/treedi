@@ -147,13 +147,14 @@ const handleOpenPicker = async function (clientId, developerKey, openPicker) {
 	// 	TOKEN
 	// );
 
-	openPicker({
-		clientId: clientId,
-		developerKey: developerKey,
-		token: TOKEN,
-		viewId: "DOCS",
-		supportDrives: true,
-	});
+	// openPicker({
+	// 	clientId: clientId,
+	// 	developerKey: developerKey,
+	// 	token: TOKEN,
+	// 	// viewMimeTypes:"application/vnd.google-apps.document",
+	// 	viewId: "DOCS",
+	// 	supportDrives: true,
+	// });
 
 	// if (data) {
 	// 	setData(data);

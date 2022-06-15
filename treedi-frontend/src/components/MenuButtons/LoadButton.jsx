@@ -4,6 +4,7 @@ import Button from "@mui/material/Button";
 import useDrivePicker from "react-google-drive-picker";
 import { default as LoadIcon } from "@mui/icons-material/CloudUpload";
 import { toast } from "react-toastify";
+import GoogleChooser from "react-google-picker"
 import "../../App.css";
 
 const LoadButton = ({
@@ -137,12 +138,36 @@ const LoadButton = ({
 		// 	"token:",
 		// 	TOKEN
 		// );
+		// var view = new google.picker.DocsView(google.picker.ViewId.DOCS);
+
+        // view.setMimeTypes("text/xml");
+        // view.setMode(google.picker.DocsViewMode.LIST);
+        // view.setQuery("*.abc");
+
+
+// <GoogleChooser clientId={clientId}
+//               developerKey={developerKey}
+//               scope={['https://www.googleapis.com/auth/drive.file']}
+//               onChange={data => console.log('on change:', data)}
+//               onAuthenticate={TOKEN => console.log('oauth token:', TOKEN)}
+//               onAuthFailed={data => console.log('on auth failed:', data)}
+//               multiselect={true}
+//               navHidden={true}
+//               authImmediate={false}
+// 			  query={'.trdi'}
+//               mimeTypes={['text/plain']}
+//               viewId={'DOCS'}>
+//    {/* <MyCustomButton /> */}
+// </GoogleChooser>
 
 		openPicker({
 			clientId: clientId,
 			developerKey: developerKey,
 			token: TOKEN,
-			viewId: "DOCS",
+			viewMimeTypes:"text/plain",
+			customScopes:["https://www.googleapis.com/auth/drive.file"],
+			query:'.trdi',
+			viewId: "DOCUMENTS",
 			supportDrives: true,
 		});
 	};
