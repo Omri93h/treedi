@@ -13,11 +13,12 @@ const App = ({ handleLogout }) => {
 	const [fileId, setFileId] = useState(null);
 	const [elementsIdOnViewMode, setElementsIdOnViewMode] = useState([]);
 
-	const user = useRef({
+	let user = useRef({
 		name: localStorage.getItem("TreediUserName"),
 		email: localStorage.getItem("TreediUserEmail"),
 		img: localStorage.getItem("TreediUserImage"),
 	});
+
 	const [action, setAction] = useState("none");
 
 	const [screenView, setScreenView] = useState("all");
@@ -50,7 +51,7 @@ const App = ({ handleLogout }) => {
 	function setLiveApi(ref) {
 		liveApi.current = ref;
 	}
-
+	
 	const socket = useRef(null);
 	function setSocket(ref) {
 		socket.current = ref;
@@ -107,6 +108,8 @@ const App = ({ handleLogout }) => {
 			console.log("NO FILE IDDDDDD");
 		}
 	}, [fileId]);
+
+
 
 	const sendElementToSocket = () => {
 		socket.current.emit("data", currElements.current[currElements.ref.length - 1]);

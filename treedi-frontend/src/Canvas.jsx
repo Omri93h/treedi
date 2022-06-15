@@ -99,6 +99,8 @@ const Canvas = (props) => {
 					let elementCopy = {};
 					Object.assign(elementCopy, element);
 					if (Number(props.screenView) === elementCopy.screen) {
+						console.log("moving element ", elementCopy);
+						let points = [];
 						switch (elementCopy.screen) {
 							case 1:
 								elementCopy.display = true;
@@ -109,12 +111,14 @@ const Canvas = (props) => {
 								break;
 							case 2:
 								if (props.elementsIdOnViewMode.indexOf(elementCopy.id) === -1) {
+									console.log("now working on element: ", elementCopy);
 									elementCopy.display = true;
-
-									if (elementCopy.type == "pencil") {
+									if (elementCopy.type === "pencil") {
+										console.log("type is correct, should change x: ", elementCopy);
 										elementCopy.points.forEach((point) => {
-											point.x -= window.screen.width;
+											points.push({ x: (point.x -= window.screen.width * 2), y: point.y });
 										});
+										elementCopy.points = points;
 									}
 									console.log("SETTING ELEMENT 2 !!!!!!!");
 									newViewMode.push(elementCopy.id);
@@ -123,10 +127,11 @@ const Canvas = (props) => {
 							case 3:
 								if (props.elementsIdOnViewMode.indexOf(elementCopy.id) === -1) {
 									elementCopy.display = true;
-									if (elementCopy.type == "pencil") {
+									if (elementCopy.type === "pencil") {
 										elementCopy.points.forEach((point) => {
-											point.x -= window.screen.width * 2;
+											points.push({ x: (point.x -= window.screen.width * 2), y: point.y });
 										});
+										elementCopy.points = points;
 									}
 									newViewMode.push(elementCopy.id);
 								}
@@ -148,23 +153,17 @@ const Canvas = (props) => {
 							// console.log('filteredList:', filteredList)
 							// props.setElementsIdOnViewMode(prevState => [filteredList]);
 						}
-						console.log(elementCopy.id, " ", elementCopy.display);
+						// console.log(elementCopy.id, " ", elementCopy.display);
 					}
 					finalElements.push(elementCopy);
 				});
 				props.setElementsIdOnViewMode(newViewMode);
-				console.log("FINAL ELEMENTS", finalElements);
-				setElements(finalElements, true);
 				props.setScreenToWriteTo(Number(props.screenView));
+				// console.log("FINAL ELEMENTS", finalElements);
+				setElements(finalElements, true);
 			};
 
-			async function startOneScreenViewProcedure() {
-				console.log("Procedure started");
-				console.log("ASYNC started");
-
-				// await handleOneScreenToMulti(); //Init
-				console.log("ASYNC Ended");
-
+			function startOneScreenViewProcedure() {
 				handleMultiScreensToOne();
 			}
 			startOneScreenViewProcedure();
@@ -203,7 +202,7 @@ const Canvas = (props) => {
 
 				// user on screenViewMode added element
 				if (elementToAdd.moveOnLoad) {
-					console.log('MOVOING ELEMENT', elementToAdd)
+					console.log("MOVOING ELEMENT", elementToAdd);
 					if (Number(props.screenView) !== elementToAdd.screen) {
 						if (elementToAdd.type == "pencil") {
 							elementToAdd.points.forEach((point) => {

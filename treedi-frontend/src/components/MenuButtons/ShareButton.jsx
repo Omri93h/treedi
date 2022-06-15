@@ -58,7 +58,7 @@ const ShareButton = ({
 	setEditPermission,
 	setIsDialogOpen,
 	setFileId,
-	elementsIdOnViewMode
+	elementsIdOnViewMode,
 }) => {
 	const [open, setOpen] = useState(false);
 	const [editToggle, setEditToggle] = useState(false);
@@ -71,12 +71,21 @@ const ShareButton = ({
 		setOpen(true);
 	};
 
+	// const filterRead = (All, readArray) => {
+	// 	let responseArray = [];
+	// 	All.forEach((item) => {
+	// 		if (numbers.find((number) => number === item)) "";
+	// 		else responseArray.push(item);
+	// 	});
+	// };
 	const handleClose = () => {
 		// setCurrEditPermission([]);
 		// setCurrReadPermission([]);
 		setIsDialogOpen(false);
 		setOpen(false);
 	};
+
+	const [displayedReadPermissions, setDisplayedReadPermissions] = useState([]);
 
 	const handleEmailChange = (event) => {
 		setEmail(event.target.value);
@@ -88,7 +97,7 @@ const ShareButton = ({
 	};
 
 	const handleReadPermissionChange = (event) => {
-		const values = getValues(event);
+		let values = getValues(event);
 		if (values.length) {
 			let currEditPermissionCopy = currEditPermission;
 			values.forEach((value) => {
@@ -100,17 +109,28 @@ const ShareButton = ({
 		} else {
 			setCurrEditPermission(Array());
 		}
-		setCurrReadPermission(values.sort());
+		values.sort();
+		setCurrReadPermission(values);
+
+		handleDisplayedReadPermissionChange(values, currEditPermission);
+		// console.log(displayedReadPermissions2);
+		// setDisplayedReadPermissions(displayedReadPermissions2);
+
+		// setDisplayedReadPermissions(currReadPermission);
 	};
 	const handleEditPermissionChange = (event) => {
 		const values = getValues(event);
-
 		if (values.length) {
 			if (currReadPermission.indexOf(values[values.length - 1]) === -1) {
 				setCurrReadPermission([...currReadPermission, values[values.length - 1]].sort());
+
+				// console.log(displayedReadPermissions2);
+				// setDisplayedReadPermissions(displayedReadPermissions2);
 			}
 		}
-		setCurrEditPermission(values.sort());
+		values.sort();
+		setCurrEditPermission(values);
+		handleDisplayedReadPermissionChange(currReadPermission, values);
 	};
 	const getValues = (event) => {
 		const {
@@ -121,7 +141,7 @@ const ShareButton = ({
 	};
 
 	const handleShare = async function () {
-		console.log("setting Permissions");
+		// console.log("setting Permissions");
 		let newReadPermissions = readPermission;
 		newReadPermissions[email] = currReadPermission;
 
@@ -155,6 +175,21 @@ const ShareButton = ({
 
 		await saveTrdiFile(trdiFileData, fileName, setFileId);
 		ShareFile();
+	};
+
+	const handleDisplayedReadPermissionChange = (readList, editList) => {
+		// const currRead = [...currReadPermission];
+		// console.log("CURR READ", newReadPermission);
+		console.log("readIn handle", readList);
+		console.log("edit in handlee", editList);
+
+		const currDisplayedReadPermissions = readList.filter(function (e) {
+			console.log("e", e);
+			return this.indexOf(e) < 0;
+		}, editList);
+		// console.log("displayedReadPermissions2", displayedReadPermissions2);
+
+		setDisplayedReadPermissions(currDisplayedReadPermissions);
 	};
 
 	// Share File
@@ -193,7 +228,7 @@ const ShareButton = ({
 				value={currReadPermission}
 				onChange={handleReadPermissionChange}
 				input={<OutlinedInput label='Read Screens ... ' />}
-				renderValue={(selected) => selected.join(", ")}
+				renderValue={() => (displayedReadPermissions.length ? displayedReadPermissions.join(", ") : (<span style={{color:"grey"}}>Edit Screens</span>))}
 				MenuProps={MenuProps}>
 				{screens.map((screen) => (
 					<MenuItem key={screen} value={screen}>
@@ -231,8 +266,6 @@ const ShareButton = ({
 				<ShareIcon className='menu-item' />
 			</Button>
 			<Modal
-				aria-labelledby='transition-modal-title'
-				aria-describedby='transition-modal-description'
 				open={open}
 				onClose={handleClose}
 				closeAfterTransition

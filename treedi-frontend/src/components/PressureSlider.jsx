@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import Slider from "@mui/material/Slider";
 
-
 const PressureSlider = ({ pressureValue, screenToWriteTo, pressureMode }) => {
 	const marks = [
 		{
@@ -16,10 +15,6 @@ const PressureSlider = ({ pressureValue, screenToWriteTo, pressureMode }) => {
 			value: 0.66,
 			label: "Screen 3",
 		},
-		{
-			value: 1,
-			label: "Max Pressure",
-		},
 	];
 
 	return (
@@ -28,7 +23,11 @@ const PressureSlider = ({ pressureValue, screenToWriteTo, pressureMode }) => {
 				orientation='vertical'
 				min={0}
 				max={1}
-				value={screenToWriteTo > 0 && !pressureMode ? [marks[screenToWriteTo - 1].value,marks[screenToWriteTo - 1].value] : pressureValue}
+				value={
+					screenToWriteTo > 0 && !pressureMode
+						? [marks[screenToWriteTo - 1].value, marks[screenToWriteTo - 1].value]
+						: pressureValue
+				}
 				marks={marks}
 				// range={0.2}
 			/>

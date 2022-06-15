@@ -28,7 +28,7 @@ const ToolSelection = ({ setScreenView }) => {
 	const displayAllScreensViewButton = (
 		<span className='menu-item'>
 			<RectangleIcon />
-			<span style={{ fontSize: "14px" }}> ALL</span> &nbsp; Full View
+			<span style={{ fontSize: "14px" }}> ALL</span> All Screens
 		</span>
 	);
 	const displayScreenOneViewButton = (
@@ -127,10 +127,10 @@ const ToolSelection = ({ setScreenView }) => {
 				{displayCurrentTool()}
 			</Button>
 			<Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
-				<MenuItem onClick={() => handleSelected("all")}>{displayAllScreensViewButton}</MenuItem>
 				<MenuItem onClick={() => handleSelected("1")}>{displayScreenOneViewButton}</MenuItem>
 				<MenuItem onClick={() => handleSelected("2")}>{displayScreenTwoViewButton}</MenuItem>
 				<MenuItem onClick={() => handleSelected("3")}>{displayScreenThreeViewButton}</MenuItem>
+				<MenuItem onClick={() => handleSelected("all")}>{displayAllScreensViewButton}</MenuItem>
 			</Menu>
 		</>
 	);
