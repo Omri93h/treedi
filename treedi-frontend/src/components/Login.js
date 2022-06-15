@@ -3,9 +3,6 @@ import GoogleLogin from "react-google-login";
 import axios from "axios";
 import Button from "@mui/material/Button";
 
-// import SimpleReactLightbox from "simple-react-lightbox";
-// import { refreshTokenSetup } from "../utils/refreshToken";
-
 const clientId = process.env.REACT_APP_CLIENT_ID;
 
 const Login = () => {
@@ -23,6 +20,10 @@ const Login = () => {
 	// On Failur of google login we get the reason for failur in an alert:
 	const onFailure = (error) => {
 		alert(JSON.stringify(error));
+		localStorage.clear();
+		window.location.href = 'https://www.treedi.app';
+		// window.location.href = 'http://localhost:3000/';
+
 	};
 
 	function openWindow(treediAppPage) {
@@ -47,13 +48,18 @@ const Login = () => {
 	// If successfull return of data from google we run this function:
 	const googleResponse = async (response) => {
 		console.log("going to API");
+		console.log("FIRST RESPONSE IS:", response);
+		console.log("EMAIL SHOULD BE:", response.profileObj.email);
+
+
 		// Check if a token was recieved and send it to our API:
 		if (response.tokenId) {
 			// const googleResponse = await axios.post("http://localhost:5001/api/user-authentication", {
 			const googleResponse = await axios.post("https://treedi-346309.oa.r.appspot.com/api/user-authentication", {
 				token: response.tokenId,
+				Email:response.profileObj.email
 			});
-			console.log("google responseee:", googleResponse);
+			console.log("google responseee:", googleResponse.data);
 			window.location.href = googleResponse.data.authUrl;
 
 			// openWindow(googleResponse.data.authUrl);
