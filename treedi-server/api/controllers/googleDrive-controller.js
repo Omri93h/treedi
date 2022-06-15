@@ -97,7 +97,7 @@ async function authAndRunCallback(req, res, callback) {
 			if(token_expiry_date < secondsSinceEpoch)
 			{
 				console.log("EXPIRY:" ,token_expiry_date , "IS SMALLER THE EPOCHE!" ,secondsSinceEpoch );
-				getTokenWithRefresh(client_secret ,client_id , redirect_uris ,user.token.refresh_token ,email);
+				await getTokenWithRefresh(client_secret ,client_id , redirect_uris ,user.token.refresh_token ,email);
 				console.log("REFRESHT TOKEN AFTER:" ,user.token);
 
 			}
