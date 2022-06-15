@@ -62,12 +62,12 @@ const Preload = ({
 	const handleOpenPicker = async function () {
 		let TOKEN;
 		let email = localStorage.getItem("TreediUserEmail");
-		setPreload(false);
 
 		console.log("EMAIL IS:", email);
 		try {
 			// const res = await axios.get("http://localhost:5001/api/googleDrive/TTC/?email=" + email);
 			const res = await axios.get("https://treedi-346309.oa.r.appspot.com/api/googleDrive/TTC/?email=" + email);
+			setPreload(false);
 			console.log(res.data);
 			// console.log(" Data:", res.data);
 			TOKEN = res.data;

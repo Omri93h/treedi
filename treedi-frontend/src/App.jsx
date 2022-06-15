@@ -156,7 +156,7 @@ const App = ({ handleLogout }) => {
 			</Fade>
 
 			<PressureSlider
-				// isMobile={isMobile.current}
+
 				pressureValue={pressureValue}
 				screenToWriteTo={screenToWriteTo}
 				pressureMode={pressureMode}

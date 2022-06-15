@@ -91,7 +91,8 @@ const Canvas = (props) => {
 		} else {
 			const handleMultiScreensToOne = () => {
 				// Decide which element to display (when user does not has "Treedi" screen)
-
+				props.setPressureMode(false);
+				props.setDisplayScreenToWriteTo(true);
 				let elementsCopy = [...elements];
 				let finalElements = [];
 				let newViewMode = [];
@@ -174,9 +175,7 @@ const Canvas = (props) => {
 		// } else {
 		// 	props.setScreenToWriteTo(0);
 		// }
-
-		props.setPressureMode(false);
-		props.setDisplayScreenToWriteTo(true);
+		console.log("settingPressureMode2");
 	}, [props.screenView]);
 
 	useEffect(() => {
@@ -492,6 +491,7 @@ const Canvas = (props) => {
 						} else {
 							console.log("key " + Number(event.key) + " is pressed");
 							props.setScreenToWriteTo(Number(event.key));
+							console.log("settingPressureMode1");
 							props.setPressureMode(false);
 							props.setDisplayScreenToWriteTo(true);
 						}
@@ -613,6 +613,7 @@ const Canvas = (props) => {
 				if (props.screenToWriteTo == 0) {
 					if (props.pressureValue > 0.33) {
 						handleMouseUp(event, false);
+						console.log("SWITCHED!!");
 						props.setScreenToWriteTo(2);
 						index += 1;
 
