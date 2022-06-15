@@ -16,6 +16,7 @@ const jwt_decode = require('jwt-decode');
     // time.
     // console.log(req);
     let decode = jwt_decode(req.body.token);
+    console.log("the req body is:",req.body);
     const email = decode.email;
     let user = await User.findOne({email: email});
     if (user) {
@@ -30,7 +31,9 @@ const jwt_decode = require('jwt-decode');
       fs.readFile('credentials_drive.json', (err, content) => {
         if (err) return console.log('Error loading client secret file:', err);
         // Authorize a client with credentials, then call the Google Drive API.
-        authorize(JSON.parse(content), (authUrl) => { res.send({authUrl: authUrl});});
+        authorize(JSON.parse(content), (authUrl) => {
+          console.log("THE AUTHURL IS:" , authUrl);
+          res.send({authUrl: authUrl});});
       });
 
     }
@@ -49,7 +52,6 @@ const jwt_decode = require('jwt-decode');
 
       const oAuth2Client = new google.auth.OAuth2(
         client_id, client_secret, redirect_uris[2]);
-        
         return getAccessToken(oAuth2Client, callback);
     }
     
