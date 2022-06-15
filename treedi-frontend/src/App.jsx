@@ -51,16 +51,16 @@ const App = ({ handleLogout }) => {
 	function setLiveApi(ref) {
 		liveApi.current = ref;
 	}
-	
+
 	const socket = useRef(null);
 	function setSocket(ref) {
 		socket.current = ref;
 	}
 
-	const preload = React.useMemo(
-		() => <Preload setProjectName={setProjectName} setIsDialogOpen={setIsDialogOpen} />,
-		[]
-	);
+	// const preload = React.useMemo(
+	// 	() => ,
+	// 	[]
+	// );
 
 	const divScreenToWriteTo = (
 		<ScreenToWriteTo
@@ -109,15 +109,21 @@ const App = ({ handleLogout }) => {
 		}
 	}, [fileId]);
 
-
-
 	const sendElementToSocket = () => {
 		socket.current.emit("data", currElements.current[currElements.ref.length - 1]);
 	};
 
 	return (
 		<div id='app' style={{ overflow: "hidden" }}>
-			{preload}
+			<Preload
+				setProjectName={setProjectName}
+				setIsDialogOpen={setIsDialogOpen}
+				setFileId={setFileId}
+				setOwner={setOwner}
+				setReadPermission={setReadPermission}
+				setEditPermission={setEditPermission}
+				setCommand={setCommand}
+			/>
 
 			{displayScreenToWriteTo ? divScreenToWriteTo : null}
 
