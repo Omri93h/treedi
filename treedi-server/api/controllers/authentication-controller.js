@@ -8,7 +8,9 @@ const jwt_decode = require('jwt-decode');
     const {google} = require('googleapis');
     
     // If modifying these scopes, delete token.json.
-    const SCOPES = ['https://www.googleapis.com/auth/drive'];
+    // const SCOPES = ['https://www.googleapis.com/auth/drive'];
+    const SCOPES = ['https://www.googleapis.com/auth/drive.file'];
+
     // The file token.json stores the user's access and refresh tokens, and is
     // created automatically when the authorization flow completes for the first
     // time.
