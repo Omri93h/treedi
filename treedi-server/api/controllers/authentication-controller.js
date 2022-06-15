@@ -8,15 +8,17 @@ const jwt_decode = require('jwt-decode');
     const {google} = require('googleapis');
     
     // If modifying these scopes, delete token.json.
-    const SCOPES = ['https://www.googleapis.com/auth/drive'];
+    // const SCOPES = ['https://www.googleapis.com/auth/drive'];
+    const SCOPES = ['https://www.googleapis.com/auth/drive.file'];
+
     // The file token.json stores the user's access and refresh tokens, and is
     // created automatically when the authorization flow completes for the first
     // time.
     // console.log(req);
-    let decode = jwt_decode(req.body.token);
-    const email = decode.email;
-    let user = await User.findOne({email: email});
-    if (user) {
+    // let decode = jwt_decode(req.body.token);
+    // const email = decode.email;
+    let user = await User.findOne({email: req.body.Email});
+    if (user && req.body.Email) {
       res.send({authUrl: "https://www.treedi.app/treedi"});
       // res.send({authUrl: "https://treedi-front.oa.r.appspot.com/treedi"});
       // res.send({authUrl: "localhost:3000/treedi"});
