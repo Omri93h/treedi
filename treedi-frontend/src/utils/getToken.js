@@ -14,6 +14,8 @@ const getToken = async function () {
 				console.log("OK");
 			}
 		} catch (error) {
+			alert("NO PERMISSION");
+			window.location.href = 'https://www.treedi.app';
 			console.log(`error - GetToken - ${error}`);
 		}
 	}

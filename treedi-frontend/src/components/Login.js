@@ -19,6 +19,7 @@ const Login = () => {
 
 	// On Failur of google login we get the reason for failur in an alert:
 	const onFailure = (error) => {
+		console.log("ERORRRR");
 		alert(JSON.stringify(error));
 		localStorage.clear();
 		window.location.href = 'https://www.treedi.app';
@@ -87,7 +88,7 @@ const Login = () => {
 				picture,
 				profile_loaded: true,
 			});
-			console.log("user Loaded", user);
+			// console.log("user Loaded", user);
 			// }
 		}
 	};
@@ -131,7 +132,6 @@ const Login = () => {
 	// when data is saved locally - and params are communicating -> open the app
 	useEffect(() => {
 		if (isDataSavedLocally) {
-			console.log("saving data to local storage");
 			const savedData = { name: "", email: "", img: "" };
 			savedData.name = localStorage.getItem("TreediUserName");
 			savedData.email = localStorage.getItem("TreediUserEmail");
@@ -142,6 +142,7 @@ const Login = () => {
 				if (savedData.name && savedData.email && savedData.img) {
 					console.log("should open!\nData: ", savedData.name, savedData.email, savedData.img);
 					// window.open(window.location.origin + "/treedi", "MyWindow", "_blank");
+					// console.log(googleResponse.data.authUrl);
 					window.location.href = googleResponse.data.authUrl;
 					break;
 				}
