@@ -3,7 +3,7 @@ import Button from "@mui/material/Button";
 import { default as ShareIcon } from "@mui/icons-material/ShareRounded";
 import getTrdiFileData from "../../utils/getTrdiFileData";
 import saveTrdiFile from "../../utils/saveTrdiFile";
-import { toast } from "react-toastify";
+import Notificator from "../../utils/Notificator";
 import "../../App.css";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -204,9 +204,16 @@ const ShareButton = ({
 
 			if (res.ok) {
 				console.log("OK");
+				Notificator("share-success");
+			} else {
+				console.log("Problem!");
+				Notificator("share-error");
+
 			}
 		} catch (error) {
 			console.log(`error - ShareFile - ${error}`);
+			Notificator("share-error");
+
 		}
 	};
 

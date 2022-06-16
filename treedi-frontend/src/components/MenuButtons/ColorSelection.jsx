@@ -9,19 +9,30 @@ import "../../App.css";
 import { default as ColorIcon } from "@mui/icons-material/CircleRounded";
 
 const ColorSelection = ({ color, setColor }) => {
+	const [currColor, setCurrColor] = useState(color);
 	const [anchorEl, setAnchorEl] = useState(null);
 	const open = Boolean(anchorEl);
+
+	const handleColorChange = (selectedColor) => {
+		setCurrColor(selectedColor);
+	};
 
 	const handleClick = (event) => {
 		setAnchorEl(event.currentTarget);
 	};
+
+	const handleSelect = () => {
+		setColor(currColor);
+		setAnchorEl(null);
+	};
+
 	const handleClose = () => {
 		setAnchorEl(null);
 	};
 
 	const displayColorPicker = (
 		<div>
-			<HexColorPicker color={color} onChange={setColor} />
+			<HexColorPicker color={color} onChange={handleColorChange} />
 		</div>
 	);
 
@@ -45,6 +56,14 @@ const ColorSelection = ({ color, setColor }) => {
 					"aria-labelledby": "basic-button",
 				}}>
 				<MenuItem>{displayColorPicker}</MenuItem>
+				<div id='color-buttons-wrapper' style={{ margin: "5px", display: "flex", justifyContent: "space-evenly" }}>
+					<Button variant='outlined' onClick={handleClose}>
+						Cancel
+					</Button>
+					<Button variant='contained' onClick={handleSelect}>
+						Select
+					</Button>
+				</div>
 			</Menu>
 		</>
 	);
