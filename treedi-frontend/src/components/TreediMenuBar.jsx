@@ -35,6 +35,7 @@ const TreediMenuBar = ({
 	elementsIdOnViewMode,
 	setScreenView,
 	setProjectName,
+	setScreenToWriteTo,
 	owner,
 }) => {
 	// const userButton = React.useMemo(
@@ -116,7 +117,7 @@ const TreediMenuBar = ({
 						<DeleteIcon className='menu-item' />
 					</Button>
 
-					<ScreenViewButton setScreenView={setScreenView} />
+					<ScreenViewButton setScreenView={setScreenView} setScreenToWriteTo={setScreenToWriteTo} />
 				</div>
 			</div>
 		</div>

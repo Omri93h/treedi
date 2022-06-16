@@ -17,7 +17,6 @@ const PressureSlider = ({ pressureValue, screenToWriteTo, pressureMode }) => {
 		},
 	];
 
-
 	return (
 		<div style={stylePressureSlider}>
 			<Slider

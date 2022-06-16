@@ -26,6 +26,7 @@ const Controller = (props) => {
 				handleLogout={props.handleLogout}
 				elementsIdOnViewMode={props.elementsIdOnViewMode}
 				setScreenView={props.setScreenView}
+				setScreenToWriteTo={props.setScreenToWriteTo}
 				owner={props.owner}
 			/>
 		</div>

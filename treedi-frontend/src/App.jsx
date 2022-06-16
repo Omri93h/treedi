@@ -175,6 +175,8 @@ const App = ({ handleLogout }) => {
 						setOwner={setOwner}
 						elementsIdOnViewMode={elementsIdOnViewMode}
 						setScreenView={setScreenView}
+						setScreenToWriteTo={setScreenToWriteTo}
+
 					/>
 				</span>
 			</Fade>
@@ -182,6 +184,7 @@ const App = ({ handleLogout }) => {
 			<PressureSlider pressureValue={pressureValue} screenToWriteTo={screenToWriteTo} pressureMode={pressureMode} />
 
 			<Canvas
+			setScreenView={setScreenView}
 				screenView={screenView}
 				action={action}
 				setAction={setAction}

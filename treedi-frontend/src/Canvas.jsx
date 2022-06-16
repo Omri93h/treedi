@@ -196,14 +196,14 @@ const Canvas = (props) => {
 				handleOneScreenToMulti();
 			}
 		} else if (props.command.live) {
-			console.log('INSIDE LIVE COMMAND')
+			console.log("INSIDE LIVE COMMAND");
 			if (props.command.live.length > 0) {
 				let elementToAdd = props.command.live[0];
 
 				// user on screenViewMode added element
 				if (elementToAdd.moveOnLoad) {
 					console.log("MOVOING ELEMENT", elementToAdd);
-					
+
 					if (Number(props.screenView) !== elementToAdd.screen) {
 						if (elementToAdd.type == "pencil") {
 							elementToAdd.points.forEach((point) => {
@@ -345,11 +345,11 @@ const Canvas = (props) => {
 					type === "line"
 						? generator.line(x1, y1, x2, y2, { stroke: props.color })
 						: generator.rectangle(x1, y1, x2 - x1, y2 - y1, { stroke: props.color });
-				return { id, x1, y1, x2, y2, type, roughElement, elem_color, screen, display,userSign };
+				return { id, x1, y1, x2, y2, type, roughElement, elem_color, screen, display, userSign };
 			case "pencil":
-				return { id, type, points: [{ x: x1, y: y1 }], elem_color, screen, display,userSign };
+				return { id, type, points: [{ x: x1, y: y1 }], elem_color, screen, display, userSign };
 			case "text":
-				return { id, type, x1, y1, x2, y2, text: "", elem_color, screen, display,userSign };
+				return { id, type, x1, y1, x2, y2, text: "", elem_color, screen, display, userSign };
 			default:
 				throw new Error(`Type not recognised: ${type}`);
 		}
@@ -492,7 +492,8 @@ const Canvas = (props) => {
 					if (event.key === "1" || event.key === "2" || event.key === "3") {
 						if (props.screenView !== "all") {
 							// ADD NOTIFICATION
-							console.log("Can't use screen switch buttons on Single Screen Mode!");
+							props.setScreenView(event.key);
+							// console.log("Can't use screen switch buttons on Single Screen Mode!");
 						} else {
 							console.log("key " + Number(event.key) + " is pressed");
 							props.setScreenToWriteTo(Number(event.key));
