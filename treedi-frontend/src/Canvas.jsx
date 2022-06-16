@@ -117,7 +117,7 @@ const Canvas = (props) => {
 									if (elementCopy.type === "pencil") {
 										console.log("type is correct, should change x: ", elementCopy);
 										elementCopy.points.forEach((point) => {
-											points.push({ x: (point.x -= window.screen.width * 2), y: point.y });
+											points.push({ x: (point.x -= window.screen.width), y: point.y });
 										});
 										elementCopy.points = points;
 									}
