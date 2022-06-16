@@ -91,9 +91,11 @@ const Preload = ({
 			callbackFunction: (pickerResponse) => {
 				console.log("PICKER:", pickerResponse);
 				if (pickerResponse.action === "picked") {
+					console.log('picked')
 					setData(pickerResponse);
 				}
 				if (pickerResponse.action === "cancel") {
+					console.log('canceled')
 					setPreload(true);
 				}
 				console.log();

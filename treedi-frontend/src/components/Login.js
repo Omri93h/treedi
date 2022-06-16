@@ -19,8 +19,8 @@ const Login = () => {
 
 	// On Failur of google login we get the reason for failur in an alert:
 	const onFailure = (error) => {
-		console.log("ERORRRR");
-		alert(JSON.stringify(error));
+		console.log("user pressed X");
+		// alert(JSON.stringify(error));
 		localStorage.clear();
 		window.location.href = 'https://www.treedi.app';
 		// window.location.href = 'http://localhost:3000/';

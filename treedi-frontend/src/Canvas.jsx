@@ -196,6 +196,7 @@ const Canvas = (props) => {
 				handleOneScreenToMulti();
 			}
 		} else if (props.command.live) {
+			console.log('INSIDE LIVE COMMAND')
 			if (props.command.live.length > 0) {
 				let elementToAdd = props.command.live[0];
 
@@ -220,7 +221,7 @@ const Canvas = (props) => {
 				let elementsCopy = [...elements];
 				if (elementsCopy[0] !== null) {
 					const idx = elementsCopy.length - 1;
-					if (elementsCopy[idx + 1] !== elementToAdd) {
+					if (elementsCopy[idx + 1] !== elementToAdd && elementToAdd.userSign !== props.user.email) {
 						elementsCopy[elementToAdd.id] = elementToAdd;
 						setElements(elementsCopy);
 					}
@@ -333,6 +334,8 @@ const Canvas = (props) => {
 			props.setElementsIdOnViewMode([...props.elementsIdOnViewMode, id]);
 		}
 
+		const userSign = props.user.email;
+
 		switch (type) {
 			case "line":
 			case "rectangle":
@@ -340,11 +343,11 @@ const Canvas = (props) => {
 					type === "line"
 						? generator.line(x1, y1, x2, y2, { stroke: props.color })
 						: generator.rectangle(x1, y1, x2 - x1, y2 - y1, { stroke: props.color });
-				return { id, x1, y1, x2, y2, type, roughElement, elem_color, screen, display };
+				return { id, x1, y1, x2, y2, type, roughElement, elem_color, screen, display,userSign };
 			case "pencil":
-				return { id, type, points: [{ x: x1, y: y1 }], elem_color, screen, display };
+				return { id, type, points: [{ x: x1, y: y1 }], elem_color, screen, display,userSign };
 			case "text":
-				return { id, type, x1, y1, x2, y2, text: "", elem_color, screen, display };
+				return { id, type, x1, y1, x2, y2, text: "", elem_color, screen, display,userSign };
 			default:
 				throw new Error(`Type not recognised: ${type}`);
 		}
