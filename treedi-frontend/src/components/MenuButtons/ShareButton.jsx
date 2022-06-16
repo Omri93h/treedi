@@ -201,6 +201,8 @@ const ShareButton = ({
 					},
 				}
 			);
+			
+			console.log("RES:::::", res);
 
 			if (res.ok) {
 				console.log("OK");
@@ -208,12 +210,10 @@ const ShareButton = ({
 			} else {
 				console.log("Problem!");
 				Notificator("share-error");
-
 			}
 		} catch (error) {
 			console.log(`error - ShareFile - ${error}`);
 			Notificator("share-error");
-
 		}
 	};
 

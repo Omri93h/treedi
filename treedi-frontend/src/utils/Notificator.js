@@ -14,7 +14,7 @@ const Notificator = (notification) => {
 			});
 			break;
 		case "share-error":
-			toast.error("Load error", {
+			toast.error("Share Error", {
 				position: "bottom-left",
 				autoClose: 5000,
 				hideProgressBar: false,
