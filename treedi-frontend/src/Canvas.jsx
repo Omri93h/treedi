@@ -203,12 +203,14 @@ const Canvas = (props) => {
 				// user on screenViewMode added element
 				if (elementToAdd.moveOnLoad) {
 					console.log("MOVOING ELEMENT", elementToAdd);
+					
 					if (Number(props.screenView) !== elementToAdd.screen) {
 						if (elementToAdd.type == "pencil") {
 							elementToAdd.points.forEach((point) => {
 								point.x += window.screen.width * (elementToAdd.screen - 1);
 							});
-							props.setElementsIdOnViewMode([...props.elementsIdOnViewMode, elementToAdd.id]);
+							if (Number(props.screenView) === elementToAdd.screen)
+								props.setElementsIdOnViewMode([...props.elementsIdOnViewMode, elementToAdd.id]);
 						}
 					}
 				}
