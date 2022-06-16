@@ -162,10 +162,12 @@ const LoadButton = ({
 			clientId: clientId,
 			developerKey: developerKey,
 			token: TOKEN,
-			viewMimeTypes: "text/plain",
-			customScopes: ["https://www.googleapis.com/auth/drive.file"],
-			query: ".trdi",
-			viewId: "DOCUMENTS",
+			// mimeType: "application/vnd.google-apps.drive-sdk.570116819468",
+			viewMimeTypes: "text/plain.570116819468",
+			// customScopes: ["https://www.googleapis.com/auth/drive.file"],
+			// query: ".trdi",
+			// appId: "570116819468",
+			// viewId: "DOCUMENTS",
 			supportDrives: true,
 			callbackFunction: (pickerResponse) => {
 				console.log("PICKER:", pickerResponse);
