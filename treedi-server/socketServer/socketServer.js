@@ -1,10 +1,9 @@
 const express = require("express");
-require('dotenv').config();
+require("dotenv").config();
 const app = express();
 const server_2 = require("http").createServer(app);
 // Socket.io server listens to our app
 const io = require("socket.io")(server_2, { cors: { origin: "*" } });
-
 
 //initialize connection
 io.on("connection", async function (socket) {
@@ -18,7 +17,6 @@ io.on("connection", async function (socket) {
 			io.sockets.in(room).emit("data", e);
 		});
 	});
-
 });
 
 const port = process.env.Socket_Port || 4001;

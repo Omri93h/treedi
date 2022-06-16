@@ -67,10 +67,8 @@ const App = ({ handleLogout }) => {
 	const [pressureValue, setPressureValue] = useState(0);
 	const [pressureMode, setPressureMode] = useState(true);
 
-	const currElements = useRef(null);
-	function setCurrElements(ref) {
-		currElements.current = ref;
-	}
+	const [currElements, setCurrElements] = useState(null);
+
 
 	const liveApi = useRef(false);
 
@@ -135,9 +133,9 @@ const App = ({ handleLogout }) => {
 		}
 	}, [fileId]);
 
-	const sendElementToSocket = () => {
-		socket.current.emit("data", currElements.current[currElements.ref.length - 1]);
-	};
+	// const sendElementToSocket = () => {
+	// 	socket.current.emit("data", currElements[currElements.ref.length - 1]);
+	// };
 
 	return (
 		<div id='app' style={{ overflow: "hidden" }}>
@@ -173,7 +171,7 @@ const App = ({ handleLogout }) => {
 						setIsDialogOpen={setIsDialogOpen}
 						handleLogout={handleLogout}
 						setLoadedElement={setLoadedElement}
-						elements={currElements.current}
+						elements={currElements}
 						setOwner={setOwner}
 						elementsIdOnViewMode={elementsIdOnViewMode}
 						setScreenView={setScreenView}

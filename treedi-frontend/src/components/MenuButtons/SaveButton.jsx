@@ -33,17 +33,24 @@ const SaveButton = ({
 
 	const getBaseElements = () => {
 		let baseElements = [];
+		console.log('The LAST element in §elements§ is', elements[elements.length - 1])
 		elements.forEach((element) => {
 			let baseElement = {};
 			Object.assign(baseElement, element);
+
+			// if saving on a screen view mode
 			if (elementsIdOnViewMode.indexOf(element.id) !== -1) {
 				baseElement.points.forEach((point) => {
 					point.x += window.screen.width * (element.screen - 1);
 				});
 			}
+
 			baseElement.display = true;
 			baseElements.push(baseElement);
+			console.log('pushed to elements that are going to be saved:', baseElement)
 		});
+
+		console.log('these are the elements which going to be saved:', baseElements)
 		return baseElements;
 	};
 

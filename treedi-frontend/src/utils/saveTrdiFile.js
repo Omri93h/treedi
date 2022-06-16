@@ -8,6 +8,8 @@ const saveTrdiFile = async function (data, fileName, setFileId) {
 		let email = localStorage.getItem("TreediUserEmail");
 		let fileid = localStorage.getItem("fileId");
 		console.log("email:", email);
+		console.log('FINAL SAVED DATA', data)
+
 		const response = await axios
 			// .post("http://localhost:5001/api/googleDrive/save/?email=" + email, {
 			.post("https://treedi-346309.oa.r.appspot.com/api/googleDrive/save/?email=" + email, {
@@ -20,7 +22,6 @@ const saveTrdiFile = async function (data, fileName, setFileId) {
 			.then((res) => {
 				localStorage.setItem("fileId", res.data);
 				setFileId(res.data);
-
 				if (res.status == 200) {
 					toast.success("Saved successfully", {
 						position: "bottom-left",
