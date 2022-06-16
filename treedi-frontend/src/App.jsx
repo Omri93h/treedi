@@ -19,13 +19,29 @@ const App = ({ handleLogout }) => {
 	});
 
 	useEffect(() => {
-		console.log("setting user NEW data");
-		setUser({
-			name: localStorage.getItem("TreediUserName"),
-			email: localStorage.getItem("TreediUserEmail"),
-			img: localStorage.getItem("TreediUserImage"),
-		});
+		if (user.img === "") {
+			console.log("setting user NEW data, img");
+			let updatedUser = user;
+			updatedUser.img = localStorage.getItem("TreediUserImage");
+			setUser({ updatedUser });
+		}
 	}, [localStorage.getItem("TreediUserImage")]);
+	useEffect(() => {
+		if (user.email === "") {
+			console.log("setting user NEW data, email");
+			let updatedUser = user;
+			updatedUser.email = localStorage.getItem("TreediUserEmail");
+			setUser({ updatedUser });
+		}
+	}, [localStorage.getItem("TreediUserEmail")]);
+	useEffect(() => {
+		if (user.name === "") {
+			console.log("setting user NEW data, username");
+			let updatedUser = user;
+			updatedUser.name = localStorage.getItem("TreediUserName");
+			setUser({ updatedUser });
+		}
+	}, [localStorage.getItem("TreediUserName")]);
 
 	getToken();
 

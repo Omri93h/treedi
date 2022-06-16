@@ -23,7 +23,7 @@ const Login = () => {
 	// On Failur of google login we get the reason for failur in an alert:
 	const onFailure = (error) => {
 		console.log("ERORRRR");
-		alert(JSON.stringify(error));
+		// alert(JSON.stringify(error));
 		localStorage.clear();
 		window.location.href = "https://www.treedi.app";
 		// window.location.href = 'http://localhost:3000/';
@@ -151,7 +151,7 @@ const Login = () => {
 	async function checkIfLoadedFromLocalStorage() {
 		const isLoaded = await isUserDataSavedToLocalStorage();
 		setIsDataLoadedLocally(isLoaded);
-		await new Promise((r) => setTimeout(r, 100));
+		await new Promise((r) => setTimeout(r, 1000));
 	}
 
 	// when data is saved locally - and params are communicating -> open the app
@@ -160,7 +160,7 @@ const Login = () => {
 			console.log('saving locally is DONE ')
 			while (true) {
 				checkIfLoadedFromLocalStorage();
-				if (isDataLoadedLocally) {
+				if (isDataLoadedLocally || user.email !== '') {
 					console.log('Data is LOADED LOCALLY')
 					console.log("should open!\nData: ");
 					// window.open(window.location.origin + "/treedi", "MyWindow", "_blank");
