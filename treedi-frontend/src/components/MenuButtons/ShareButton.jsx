@@ -204,10 +204,10 @@ const ShareButton = ({
 
 			console.log("RES:::::", res);
 
-			if (res.data == 'success') {
+			if (res.data === 'success') {
 				Notificator("share-success");
 			} else {
-				console.log("Problem!");
+				console.log("Problem on Share!");
 				Notificator("share-error");
 			}
 		} catch (error) {
