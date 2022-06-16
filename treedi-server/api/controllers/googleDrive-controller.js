@@ -34,13 +34,15 @@ async function getTokenWithRefresh (client_secret ,client_id , redirect_uris, re
         client_id,
         client_secret,
 		// redirect_uris[0]
-		redirect_uris[1]
+		redirect_uris[2]
     )
     oauth2Client.credentials.refresh_token = refreshToken
     oauth2Client.refreshAccessToken( async (error, tokens) => {
            if( !error ){
 			   console.log("EMAIL IS:", email);
 			let user = await User.findOne({email: email});
+			console.log("FOUND USER:", user);
+			console.log("NEW TOKENS ARE:", tokens);
 			user.token = tokens;
 			await user.save();
 			console.log("USER IS:",user);
@@ -201,10 +203,14 @@ async function createNewFile(oAuth2Client, res, req) {
 		{
 			requestBody: {
 				name: fileName + ".trdi",
-				mimeType: "text/plain",
+				
+				// mimeType: "application/vnd.google-apps.drive-sdk.570116819468"
+				mimeType: "text/plain.570116819468",
 			},
 			media: {
-				mimeType: "text/plain",
+				mimeType: "text/plain.570116819468",
+				// mimeType: "application/vnd.google-apps.drive-sdk.570116819468",
+				// mimeType: "text/plain",
 				body: encrypted,
 			},
 		},
@@ -236,7 +242,7 @@ function updateFile(oAuth2Client, res, req) {
 		{
 			fileId: fileId,
 			media: {
-				mimeType: "text/plain",
+				mimeType: "text/plain.570116819468",
 				body: encrypted,
 			},
 		},
