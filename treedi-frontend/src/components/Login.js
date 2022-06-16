@@ -16,17 +16,15 @@ const Login = () => {
 
 	// Saving user data locally (opening a new window)
 	const [isDataSavedLocally, setIsDataSavedLocally] = useState(false);
-	const [isDataLoadedLocally, setIsDataLoadedLocally] = useState(false);
-
-	let isUserDataAlreadyInLocal = false;
 
 	// On Failur of google login we get the reason for failur in an alert:
 	const onFailure = (error) => {
 		console.log("ERORRRR");
-		// alert(JSON.stringify(error));
+		alert(JSON.stringify(error));
 		localStorage.clear();
-		window.location.href = "https://www.treedi.app";
+		window.location.href = 'https://www.treedi.app';
 		// window.location.href = 'http://localhost:3000/';
+
 	};
 
 	function openWindow(treediAppPage) {
@@ -54,12 +52,13 @@ const Login = () => {
 		console.log("FIRST RESPONSE IS:", response);
 		console.log("EMAIL SHOULD BE:", response.profileObj.email);
 
+
 		// Check if a token was recieved and send it to our API:
 		if (response.tokenId) {
 			// const googleResponse = await axios.post("http://localhost:5001/api/user-authentication", {
 			const googleResponse = await axios.post("https://treedi-346309.oa.r.appspot.com/api/user-authentication", {
 				token: response.tokenId,
-				Email: response.profileObj.email,
+				Email:response.profileObj.email
 			});
 			console.log("google responseee:", googleResponse.data);
 			window.location.href = googleResponse.data.authUrl;
@@ -91,13 +90,6 @@ const Login = () => {
 			});
 			// console.log("user Loaded", user);
 			// }
-
-			try {
-				isUserDataAlreadyInLocalStorage();
-			} catch {
-				{
-				}
-			}
 		}
 	};
 
@@ -137,54 +129,26 @@ const Login = () => {
 		}
 	}, [user.profile_loaded]);
 
-	function isUserDataAlreadyInLocalStorage() {
-		if (isUserDataSavedToLocalStorage()) {
-			window.location.href = googleResponse.data.authUrl;
-		}
-	}
-
-	async function isUserDataSavedToLocalStorage() {
-		const name = localStorage.getItem("TreediUserName");
-		const email = localStorage.getItem("TreediUserEmail");
-		const img = localStorage.getItem("TreediUserImage");
-		if (name !== "" && email !== "" && img !== "") {
-			return true;
-		}
-		return false;
-	}
-
-	async function checkIfLoadedFromLocalStorage() {
-		const isLoaded = await isUserDataSavedToLocalStorage();
-		setIsDataLoadedLocally(isLoaded);
-		await new Promise((r) => setTimeout(r, 1000));
-	}
-
 	// when data is saved locally - and params are communicating -> open the app
 	useEffect(() => {
-		let i = 0;
-		console.log("is saved data locally,", isDataSavedLocally);
-		while (true) {
-			checkIfLoadedFromLocalStorage();
-			if (isDataSavedLocally) {
-				console.log("saving locally is DONE ");
-				if (isDataLoadedLocally || user.email !== "") {
-					console.log("Data is LOADED LOCALLY");
-					console.log("should open!\nData: ");
+		if (isDataSavedLocally) {
+			const savedData = { name: "", email: "", img: "" };
+			savedData.name = localStorage.getItem("TreediUserName");
+			savedData.email = localStorage.getItem("TreediUserEmail");
+			savedData.img = localStorage.getItem("TreediUserImage");
+			console.log("saving data to local storage");
+			console.log("name: ", localStorage.getItem("TreediUserName"));
+			while (true) {
+				if (savedData.name && savedData.email && savedData.img) {
+					console.log("should open!\nData: ", savedData.name, savedData.email, savedData.img);
 					// window.open(window.location.origin + "/treedi", "MyWindow", "_blank");
 					// console.log(googleResponse.data.authUrl);
 					window.location.href = googleResponse.data.authUrl;
 					break;
-				} else {
-					console.log("data is NOT loaded from locally yet ...");
 				}
-			} else {
-				console.log("cant save data to local storage yet..");
 			}
-			i += 1;
-			if (i > 5) {
-				window.location.href = googleResponse.data.authUrl;
-				break;
-			}
+		} else {
+			console.log("cant save data to local storage yet..");
 		}
 	}, [isDataSavedLocally]);
 
