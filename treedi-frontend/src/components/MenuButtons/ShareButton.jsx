@@ -204,7 +204,7 @@ const ShareButton = ({
 
 			console.log("RES:::::", res);
 
-			if (res.data === 'success') {
+			if (res.data === 'success' || res.statusText === 'OK') {
 				Notificator("share-success");
 			} else {
 				console.log("Problem on Share!");
