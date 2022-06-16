@@ -50,8 +50,6 @@ const Login = () => {
 	}
 	// If successfull return of data from google we run this function:
 	const googleResponse = async (response) => {
-		try{isUserDataAlreadyInLocalStorage()}
-		catch{{}}
 		console.log("going to API");
 		console.log("FIRST RESPONSE IS:", response);
 		console.log("EMAIL SHOULD BE:", response.profileObj.email);
@@ -93,6 +91,13 @@ const Login = () => {
 			});
 			// console.log("user Loaded", user);
 			// }
+
+			try {
+				isUserDataAlreadyInLocalStorage();
+			} catch {
+				{
+				}
+			}
 		}
 	};
 
@@ -133,7 +138,7 @@ const Login = () => {
 	}, [user.profile_loaded]);
 
 	function isUserDataAlreadyInLocalStorage() {
-		if (isUserDataSavedToLocalStorage()){
+		if (isUserDataSavedToLocalStorage()) {
 			window.location.href = googleResponse.data.authUrl;
 		}
 	}
@@ -156,24 +161,30 @@ const Login = () => {
 
 	// when data is saved locally - and params are communicating -> open the app
 	useEffect(() => {
-		if (isDataSavedLocally) {
-			console.log('saving locally is DONE ')
-			while (true) {
-				checkIfLoadedFromLocalStorage();
-				if (isDataLoadedLocally || user.email !== '') {
-					console.log('Data is LOADED LOCALLY')
+		let i = 0;
+		console.log("is saved data locally,", isDataSavedLocally);
+		while (true) {
+			checkIfLoadedFromLocalStorage();
+			if (isDataSavedLocally) {
+				console.log("saving locally is DONE ");
+				if (isDataLoadedLocally || user.email !== "") {
+					console.log("Data is LOADED LOCALLY");
 					console.log("should open!\nData: ");
 					// window.open(window.location.origin + "/treedi", "MyWindow", "_blank");
 					// console.log(googleResponse.data.authUrl);
 					window.location.href = googleResponse.data.authUrl;
 					break;
+				} else {
+					console.log("data is NOT loaded from locally yet ...");
 				}
-				else {
-					console.log('data is NOT loaded from locally yet ...')
-				}
+			} else {
+				console.log("cant save data to local storage yet..");
 			}
-		} else {
-			console.log("cant save data to local storage yet..");
+			i += 1;
+			if (i > 5) {
+				window.location.href = googleResponse.data.authUrl;
+				break;
+			}
 		}
 	}, [isDataSavedLocally]);
 
