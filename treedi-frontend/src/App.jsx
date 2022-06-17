@@ -3,10 +3,13 @@ import Controller from "./Controller";
 import Canvas from "./Canvas";
 import Preload from "./components/Preload";
 import getToken from "./utils/getToken";
-import ScreenToWriteTo from "./components/ScreenToWriteTo";
+
 import io from "socket.io-client";
 import PressureSlider from "./components/PressureSlider";
 import { Fade } from "@mui/material";
+
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = ({ handleLogout }) => {
 	const [fileId, setFileId] = useState(null);
@@ -69,7 +72,6 @@ const App = ({ handleLogout }) => {
 
 	const [currElements, setCurrElements] = useState(null);
 
-
 	const liveApi = useRef(false);
 
 	function setLiveApi(ref) {
@@ -85,16 +87,15 @@ const App = ({ handleLogout }) => {
 	// 	() => ,
 	// 	[]
 	// );
-
-	const divScreenToWriteTo = (
-		<ScreenToWriteTo
-			user={user}
-			owner={owner}
-			screenToWriteTo={screenToWriteTo}
-			setDisplayScreenToWriteTo={setDisplayScreenToWriteTo}
-			editPermission={editPermission}
-		/>
-	);
+	// const divScreenToWriteTo = React.useMemo(
+	// 	() => (
+	// 		<ScreenToWriteTo user={user} owner={owner} screenToWriteTo={screenToWriteTo} editPermission={editPermission} />
+	// 	),
+	// 	[]
+	// );
+	// const divScreenToWriteTo = (
+	// 	<ScreenToWriteTo user={user} owner={owner} screenToWriteTo={screenToWriteTo} editPermission={editPermission} />
+	// );
 
 	useEffect(() => {
 		function initSocket() {
@@ -139,6 +140,15 @@ const App = ({ handleLogout }) => {
 
 	return (
 		<div id='app' style={{ overflow: "hidden" }}>
+			<ToastContainer
+				position='bottom-left'
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick
+				rtl={false}
+				draggable
+			/>
 			<Preload
 				setProjectName={setProjectName}
 				setIsDialogOpen={setIsDialogOpen}
@@ -149,7 +159,7 @@ const App = ({ handleLogout }) => {
 				setCommand={setCommand}
 			/>
 
-			{displayScreenToWriteTo ? divScreenToWriteTo : null}
+			{/* {displayScreenToWriteTo ? divScreenToWriteTo : null} */}
 
 			<Fade in={action === "none" ? true : false} timeout={250}>
 				<span>
@@ -176,7 +186,6 @@ const App = ({ handleLogout }) => {
 						elementsIdOnViewMode={elementsIdOnViewMode}
 						setScreenView={setScreenView}
 						setScreenToWriteTo={setScreenToWriteTo}
-
 					/>
 				</span>
 			</Fade>
@@ -184,7 +193,7 @@ const App = ({ handleLogout }) => {
 			<PressureSlider pressureValue={pressureValue} screenToWriteTo={screenToWriteTo} pressureMode={pressureMode} />
 
 			<Canvas
-			setScreenView={setScreenView}
+				setScreenView={setScreenView}
 				screenView={screenView}
 				action={action}
 				setAction={setAction}

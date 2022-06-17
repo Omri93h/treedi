@@ -2,6 +2,7 @@ import React, { useEffect, useLayoutEffect, useState, useRef } from "react";
 import rough from "roughjs/bundled/rough.esm";
 import getStroke from "perfect-freehand";
 import io from "socket.io-client";
+import Notificator from "./utils/Notificator";
 // import Socket from "./utils/socket";
 
 const generator = rough.generator();
@@ -493,6 +494,7 @@ const Canvas = (props) => {
 						if (props.screenView !== "all") {
 							// ADD NOTIFICATION
 							props.setScreenView(event.key);
+							Notificator("screen-mode", Number(event.key));
 							// console.log("Can't use screen switch buttons on Single Screen Mode!");
 						} else {
 							console.log("key " + Number(event.key) + " is pressed");
@@ -500,15 +502,19 @@ const Canvas = (props) => {
 							console.log("settingPressureMode1");
 							props.setPressureMode(false);
 							props.setDisplayScreenToWriteTo(true);
+							Notificator("screen-mode", Number(event.key));
+
 						}
 					} else if (event.key === "0") {
 						if (props.screenView !== "all") {
 							// ADD NOTIFICATION
-							console.log("Can't use screen switch buttons on Single Screen Mode!");
+							Notificator("screen-mode-error");
 						} else {
 							props.setScreenToWriteTo(0);
 							props.setPressureMode(true);
 							props.setDisplayScreenToWriteTo(true);
+							Notificator("screen-mode", 0);
+
 						}
 					}
 				}

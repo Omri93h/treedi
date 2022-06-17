@@ -37,9 +37,9 @@ const PressureSlider = ({ pressureValue, screenToWriteTo, pressureMode }) => {
 
 const stylePressureSlider = {
 	position: "absolute",
-	height: "80%",
+	height: "70%",
 	zIndex: "100",
-	top: "100px",
+	top: "140px",
 	marginLeft: "10px",
 	cursor: "crosshair",
 	pointerEvents: "none",

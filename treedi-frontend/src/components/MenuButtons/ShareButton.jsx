@@ -23,17 +23,38 @@ import Switch from "@mui/material/Switch";
 import Checkbox from "@mui/material/Checkbox";
 import axios from "axios";
 import OutlinedInput from "@mui/material/OutlinedInput";
+import { height, width } from "@mui/system";
 
 const modalStyle = {
-	position: "absolute",
-	top: "50%",
-	left: window.screen.width / 6,
-	transform: "translate(-50%, -50%)",
+	position: "relative",
+	// left:window.screen.width / 2 + 'px',
+	// marginLeft:'25%',
+	margin:'auto',
+	marginTop:'2%',
+
+	// marginLeft: "auto",
+	// marginRight: "auto",
+
+	top: "10%",
+	// left: window.screen.width / 6,
+	// transform: "translate(-50%, -50%)",
 	width: 400,
 	bgcolor: "background.paper",
 	border: "2px solid #000",
 	boxShadow: 24,
-	p: 4,
+	p: 3,
+};
+
+const modalWrapper = {
+
+	position: "absolute",
+	height: window.screen.height + "px",
+	width: window.screen.width + 'px',
+	justifyContent: 'center',
+
+	textAlign: "center",
+	verticalAlign:'middle',
+	// zIndex:'0'
 };
 
 const screens = [1, 2, 3];
@@ -257,44 +278,50 @@ const ShareButton = ({
 			<Button className='basic-button' onClick={handleOpen}>
 				<ShareIcon className='menu-item' />
 			</Button>
-			<Modal
-				open={open}
-				onClose={handleClose}
-				closeAfterTransition
-				BackdropComponent={Backdrop}
-				BackdropProps={{
-					timeout: 500,
-				}}>
-				<Fade in={open}>
-					<Box sx={modalStyle}>
-						<Typography id='transition-modal-title' variant='h6' component='h2'>
-							<TextField onChange={handleEmailChange} fullWidth label='Email ...' id='fullWidth' type='email' />
-						</Typography>
-						<br />
-						<br />
-						<List
-							sx={{ width: "100%", bgcolor: "background.paper" }}
-							subheader={<ListSubheader>Permissions</ListSubheader>}>
-							<ListItem>
-								<Switch edge='end' disabled={true} checked={true} />
-								<ListItemText primary='&nbsp;Read' />
-								{readScreens}
-							</ListItem>
-							<ListItem>
-								<Switch edge='end' onChange={handleEditToggle} checked={editToggle} />
-								<ListItemText primary='&nbsp;Edit' />
-								{editScreens}
-							</ListItem>
-						</List>
-						<br />
-						<div style={{ textAlign: "center" }}>
-							<Button size='large' variant='outlined' onClick={handleShare}>
-								<ShareIcon className='menu-item' /> &nbsp; Share
-							</Button>
-						</div>
-					</Box>
-				</Fade>
-			</Modal>
+
+				<Modal
+					open={open}
+					onClose={handleClose}
+					closeAfterTransition
+					// BackdropComponent={Backdrop}
+					BackdropProps={{
+						timeout: 500,
+					}}>
+									<div style={modalWrapper}>
+
+					<Fade in={open}>
+						<Box sx={modalStyle}>
+							<Typography id='transition-modal-title' variant='h6' component='h2'>
+								<TextField onChange={handleEmailChange} fullWidth label='Email ...' id='fullWidth' type='email' />
+							</Typography>
+							<br />
+							<br />
+							<List
+								sx={{ width: "100%", bgcolor: "background.paper" }}
+								subheader={<ListSubheader>Permissions</ListSubheader>}>
+								<ListItem>
+									<Switch edge='end' disabled={true} checked={true} />
+									<ListItemText primary='&nbsp;Read' />
+									{readScreens}
+								</ListItem>
+								<ListItem>
+									<Switch edge='end' onChange={handleEditToggle} checked={editToggle} />
+									<ListItemText primary='&nbsp;Edit' />
+									{editScreens}
+								</ListItem>
+							</List>
+							<br />
+							<div style={{ textAlign: "center" }}>
+								<Button size='large' variant='outlined' onClick={handleShare}>
+									<ShareIcon className='menu-item' /> &nbsp; Share
+								</Button>
+							</div>
+						</Box>
+					</Fade>
+					</div>
+
+				</Modal>
+
 		</>
 	);
 };

@@ -13,9 +13,6 @@ import ScreenViewButton from "./MenuButtons/ScreenViewButton";
 
 import "../App.css";
 
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
 const TreediMenuBar = ({
 	user,
 	setTool,
@@ -46,18 +43,6 @@ const TreediMenuBar = ({
 	// );
 	return (
 		<div style={{ display: "flex", position: "absolute" }}>
-			<ToastContainer
-				position='bottom-left'
-				autoClose={5000}
-				hideProgressBar={false}
-				newestOnTop={false}
-				closeOnClick
-				rtl={false}
-				pauseOnFocusLoss
-				draggable
-				pauseOnHover
-			/>
-
 			<img src='./icon_app.jpg' style={iconStyle} />
 
 			<div style={userIconStyle}>
@@ -153,7 +138,7 @@ const iconStyle = {
 };
 
 const userIconStyle = {
-	zIndex:'1',
+	zIndex: "1",
 	top: "10px",
 	position: "absolute",
 	left: String(window.screen.width - 100) + "px",

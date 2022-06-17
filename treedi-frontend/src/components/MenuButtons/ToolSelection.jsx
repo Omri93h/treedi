@@ -97,7 +97,7 @@ const ToolSelection = ({ setTool }) => {
 			</Button>
 			<Menu anchorEl={anchorEl} open={open} onClose={handleClose}>
 				<MenuItem onClick={() => handleSelected("pencil")}>{displayPencilTool}</MenuItem>
-				<MenuItem onClick={() => handleSelected("text")}>{displayTextTool}</MenuItem>
+				{/* <MenuItem onClick={() => handleSelected("text")}>{displayTextTool}</MenuItem> */}
 				<MenuItem onClick={() => handleSelected("rectangle")}>{displayRectangleTool}</MenuItem>
 				<MenuItem onClick={() => handleSelected("line")}>{displayLineTool}</MenuItem>
 				<MenuItem onClick={() => handleSelected("eraser")}>{displayEraserTool}</MenuItem>

@@ -1,12 +1,12 @@
 import { toast } from "react-toastify";
 
-const Notificator = (notification) => {
+const Notificator = (notification, screenToWriteTo = null) => {
 	const notificationParams = {
 		position: "bottom-left",
 		autoClose: 5000,
 		hideProgressBar: false,
 		closeOnClick: true,
-		pauseOnHover: true,
+		pauseOnHover: false,
 		draggable: true,
 		progress: undefined,
 	};
@@ -15,7 +15,16 @@ const Notificator = (notification) => {
 		autoClose: 3000,
 		hideProgressBar: false,
 		closeOnClick: true,
-		pauseOnHover: true,
+		pauseOnHover: false,
+		draggable: true,
+		progress: undefined,
+	};
+	const screenToWriteToParams = {
+		position: "bottom-left",
+		autoClose: 1000,
+		hideProgressBar: false,
+		closeOnClick: true,
+		pauseOnHover: false,
 		draggable: true,
 		progress: undefined,
 	};
@@ -54,6 +63,19 @@ const Notificator = (notification) => {
 		case "edit-permission":
 			toast.error("You are not permitted to edit this layer", notificationParams);
 			break;
+
+		// SCREEN TO WRITE TO
+		case "screen-mode":
+			toast.info(
+				screenToWriteTo > 0 ? "Writing To Screen " + Number(screenToWriteTo) : "Pressure Mode",
+				screenToWriteToParams
+			);
+			break;
+
+		case "screen-mode-error":
+			toast.error("Can't use in-depth pen pressure on Single Screen Mode!", notificationParams);
+			break;
+
 		//DEFAULT
 		default:
 			toast.info("Notification Not Working.....", infoParams);
