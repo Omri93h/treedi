@@ -5,6 +5,7 @@ import useDrivePicker from "react-google-drive-picker";
 import { default as LoadIcon } from "@mui/icons-material/CloudUpload";
 import { toast } from "react-toastify";
 import "../../App.css";
+import Notificator from "../../utils/Notificator";
 
 const LoadButton = ({
 	setCommand,
@@ -45,15 +46,7 @@ const LoadButton = ({
 	};
 
 	const GetFileData = async function (fileID) {
-		toast.info("Loading File ...", {
-			position: "bottom-left",
-			autoClose: 2000,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			draggable: true,
-			progress: undefined,
-		});
+		Notificator("loading");
 		let params = new URL(document.location).searchParams;
 		// let code = params.get("code");
 
@@ -74,37 +67,13 @@ const LoadButton = ({
 						setOwner(res.data.Owner);
 						console.log("DATGATGEDBAS", res.data);
 						setProjectName(res.data.FileName);
-						toast.success("Loaded successfully", {
-							position: "bottom-left",
-							autoClose: 5000,
-							hideProgressBar: false,
-							closeOnClick: true,
-							pauseOnHover: true,
-							draggable: true,
-							progress: undefined,
-						});
+						Notificator("load-success");
 					} else {
-						toast.error("Could not load file", {
-							position: "bottom-left",
-							autoClose: 5000,
-							hideProgressBar: false,
-							closeOnClick: true,
-							pauseOnHover: true,
-							draggable: true,
-							progress: undefined,
-						});
+						Notificator("load-error");
 					}
 				});
 		} catch (error) {
-			toast.error("Load error", {
-				position: "bottom-left",
-				autoClose: 5000,
-				hideProgressBar: false,
-				closeOnClick: true,
-				pauseOnHover: true,
-				draggable: true,
-				progress: undefined,
-			});
+			Notificator("load-error");
 		}
 	};
 
@@ -126,37 +95,6 @@ const LoadButton = ({
 			console.log(`error - GetToken - ${error}`);
 		}
 		setCommand({ resetView: true });
-		// console.log(
-		// 	"PARAMS FOR PICKER:\n\n",
-		// 	"clientId:",
-		// 	clientId,
-		// 	"\n\n",
-		// 	"developerKey:",
-		// 	developerKey,
-		// 	"\n\n",
-		// 	"token:",
-		// 	TOKEN
-		// );
-		// var view = new google.picker.DocsView(google.picker.ViewId.DOCS);
-
-		// view.setMimeTypes("text/xml");
-		// view.setMode(google.picker.DocsViewMode.LIST);
-		// view.setQuery("*.abc");
-
-		// <GoogleChooser clientId={clientId}
-		//               developerKey={developerKey}
-		//               scope={['https://www.googleapis.com/auth/drive.file']}
-		//               onChange={data => console.log('on change:', data)}
-		//               onAuthenticate={TOKEN => console.log('oauth token:', TOKEN)}
-		//               onAuthFailed={data => console.log('on auth failed:', data)}
-		//               multiselect={true}
-		//               navHidden={true}
-		//               authImmediate={false}
-		// 			  query={'.trdi'}
-		//               mimeTypes={['text/plain']}
-		//               viewId={'DOCS'}>
-		//    {/* <MyCustomButton /> */}
-		// </GoogleChooser>
 
 		openPicker({
 			clientId: clientId,

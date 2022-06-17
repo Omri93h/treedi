@@ -1,5 +1,6 @@
 import { toast } from "react-toastify";
 import axios from "axios";
+import Notificator from "./Notificator";
 
 const saveTrdiFile = async function (data, fileName, setFileId) {
 	try {
@@ -8,7 +9,7 @@ const saveTrdiFile = async function (data, fileName, setFileId) {
 		let email = localStorage.getItem("TreediUserEmail");
 		let fileid = localStorage.getItem("fileId");
 		console.log("email:", email);
-		console.log('FINAL SAVED DATA', data)
+		console.log("FINAL SAVED DATA", data);
 
 		const response = await axios
 			// .post("http://localhost:5001/api/googleDrive/save/?email=" + email, {
@@ -23,37 +24,13 @@ const saveTrdiFile = async function (data, fileName, setFileId) {
 				localStorage.setItem("fileId", res.data);
 				setFileId(res.data);
 				if (res.status == 200) {
-					toast.success("Saved successfully", {
-						position: "bottom-left",
-						autoClose: 5000,
-						hideProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true,
-						draggable: true,
-						progress: undefined,
-					});
+					Notificator("save-success");
 				} else {
-					toast.error("Could not save file", {
-						position: "bottom-left",
-						autoClose: 5000,
-						hideProgressBar: false,
-						closeOnClick: true,
-						pauseOnHover: true,
-						draggable: true,
-						progress: undefined,
-					});
+					Notificator("save-error");
 				}
 			});
 	} catch (error) {
-		toast.error("Save error!", {
-			position: "bottom-left",
-			autoClose: 5000,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			draggable: true,
-			progress: undefined,
-		});
+		Notificator("save-error");
 	}
 };
 

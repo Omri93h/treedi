@@ -165,7 +165,7 @@ const Login = () => {
 						onFailure={onFailure}
 						render={(renderProps) => (
 							<Button onClick={renderProps.onClick} variant='contained' size='large' color='success'>
-								Login
+								Login with Google
 							</Button>
 						)}
 					/>

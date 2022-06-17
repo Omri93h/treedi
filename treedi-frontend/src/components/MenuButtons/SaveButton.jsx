@@ -7,7 +7,7 @@ import { default as SaveIcon } from "@mui/icons-material/SaveAltRounded";
 import { Divider } from "@mui/material";
 import getTrdiFileData from "../../utils/getTrdiFileData";
 import saveTrdiFile from "../../utils/saveTrdiFile";
-import { toast } from "react-toastify";
+
 
 import "../../App.css";
 
@@ -56,15 +56,7 @@ const SaveButton = ({
 
 	const handleSave = () => {
 		// setScreenView("all");
-		toast.info("Saving File ...", {
-			position: "bottom-left",
-			autoClose: 800,
-			hideProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			draggable: true,
-			progress: undefined,
-		});
+
 		// console.log(elements);
 		const baseElements = getBaseElements();
 		console.log(baseElements);

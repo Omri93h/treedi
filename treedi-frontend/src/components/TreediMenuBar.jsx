@@ -146,10 +146,10 @@ const TreediMenuBarStyle = {
 };
 
 const iconStyle = {
-	marginTop: "10px",
+	marginTop: "16px",
 	marginLeft: "20px",
-	height: "50px",
-	width: "220px",
+	height: "40px",
+	width: "170px",
 };
 
 const userIconStyle = {

@@ -71,16 +71,7 @@ const ShareButton = ({
 		setOpen(true);
 	};
 
-	// const filterRead = (All, readArray) => {
-	// 	let responseArray = [];
-	// 	All.forEach((item) => {
-	// 		if (numbers.find((number) => number === item)) "";
-	// 		else responseArray.push(item);
-	// 	});
-	// };
 	const handleClose = () => {
-		// setCurrEditPermission([]);
-		// setCurrReadPermission([]);
 		setIsDialogOpen(false);
 		setOpen(false);
 	};
@@ -202,9 +193,7 @@ const ShareButton = ({
 				}
 			);
 
-			console.log("RES:::::", res);
-
-			if (res.data === 'success' || res.statusText === 'OK') {
+			if (res.data === "success" || res.statusText === "OK") {
 				Notificator("share-success");
 			} else {
 				console.log("Problem on Share!");
