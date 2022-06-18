@@ -531,7 +531,7 @@ const Canvas = (props) => {
 		switch (type) {
 			case "line":
 			case "rectangle":
-				elementsCopy[id] = createElement(id, x1, y1, x2, y2, type, screen, true);
+				elementsCopy[id] = createElement(id, x1, y1, x2, y2, type,elementsCopy[id].color, screen, true);
 				break;
 			case "pencil":
 				elementsCopy[id].points = [...elementsCopy[id].points, { x: x2, y: y2 }];
