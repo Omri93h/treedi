@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import GoogleLogin from "react-google-login";
 import axios from "axios";
 import Button from "@mui/material/Button";
+import GoogleIcon from "@mui/icons-material/Google";
 
 const clientId = process.env.REACT_APP_CLIENT_ID;
 
@@ -22,9 +23,8 @@ const Login = () => {
 		console.log("user pressed X");
 		// alert(JSON.stringify(error));
 		localStorage.clear();
-		window.location.href = 'https://www.treedi.app';
+		window.location.href = "https://www.treedi.app";
 		// window.location.href = 'http://localhost:3000/';
-
 	};
 
 	function openWindow(treediAppPage) {
@@ -52,13 +52,12 @@ const Login = () => {
 		console.log("FIRST RESPONSE IS:", response);
 		console.log("EMAIL SHOULD BE:", response.profileObj.email);
 
-
 		// Check if a token was recieved and send it to our API:
 		if (response.tokenId) {
 			// const googleResponse = await axios.post("http://localhost:5001/api/user-authentication", {
 			const googleResponse = await axios.post("https://treedi-346309.oa.r.appspot.com/api/user-authentication", {
 				token: response.tokenId,
-				Email:response.profileObj.email
+				Email: response.profileObj.email,
 			});
 			console.log("google responseee:", googleResponse.data);
 			window.location.href = googleResponse.data.authUrl;
@@ -164,8 +163,16 @@ const Login = () => {
 						onSuccess={googleResponse}
 						onFailure={onFailure}
 						render={(renderProps) => (
-							<Button onClick={renderProps.onClick} variant='contained' size='large' color='success'>
-								Login with Google
+							<Button
+								style={{ textTransform: "none" }}
+								onClick={renderProps.onClick}
+								variant='contained'
+								size='medium'
+								color='primary'>
+								<span style={{ color: "white" }}>
+									Login With
+									<span style={{ fontSize: "20px" }}> Google </span>
+								</span>
 							</Button>
 						)}
 					/>

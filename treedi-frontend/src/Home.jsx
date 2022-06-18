@@ -11,7 +11,7 @@ const Home = () => {
 
 	return (
 		<div className='Home'>
-			<video loop autoPlay muted type='video/mp4'>
+			<video loop autoPlay muted type='video/mp4' style={videoStyle}>
 				<source src={"/video.mp4"}></source>
 			</video>
 
@@ -72,6 +72,15 @@ const Home = () => {
 		</div>
 	);
 };
+
+const videoStyle =  {
+	position:'absolute',
+	width: window.screen.width + "px",
+	left:'0',
+	height: "100%",
+	objectFit: "cover",
+	overflow: "hidden"
+}
 
 const iconStyle = {
 	height: "130px",
